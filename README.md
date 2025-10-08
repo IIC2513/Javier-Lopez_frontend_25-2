@@ -19,6 +19,23 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas principales (Mockups)
 
+<p align="center">
+  <img src="docs/Vista-Pc.png" alt="Vista de escritorio" width="400"/>
+  <img src="docs/Vista-iPad.png" alt="Vista de Ipad" width="200"/>
+  <img src="docs/Vista-Celular.png" alt="Vista de Celular" width="120"/>
+</p>
+
+## Paleta de colores 
+<img src="docs/Primary-Colors.png" alt="Colores primarios" width="400"/>
+<img src="docs/Secondary-Colors.png" alt="Colores secundarios" width="400"/>
+
+## Fuentes
+<img src="docs/Fonts.png" alt="Fuentes" width="400"/>
+
+## Logo
+<img src="docs/Logo.png" alt="Fuentes" width="400"/>
+
+
 ## Diagrama E/R
 
 ## Historias de Usuario
