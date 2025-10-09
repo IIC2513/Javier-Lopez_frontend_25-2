@@ -159,7 +159,7 @@ const NavBar = ({
 							Products ▾
 						</a>
 						<a
-							href="/"
+							href="/about-us"
 							className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
 							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
 						>
