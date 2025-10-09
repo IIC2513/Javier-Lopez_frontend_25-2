@@ -37,6 +37,7 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 
 ## Diagrama E/R
+<img src="docs/Diagrama-ER.png" alt="DiagramaER" width="700"/>
 
 ## Historias de Usuario
 
