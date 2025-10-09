@@ -5,6 +5,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import LandingPage from "./pages/Landing";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   return (
@@ -15,14 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           {/* Si quieres otras rutas, agrégalas aquí: */}
-          <Route
-            path="/about"
-            element={
-              <div className="p-4">
-                <h1 className="text-2xl font-bold">About</h1>
-              </div>
-            }
-          />
+          <Route path="/about-us" element={<AboutUs />} />
         </Routes>
       </div>
     </Router>
