@@ -3,6 +3,8 @@ import "./App.css";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
+import AboutUs from "./pages/AboutUs";
+
 
 function App() {
 	const items = [
@@ -95,6 +97,7 @@ function App() {
 							</div>
 						}
 					/>
+					<Route path="/about-us" element={<AboutUs />} />
 				</Routes>
 			</div>
 		</Router>
