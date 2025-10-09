@@ -5,6 +5,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import LandingPage from "./pages/Landing";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -12,14 +13,47 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         {" "}
         {/* Cambié bg-base-100 por uno de Tailwind */}
+        <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          {/* Si quieres otras rutas, agrégalas aquí: */}
+          {/* Agrega más rutas aquí cuando las crees */}
           <Route
-            path="/about"
+            path="/caracteristicas"
             element={
-              <div className="p-4">
-                <h1 className="text-2xl font-bold">About</h1>
+              <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold">Características</h1>
+              </div>
+            }
+          />
+          <Route
+            path="/precios"
+            element={
+              <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold">Precios</h1>
+              </div>
+            }
+          />
+          <Route
+            path="/contacto"
+            element={
+              <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold">Contacto</h1>
+              </div>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold">Iniciar Sesión</h1>
+              </div>
+            }
+          />
+          <Route
+            path="/registro"
+            element={
+              <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold">Registrarse</h1>
               </div>
             }
           />
