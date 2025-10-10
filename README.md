@@ -1,9 +1,10 @@
-# Performados - Frontend 
+# Performados - Frontend
 
 ## Grupo Javier Lopez - IIC2513-1 2025-2
 
 ### Integrantes:
-- Vicente Cuitiño 
+
+- Vicente Cuitiño
 - Esteban Ortega
 - Miguel Ulloa
 
@@ -25,19 +26,27 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
   <img src="docs/Vista-Celular.png" alt="Vista de Celular" width="120"/>
 </p>
 
-## Paleta de colores 
+## Paleta de colores
+
 <img src="docs/Primary-Colors.png" alt="Colores primarios" width="400"/>
 <img src="docs/Secondary-Colors.png" alt="Colores secundarios" width="400"/>
 
 ## Fuentes
+
 <img src="docs/Fonts.png" alt="Fuentes" width="400"/>
 
 ## Logo
+
 <img src="docs/Logo.png" alt="Fuentes" width="400"/>
 
-
 ## Diagrama E/R
+
 <img src="docs/Diagrama-ER.png" alt="DiagramaER" width="700"/>
+
+## Vistas desarolladas
+
+<img src="docs/AboutUs.png" alt="AboutUs" width="700"/>
+<img src="docs/AboutUs2.png" alt="AboutUs2" width="700"/>
 
 ## Historias de Usuario
 
