@@ -158,7 +158,7 @@ const NavBar = ({
 							Products ▾
 						</a>
 						<a
-							href="/"
+							href="/about-us"
 							className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
 							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
 						>
@@ -174,15 +174,17 @@ const NavBar = ({
 					</div>
 
 					<div className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
-						<h1
-							className="text-[50px] tracking-tight"
-							style={{
-								fontFamily: "MidnightGelactic, sans-serif",
-								color: "#2f5b61",
-							}}
-						>
-							Performados
-						</h1>
+						<a href="/" className="cursor-pointer">
+							<h1
+								className="text-[50px] tracking-tight"
+								style={{
+									fontFamily: "MidnightGelactic, sans-serif",
+									color: "#2f5b61",
+								}}
+							>
+								Performados
+							</h1>
+						</a>
 					</div>
 
 					<div className="hidden md:flex items-center gap-3 order-3 ml-auto mr-4">
