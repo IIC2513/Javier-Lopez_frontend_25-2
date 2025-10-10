@@ -32,7 +32,6 @@ function AboutUs() {
   ];
   return (
     <div className="bg-[#2F5B61] min-h-screen flex flex-col items-center justify-center p-6">
-      {/* Sección superior */}
       <div className="flex flex-col items-center justify-center text-center min-h-screen">
         <h1
           className="text-[50px] tracking-tight"
@@ -52,7 +51,6 @@ function AboutUs() {
           traer nuevas experiencias a los usuarios a través de nuestras
           aplicaciones.
         </p>
-
         <button
           type="button"
           onClick={handleScroll}
@@ -62,8 +60,6 @@ function AboutUs() {
           ⬇
         </button>
       </div>
-
-      {/* Sección inferior con cards */}
       <div
         ref={cardsRef}
         className="min-h-screen flex flex-col items-center justify-center"

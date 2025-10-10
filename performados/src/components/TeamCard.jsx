@@ -59,14 +59,12 @@ const SpotlightCard = ({
 
       {member && (
         <div className="flex items-center h-full space-x-6 font-sora px-4">
-          {/* Imagen */}
           <img
             src={member.image}
             alt={member.nombre}
             className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover flex-shrink-0"
           />
 
-          {/* Texto */}
           <div className="flex flex-col justify-center text-left">
             <h2
               className="text-2xl font-bold text-[#f6efe2]"
