@@ -147,7 +147,6 @@ const NavBar = ({
 				} block h-[60px] p-0 rounded-xl shadow-md relative overflow-hidden will-change-[height]`}
 				style={{ backgroundColor: baseColor }}
 			>
-				{/* === Izquierda === */}
 				<div className="card-nav-top absolute inset-x-0 top-0 h-[80px] flex items-center justify-between p-2 pl-[1.1rem] z-[2]">
 					<div className="hidden md:flex items-center gap-6 order-0">
 						<a
@@ -174,7 +173,6 @@ const NavBar = ({
 						</a>
 					</div>
 
-					{/* === LOGO === */}
 					<div className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
 						<h1
 							className="text-[50px] tracking-tight"
@@ -187,7 +185,6 @@ const NavBar = ({
 						</h1>
 					</div>
 
-					{/* === BOTONES === */}
 					<div className="hidden md:flex items-center gap-3 order-3 ml-auto mr-4">
 						<button
 							type="button"
@@ -209,7 +206,6 @@ const NavBar = ({
 					</div>
 				</div>
 
-				{/* === MENU CONTENT === */}
 				<div
 					className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-[1] ${
 						isExpanded

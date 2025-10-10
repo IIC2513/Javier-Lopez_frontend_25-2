@@ -76,7 +76,6 @@ export default function Carousel({
 	const [isResetting, setIsResetting] = useState(false);
 	const containerRef = useRef(null);
 
-	// Nuevo hook
 	const [containerWidth, setContainerWidth] = useState(0);
 
 	useEffect(() => {
@@ -135,7 +134,7 @@ export default function Carousel({
 		if (loop && currentIndex === carouselItems.length - 1) {
 			setTimeout(() => {
 				setIsResetting(true);
-				x.jump(0); // salto instantáneo sin transición visible
+				x.jump(0);
 				setCurrentIndex(0);
 				setIsResetting(false);
 			}, 10);
@@ -178,7 +177,6 @@ export default function Carousel({
 							className="flex-shrink-0 w-screen h-screen flex flex-col justify-center items-center text-center px-8"
 							style={{ backgroundColor: bgColor }}
 						>
-							{/* Imagen bajada solo en el primer item */}
 							<span
 								className="mb-4"
 								style={{ marginTop: index === 0 ? "100px" : "0px" }}
@@ -186,12 +184,10 @@ export default function Carousel({
 								{item.icon}
 							</span>
 
-							{/* Título con la fuente y escala Anton */}
 							<h2 className="mb-2 text-center" style={itemTextStyles[index]}>
 								{item.title}
 							</h2>
 
-							{/* Descripción con misma fuente */}
 							<p
 								className="text-center"
 								style={{
@@ -209,7 +205,6 @@ export default function Carousel({
 				})}
 			</motion.div>
 
-			{/* Indicators */}
 			<div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
 				{items.map((_, idx) => (
 					<div
