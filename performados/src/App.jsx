@@ -4,6 +4,7 @@ import LandingPage from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
 import AboutUs from "./pages/AboutUs";
+import Testing from "./pages/Testing";
 
 function App() {
   const items = [
@@ -97,6 +98,8 @@ function App() {
             }
           />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/testing" element={<Testing />} />
+
         </Routes>
       </div>
     </Router>
