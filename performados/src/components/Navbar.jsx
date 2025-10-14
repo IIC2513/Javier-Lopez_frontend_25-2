@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { GoArrowUpRight } from "react-icons/go";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 // Para este componente se utilizó https://reactbits.dev/components/card-nav y se modifico acorde al mockup
 // Se utilizó chatgpt, para ayudar con partes complejas
@@ -166,10 +167,10 @@ const NavBar = ({
 						</a>
 						<a
 							href="/"
-							className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
+							className="flex items-center gap-2 text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
 							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
 						>
-							Search 🔍
+							Search<FaMagnifyingGlass/>
 						</a>
 					</div>
 
