@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
 import AboutUs from "./pages/AboutUs";
 import Testing from "./pages/Testing";
+import Login from "./pages/Login";
 
 function App() {
   const items = [
@@ -83,10 +84,7 @@ function App() {
           />
           <Route
             path="/login"
-            element={
-              <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold">Iniciar Sesión</h1>
-              </div>
+            element={<Login />
             }
           />
           <Route
@@ -99,6 +97,7 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
+          <Route path="/login" element={<Login />} />
 
         </Routes>
       </div>
