@@ -1,11 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+import React, { useState, useEffect } from "react";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
 import AboutUs from "./pages/AboutUs";
 import Testing from "./pages/Testing";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   const items = [
@@ -41,6 +43,26 @@ function App() {
       ],
     },
   ];
+  const [currentUser, setCurrentUser] = React.useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [users, setUsers] = React.useState(() => {
+    const storedUsers = localStorage.getItem("users");
+    return storedUsers ? JSON.parse(storedUsers) : [];
+  });  
+
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [currentUser]);
 
   return (
     <Router>
@@ -84,20 +106,17 @@ function App() {
           />
           <Route
             path="/login"
-            element={<Login />
-            }
+            element={<Login users={users}  
+                            setCurrentUser={setCurrentUser} />}
           />
           <Route
-            path="/registro"
-            element={
-              <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold">Registrarse</h1>
-              </div>
-            }
+            path="/register"
+            element={<Register users={users}
+                               setUsers={setUsers} 
+                               setCurrentUser={setCurrentUser} />}
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
-          <Route path="/login" element={<Login />} />
 
         </Routes>
       </div>
