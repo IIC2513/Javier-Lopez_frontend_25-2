@@ -13,10 +13,9 @@ const AnimatedContent = ({
     scale = 2,
     delay = 0,
     onComplete,
-    // ✨ Nuevo prop para controlar la animación flotante
     isFloating = true, 
-    floatAmount = 20, // Cantidad de pixeles a moverse (ej: 20px)
-    floatDuration = 3, // Duración del ciclo flotante (ej: 3 segundos)
+    floatAmount = 20,
+    floatDuration = 3, 
 }) => {
     const ref = useRef(null);
 
@@ -29,7 +28,6 @@ const AnimatedContent = ({
         const axis = direction === "horizontal" ? "x" : "y";
         const offset = reverse ? -distance : distance;
 
-        // 1. Establece el estado inicial (para la animación de entrada)
         gsap.set(el, {
             [axis]: offset,
             scale,
@@ -37,7 +35,6 @@ const AnimatedContent = ({
             visibility: 'visible',
         });
 
-        // 2. Anima al estado final (la animación de entrada)
         gsap.to(el, {
             [axis]: 0,
             scale: 1,
@@ -46,16 +43,15 @@ const AnimatedContent = ({
             ease,
             delay,
             onComplete: () => {
-                // Llama al callback original si existe
                 if (onComplete) onComplete(); 
 
                 if (isFloating) {
                     gsap.to(el, {
-                        y: `+=${floatAmount}`, // Mueve hacia abajo 'floatAmount' píxeles
+                        y: `+=${floatAmount}`, 
                         duration: floatDuration,
-                        ease: "sine.inOut", // Curva para un movimiento natural de subida/bajada
-                        repeat: -1, // Repetir infinitamente
-                        yoyo: true, // Hacer el efecto ping-pong (subir y bajar)
+                        ease: "sine.inOut", 
+                        repeat: -1, 
+                        yoyo: true, 
                     });
                 }
             },
