@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
 import AboutUs from "./pages/AboutUs";
 import Testing from "./pages/Testing";
+import Products from "./pages/Products";
 
 function App() {
   const items = [
@@ -99,7 +100,7 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
-
+          <Route path="/products" element={<Products />} />
         </Routes>
       </div>
     </Router>
