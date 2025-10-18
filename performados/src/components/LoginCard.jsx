@@ -24,16 +24,16 @@ const LoginCard = ({ users, setCurrentUser }) => {
   }
 
     return (
-        <div className="bg-white flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
-            <h1 className="font-sora px-4"
+        <div className="mt-[6rem] bg-white flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
+            <h1 className="font-sora px-4 my-2 text-[#2F5B61]"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}> 
             Iniciar Sesión </h1>
             <form className="flex flex-col" onSubmit={handleSubmit}>
-                <input name="email" placeholder="Correo Electrónico" className="mb-4 p-2 rounded" value={email} onChange={(e) => setEmail(e.target.value)} />  
-                <input type="password" name="password" placeholder="Contraseña" className="mb-4 p-2 rounded" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="submit" className="bg-[#2b555b] text-white p-2 rounded">Iniciar Sesión</button>
+                <input name="email" placeholder="Correo Electrónico" className="mb-4 p-2 rounded my-2" value={email} onChange={(e) => setEmail(e.target.value)} />  
+                <input type="password" name="password" placeholder="Contraseña" className="mb-4 p-2 rounded my-2" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <button type="submit" className="bg-[#2b555b] text-white p-2 rounded my-2">Iniciar Sesión</button>
             </form>
-            {errors && <><p className="text-red-500 font-sora px-4"
+            {errors && <><p className="text-red-500 font-sora px-4 my-2"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
             >Correo o contraseña incorrectos.</p></>}
         </div>
