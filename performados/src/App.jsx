@@ -9,6 +9,7 @@ import Testing from "./pages/Testing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyProfile from "./pages/MyProfile";
+import EditProfile from "./pages/EditProfile";
 function App() {
   const items = [
     {
@@ -117,6 +118,10 @@ function App() {
           />
 
           <Route path="/my-profile" element={<MyProfile currentUser={currentUser} />} />
+          <Route path="/edit-profile" element={<EditProfile currentUser={currentUser} 
+                                                     setCurrentUser={setCurrentUser}
+                                                     users={users}
+                                                     setUsers={setUsers} />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
 
