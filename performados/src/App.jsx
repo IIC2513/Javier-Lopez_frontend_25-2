@@ -53,7 +53,8 @@ function App() {
     return storedUsers ? JSON.parse(storedUsers) : [];
   });
   const [currentID, setCurrentID] = useState(() => {
-    return users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0;
+    const storedID = localStorage.getItem("currentID");
+    return storedID ? JSON.parse(storedID) : 0;
   });
 
   useEffect(() => {
@@ -67,6 +68,10 @@ function App() {
       localStorage.removeItem("currentUser");
     }
   }, [currentUser]);
+
+  useEffect(() => {
+  localStorage.setItem("currentID", JSON.stringify(currentID));
+  }, [currentID]);
 
   return (
     <Router>
