@@ -7,7 +7,7 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
 
   const originalUser = useRef(currentUser ? { ...currentUser } : null);
   const originalEmail = useRef(currentUser?.email);
-  
+
   useEffect(() => {
     if (originalUser.current === null && currentUser) {
       originalUser.current = { ...currentUser };
@@ -45,8 +45,9 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-[6rem] bg-white flex flex-row p-6 rounded-2xl shadow-md">
-      <div className=" flex items-center justify-center flex-col ">
+    <form onSubmit={handleSubmit} className="mt-[6rem] bg-[#F6EFE2] p-6 rounded-2xl shadow-md">
+      <div className="flex flex-row">
+      <div className="flex items-center justify-center flex-col">
       <input name="name"
             value={currentUser?.name || ''}
             onChange={(e) => setCurrentUser({ ...currentUser, name: e.target.value })}
@@ -67,7 +68,7 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
             onChange={(e) => setCurrentUser({ ...currentUser, description: e.target.value })}
             placeholder="Descripción"
             className="mb-4 p-2 rounded my-2" />
-        <button type="submit" className="bg-[#2b555b] text-white p-2 rounded my-2">Guardar Cambios</button>    
+   
        </div>
        <div className="flex items-center justify-center flex-col">
           <img src={currentUser?.image || "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"}
@@ -77,8 +78,14 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
            onChange={(e) => setCurrentUser({ ...currentUser, image: e.target.value })}
            placeholder="URL de la imagen"
            className="mb-4 p-2 rounded my-2" />
-           <button type="button" onClick={handleCancel} className="bg-[#2b555b] text-white p-2 rounded my-2">Cancelar</button>
-       </div>
+           </div>
+           </div>
+           <div className="flex items-center justify-center flex-row">
+           <button type="submit" className="bg-[#2b555b] text-white p-2 rounded my-2 mx-2">Guardar Cambios</button>
+
+           <button type="button" onClick={handleCancel} className="bg-[#2b555b] text-white p-2 rounded my-2 mx-2">Cancelar</button>
+           </div>
+  
     </form>
   );
 };

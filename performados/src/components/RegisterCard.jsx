@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const RegisterCard = ({ users, setUsers, setCurrentUser }) => {
+const RegisterCard = ({ users, setUsers, setCurrentUser, currentID, setCurrentID }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState(false);
@@ -18,7 +18,8 @@ const RegisterCard = ({ users, setUsers, setCurrentUser }) => {
         }
 
         setErrors(false);
-        const newUser = { email, password, name };
+        const newUser = { email, password, name, id: currentID + 1 };
+        setCurrentID(currentID + 1);
         setUsers([...users, newUser]);
         setCurrentUser(newUser);
         setEmail('');
@@ -29,7 +30,7 @@ const RegisterCard = ({ users, setUsers, setCurrentUser }) => {
 
 
     return (
-        <div className="mt-[6rem] bg-white flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
+        <div className="mt-[6rem] bg-[#F6EFE2] flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
             <h1 className="font-sora px-4 text-[#2F5B61] my-2"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}> 
             Registrarse </h1>

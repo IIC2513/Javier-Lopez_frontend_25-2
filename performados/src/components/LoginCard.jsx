@@ -24,7 +24,7 @@ const LoginCard = ({ users, setCurrentUser }) => {
   }
 
     return (
-        <div className="mt-[6rem] bg-white flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
+        <div className="mt-[6rem] bg-[#F6EFE2] flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
             <h1 className="font-sora px-4 my-2 text-[#2F5B61]"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}> 
             Iniciar Sesión </h1>

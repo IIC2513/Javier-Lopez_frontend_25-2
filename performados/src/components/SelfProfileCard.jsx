@@ -8,11 +8,18 @@ const SelfProfileCard = ({ currentUser }) => {
   };
 
   return (
-    <div className="mt-[6rem] bg-white flex flex-row justify-center items-center gap-8 rounded-2xl shadow-md p-6">
-      <div className="flex items-center justify-center flex-col p-6 ">
+    <div className="mt-[6rem] bg-[#F6EFE2] flex flex-row justify-center items-center gap-8 rounded-2xl shadow-md p-6">
+      <div className="flex align-left flex-col p-6 ">
         <h2 className="text-xl font-bold my-2 text-[#2F5B61]">{currentUser.name}</h2>
         <p className="text-xl font-bold my-2 text-[#2F5B61]">Email: {currentUser.email}</p>
-        <p className="text-xl font-bold my-2 text-[#2F5B61]">Tu descripción: {currentUser.description || "No posees una descripción."}</p>
+        <p className="text-xl font-bold my-2 text-[#2F5B61]">Tu descripción:</p>
+        <textarea
+          value={currentUser.description || 'No posees una descripción.'}
+          readOnly
+          disabled
+          resize="none"
+          className="w-96 h-32 p-2 border border-[#2F5B61] rounded my-2 resize-none text-[#2F5B61]"
+        />
       </div>
       <div className=" flex items-center justify-center flex-col p-6">
         <img src={currentUser?.image || "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"}

@@ -51,7 +51,10 @@ function App() {
   const [users, setUsers] = React.useState(() => {
     const storedUsers = localStorage.getItem("users");
     return storedUsers ? JSON.parse(storedUsers) : [];
-  });  
+  });
+  const [currentID, setCurrentID] = useState(() => {
+    return users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0;
+  });
 
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
@@ -114,7 +117,9 @@ function App() {
             path="/register"
             element={<Register users={users}
                                setUsers={setUsers} 
-                               setCurrentUser={setCurrentUser} />}
+                               setCurrentUser={setCurrentUser}
+                               currentID={currentID}
+                               setCurrentID={setCurrentID} />}
           />
 
           <Route path="/my-profile" element={<MyProfile currentUser={currentUser} />} />
