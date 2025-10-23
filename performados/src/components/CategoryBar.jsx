@@ -11,6 +11,9 @@ const category = [
     Labubus: labubu,
   },
   {
+    Discos: disk,
+  },
+  {
     Totebags: tote,
   },
   {
@@ -18,9 +21,6 @@ const category = [
   },
   {
     Matcha: latte,
-  },
-  {
-    Discos: disk,
   },
   {
     Accesorios: camera,
@@ -39,15 +39,15 @@ function CategoryBar() {
                 key={index}
                 className="flex-shrink-0 w-30 text-center text-white"
               >
-                <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center hover:bg-[#468b94] transition-colors duration-300">
+                <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-15 h-15 md:w-15 md:h-15 lg:w-20 lg:h-20 flex items-center justify-center hover:bg-[#468b94] transition-colors duration-300">
                   <img
                     src={category[categoryName]}
                     alt={categoryName}
-                    className="w-10 h-10 md:w-15 md:h-15 lg:w-20 lg:h-20 mx-auto mb-2 mt-2 object-contain hover:scale-120 transition-transform duration-300  "
+                    className="w-10 h-10 md:w-15 md:h-15 lg:w-15 lg:h-15 mx-auto mb-2 mt-2 object-contain hover:scale-120 transition-transform duration-300  "
                   />
                 </div>
                 <span
-                  className="text-sm font-bold text-[#f6efe2]"
+                  className="text-xs font-bold text-[#f6efe2] md:text-sm"
                   style={{ fontFamily: "sora, sans-serif" }}
                 >
                   {categoryName}
