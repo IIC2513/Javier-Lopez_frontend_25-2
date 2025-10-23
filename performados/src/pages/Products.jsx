@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import PillNav from "../components/ProductBar";
 
 import toteBagClairo from "../assets/Totebag-Clairo.png";
@@ -110,7 +110,7 @@ let products_fetched = [
   {
     id: 3,
     OwnerId: 1,
-    categoryId: 1,
+    categoryId: 2,
     condition: "nuevo",
     image: labubu3,
     description: "Producto oficial de la pagina",
@@ -123,7 +123,7 @@ let products_fetched = [
   {
     id: 4,
     OwnerId: 1,
-    categoryId: 1,
+    categoryId: 2,
     condition: "nuevo",
     image: labubu2,
     description: "Producto oficial de la pagina",
@@ -136,7 +136,7 @@ let products_fetched = [
   {
     id: 5,
     OwnerId: 1,
-    categoryId: 1,
+    categoryId: 2,
     condition: "nuevo",
     image: labubu,
     description: "Producto oficial de la pagina",
@@ -363,6 +363,15 @@ let products_fetched = [
   },
 ];
 
+const categories = {
+  labubus: 2,
+  discos: 3,
+  totebags: 1,
+  libros: 4,
+  matcha: 5,
+  accesorios: 6,
+};
+
 const Products = () => {
   let [selectedCategory, setSelectedCategory] = useState(null);
   let [selectedPriceRange, setSelectedPriceRange] = useState(null);
@@ -370,6 +379,20 @@ const Products = () => {
   let [selectedSortOption, setSelectedSortOption] = useState(null);
   let [selectedColor, setSelectedColor] = useState(null);
   let [selectedName, setSelectedName] = useState(null);
+  let [filteredProducts, setFilteredProducts] = useState(products_fetched);
+
+  useEffect(() => {
+    let products = products_fetched;
+    if (selectedCategory) {
+      console.log("Filtrando por categoría:", selectedCategory);
+      const newFilteredList = products.filter(
+        (product) => product.categoryId === categories[selectedCategory]
+      );
+      setFilteredProducts(newFilteredList);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [selectedCategory, categories, products_fetched]);
 
   return (
     <div className="min-h-screen bg-[#efe6d2]">
@@ -395,11 +418,14 @@ const Products = () => {
 
         <div className="flex-col justify-center">
           <div className="Barra-Filtros">
-            <CategoryBar />
+            <CategoryBar
+              currentCategory={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
           </div>
           <div className="Products container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products_fetched.map((product) => (
+              {filteredProducts.map((product) => (
                 <div
                   key={product.id}
                   className="bg-[#e7dcc775]  p-4 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-shadow duration-300"

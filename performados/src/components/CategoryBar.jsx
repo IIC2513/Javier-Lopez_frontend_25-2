@@ -27,7 +27,7 @@ const category = [
   },
 ];
 
-function CategoryBar() {
+function CategoryBar({ currentCategory, onCategorySelect }) {
   return (
     <div className="bg-[#2e6167] shadow-md py-8">
       <div className="container mx-auto px-4 ">
@@ -38,6 +38,7 @@ function CategoryBar() {
               <div
                 key={index}
                 className="flex-shrink-0 w-30 text-center text-white"
+                onClick={() => onCategorySelect(categoryName.toLowerCase())}
               >
                 <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-15 h-15 md:w-15 md:h-15 lg:w-20 lg:h-20 flex items-center justify-center hover:bg-[#468b94] transition-colors duration-300">
                   <img
