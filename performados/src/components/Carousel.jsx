@@ -6,32 +6,51 @@ import { useEffect, useState, useRef } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import AnimatedContent from "./animacion";
 import CircleRevealStyle from "./circulito";
+import React from "react";
 
 const DEFAULT_ITEMS = [
 	{
 		title: "TOTE BAG",
 		id: 1,
-		icon: <img src={toteBag} alt="Tote Bag" className="h-[600px] w-[600px]" />,
-		scale: 1.0,
-		offsetY: "-100px",
+		icon: (
+			<img
+				src={toteBag}
+				alt="Tote Bag"
+				className="h-[40vh] lg:h-[45vh] w-auto object-contain" // Más grande
+			/>
+		),
+		scale: 1.5,
+		offsetY: "-10vh",
 		color: "#FCA41D",
 		textColor: "#2F5B61",
 	},
 	{
 		title: "MATCHA LATTE",
 		id: 2,
-		icon: <img src={matcha} alt="Matcha Latte" />,
-		scale: 0.7,
-		offsetY: "-80px",
+		icon: (
+			<img
+				src={matcha}
+				alt="Matcha Latte"
+				className="h-[40vh] lg:h-[45vh] w-auto object-contain" // Más grande
+			/>
+		),
+		scale: 1,
+		offsetY: "-10vh",
 		color: "#839243",
 		textColor: "#FFFFFF",
 	},
 	{
 		title: "LITERATURA",
 		id: 3,
-		icon: <img src={libro} alt="Libro Segundo Sexo" />,
+		icon: (
+			<img
+				src={libro}
+				alt="Libro Segundo Sexo"
+				className="h-[40vh] lg:h-[45vh] w-auto object-contain" // Ajustado
+			/>
+		),
 		scale: 1.0,
-		offsetY: "-80px",
+		offsetY: "-10vh",
 		color: "#fd538d",
 		textColor: "#FFFFFF",
 	},
@@ -73,19 +92,6 @@ export default function Carousel({
 		window.addEventListener("resize", updateWidth);
 		return () => window.removeEventListener("resize", updateWidth);
 	}, []);
-
-	useEffect(() => {
-		if (!pauseOnHover || !containerRef.current) return;
-		const c = containerRef.current;
-		const enter = () => setIsHovered(true);
-		const leave = () => setIsHovered(false);
-		c.addEventListener("mouseenter", enter);
-		c.addEventListener("mouseleave", leave);
-		return () => {
-			c.removeEventListener("mouseenter", enter);
-			c.removeEventListener("mouseleave", leave);
-		};
-	}, [pauseOnHover]);
 
 	useEffect(() => {
 		if (!autoplay || (pauseOnHover && isHovered)) return;
@@ -170,19 +176,19 @@ export default function Carousel({
 									}`}
 								/>
 
-								<div className="flex flex-col justify-center items-center text-center px-8 w-full h-full absolute top-0 left-0 z-[10]">
-									<div
-										className="flex flex-col items-center"
-										style={{ transform: "translateY(120px)" }}
-									>
-										<div className="h-[400px] flex items-center justify-center">
+								<div className="flex flex-col items-center text-center px-8 w-full h-full absolute top-0 left-0 z-[10] pt-[30vh] pb-24">
+									<div className="flex flex-col items-center">
+										<div className="h-auto flex items-center justify-center">
 											<span
+												className="flex justify-center items-center"
 												style={{
 													transform: `translateY(${item.offsetY || 0}) scale(${
 														item.scale || 1
 													})`,
 													transformOrigin: "center",
 												}}
+												onMouseEnter={() => setIsHovered(true)}
+												onMouseLeave={() => setIsHovered(false)}
 											>
 												<AnimatedContent
 													key={activeIndex}
@@ -204,15 +210,14 @@ export default function Carousel({
 										</div>
 
 										<h2
-											className="mb-2 text-center"
+											className="mb-2 text-center leading-tight"
 											style={{
 												fontFamily: "Anton, sans-serif",
-												fontSize: "100.34px",
 												fontWeight: 800,
-												lineHeight: "156.79px",
 												letterSpacing: "3.49px",
 												color: item.textColor,
 												transform: "scaleX(0.8)",
+												fontSize: "clamp(2.5rem, 10vw, 6rem)",
 											}}
 										>
 											{item.title}
@@ -240,3 +245,4 @@ export default function Carousel({
 		</>
 	);
 }
+1;

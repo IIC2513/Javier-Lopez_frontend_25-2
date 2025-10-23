@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { GoArrowUpRight } from "react-icons/go";
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaBars, FaX } from "react-icons/fa6";
 
 // Para este componente se utilizó https://reactbits.dev/components/card-nav y se modifico acorde al mockup
 // Se utilizó chatgpt, para ayudar con partes complejas
@@ -19,6 +19,7 @@ const NavBar = ({
 }) => {
 	const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const navRef = useRef(null);
 	const cardsRef = useRef([]);
 	const tlRef = useRef(null);
@@ -27,7 +28,7 @@ const NavBar = ({
 		const navEl = navRef.current;
 		if (!navEl) return 260;
 
-		const isMobile = window.matchMedia("(max-width: 768px)").matches;
+		const isMobile = window.matchMedia("(max-width: 1024px)").matches;
 		if (isMobile) {
 			const contentEl = navEl.querySelector(".card-nav-content");
 			if (contentEl) {
@@ -43,7 +44,7 @@ const NavBar = ({
 
 				contentEl.offsetHeight;
 
-				const topBar = 60;
+				const topBar = 80;
 				const padding = 16;
 				const contentHeight = contentEl.scrollHeight;
 
@@ -123,6 +124,7 @@ const NavBar = ({
 		const tl = tlRef.current;
 		if (!tl) return;
 		if (!isExpanded) {
+			setIsMobileMenuOpen(false);
 			setIsHamburgerOpen(true);
 			setIsExpanded(true);
 			tl.play(0);
@@ -130,6 +132,20 @@ const NavBar = ({
 			setIsHamburgerOpen(false);
 			tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
 			tl.reverse();
+		}
+	};
+
+	const handleToggleMobileMenu = () => {
+		const newOpenState = !isMobileMenuOpen;
+		setIsMobileMenuOpen(newOpenState);
+
+		if (newOpenState && isExpanded) {
+			const tl = tlRef.current;
+			if (tl) {
+				setIsHamburgerOpen(false);
+				tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
+				tl.reverse();
+			}
 		}
 	};
 
@@ -145,11 +161,11 @@ const NavBar = ({
 				ref={navRef}
 				className={`card-nav ${
 					isExpanded ? "open" : ""
-				} block h-[60px] p-0 rounded-xl shadow-md relative overflow-hidden will-change-[height]`}
+				} block h-[80px] p-0 rounded-xl shadow-md relative overflow-hidden will-change-[height]`}
 				style={{ backgroundColor: baseColor }}
 			>
 				<div className="card-nav-top absolute inset-x-0 top-0 h-[80px] flex items-center justify-between p-2 pl-[1.1rem] z-[2]">
-					<div className="hidden md:flex items-center gap-6 order-0">
+					<div className="hidden lg:flex items-center gap-6 order-0">
 						<a
 							href="#"
 							className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
@@ -170,14 +186,15 @@ const NavBar = ({
 							className="flex items-center gap-2 text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
 							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
 						>
-							Search<FaMagnifyingGlass/>
+							Search
+							<FaMagnifyingGlass />
 						</a>
 					</div>
 
-					<div className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none">
+					<div className="logo-container flex items-center lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 order-1 lg:order-none">
 						<a href="/" className="cursor-pointer">
 							<h1
-								className="text-[50px] tracking-tight"
+								className="text-[36px] lg:text-[50px] tracking-tight"
 								style={{
 									fontFamily: "MidnightGelactic, sans-serif",
 									color: "#2f5b61",
@@ -188,7 +205,7 @@ const NavBar = ({
 						</a>
 					</div>
 
-					<div className="hidden md:flex items-center gap-3 order-3 ml-auto mr-4">
+					<div className="hidden lg:flex items-center gap-3 order-3 ml-auto mr-4">
 						<button
 							type="button"
 							className="rounded-lg px-10 py-3 font-sora transition-colors duration-300 bg-[#2f5b61] text-xl text-white hover:opacity-90"
@@ -207,20 +224,31 @@ const NavBar = ({
 							Register
 						</button>
 					</div>
+
+					<div className="flex lg:hidden items-center order-3 ml-auto mr-4">
+						<button
+							type="button"
+							onClick={handleToggleMobileMenu}
+							className="text-[#2f5b61] text-3xl"
+							aria-label="Toggle navigation"
+						>
+							{isMobileMenuOpen ? <FaX /> : <FaBars />}
+						</button>
+					</div>
 				</div>
 
 				<div
-					className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-[1] ${
+					className={`card-nav-content absolute left-0 right-0 top-[80px] bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-[1] ${
 						isExpanded
 							? "visible pointer-events-auto"
 							: "invisible pointer-events-none"
-					} md:flex-row md:items-end md:gap-[12px]`}
+					} lg:flex-row lg:items-end lg:gap-[12px]`}
 					aria-hidden={!isExpanded}
 				>
 					{(items || []).slice(0, 3).map((item, idx) => (
 						<div
 							key={`${item.label}-${idx}`}
-							className="nav-card select-none relative flex flex-col gap-2 p-[12px_16px] rounded-[calc(0.75rem-0.2rem)] min-w-0 flex-[1_1_auto] h-auto min-h-[60px] md:h-full md:min-h-0 md:flex-[1_1_0%]"
+							className="nav-card select-none relative flex flex-col gap-2 p-[12px_16px] rounded-[calc(0.75rem-0.2rem)] min-w-0 flex-[1_1_auto] h-auto min-h-[60px] lg:h-full lg:min-h-0 lg:flex-[1_1_0%]"
 							ref={setCardRef(idx)}
 							style={{
 								backgroundColor: item.bgColor,
@@ -228,14 +256,14 @@ const NavBar = ({
 								fontFamily: item.fontFamily || "inherit",
 							}}
 						>
-							<div className="nav-card-label font-normal tracking-[-0.5px] text-[18px] md:text-[22px]">
+							<div className="nav-card-label font-normal tracking-[-0.5px] text-[18px] lg:text-[22px]">
 								{item.label}
 							</div>
 							<div className="nav-card-links mt-auto flex flex-col gap-[2px]">
 								{item.links?.map((lnk, i) => (
 									<a
 										key={`${lnk.label}-${i}`}
-										className="nav-card-link inline-flex items-center gap-[6px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 text-[15px] md:text-[16px]"
+										className="nav-card-link inline-flex items-center gap-[6px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 text-[15px] lg:text-[16px]"
 										href={lnk.href}
 										aria-label={lnk.ariaLabel}
 									>
@@ -251,6 +279,69 @@ const NavBar = ({
 					))}
 				</div>
 			</nav>
+
+			<div
+				className={`mobile-nav-content lg:hidden absolute left-0 right-0 top-[80px] rounded-b-xl shadow-md overflow-y-auto ${
+					isMobileMenuOpen
+						? "visible pointer-events-auto"
+						: "invisible pointer-events-none"
+				}`}
+				style={{
+					backgroundColor: baseColor,
+					maxHeight: "calc(100vh - 100px)",
+					zIndex: -1,
+				}}
+				aria-hidden={!isMobileMenuOpen}
+			>
+				<div className="p-4 pt-6 flex flex-col gap-4">
+					<a
+						href="#"
+						className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
+						onClick={(e) => {
+							e.preventDefault();
+							toggleMenu();
+						}}
+						style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
+					>
+						Products ▾
+					</a>
+					<a
+						href="/about-us"
+						className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
+						style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
+					>
+						About Us
+					</a>
+					<a
+						href="/"
+						className="flex items-center gap-2 text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
+						style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
+					>
+						Search
+						<FaMagnifyingGlass />
+					</a>
+
+					<hr className="border-t border-[#2f5b61]/20 my-2" />
+
+					<button
+						type="button"
+						className="rounded-lg px-10 py-3 font-sora transition-colors duration-300 bg-[#2f5b61] text-xl text-white hover:opacity-90"
+						style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
+					>
+						Login
+					</button>
+					<button
+						type="button"
+						className="rounded-lg px-8 py-3 font-sora transition-colors duration-300 border border-[#2f5b61] text-[#2f5b61] text-xl hover:bg-[#2f5b61] hover:text-white"
+						style={{
+							fontFamily: "sora, sans-serif",
+							fontWeight: "bolder",
+						}}
+					>
+						Register
+					</button>
+				</div>
+			</div>
 		</div>
 	);
 };
