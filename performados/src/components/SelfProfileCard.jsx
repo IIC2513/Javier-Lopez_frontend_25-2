@@ -1,10 +1,15 @@
 import {useNavigate} from "react-router-dom";
 
-const SelfProfileCard = ({ currentUser }) => {
+const SelfProfileCard = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
 
   const handleEditProfile = () => {
     navigate("/edit-profile");
+  };
+   const handleLogout = (e) => {
+    e.preventDefault();
+    setCurrentUser(null);
+    navigate('/');
   };
 
   return (
@@ -27,6 +32,10 @@ const SelfProfileCard = ({ currentUser }) => {
         <button onClick={handleEditProfile} className="rounded-lg px-8 py-3 my-2 font-sora transition-colors duration-300 border border-[#2F5B61] text-[#2F5B61] text-xl hover:bg-[#2F5B61] hover:text-white">
 
         Editar tu perfil
+      </button>
+      <button onClick={handleLogout} className="rounded-lg px-8 py-3 my-2 font-sora transition-colors duration-300 border border-[#2F5B61] text-[#2F5B61] text-xl hover:bg-[#2F5B61] hover:text-white">
+
+        Cerrar sesión
       </button>
     </div>
     </div>

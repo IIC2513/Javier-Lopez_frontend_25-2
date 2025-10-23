@@ -54,7 +54,7 @@ function App() {
   });
   const [currentID, setCurrentID] = useState(() => {
     const storedID = localStorage.getItem("currentID");
-    return storedID ? JSON.parse(storedID) : 0;
+    return storedID ? JSON.parse(storedID) : 1;
   });
 
   useEffect(() => {
@@ -127,7 +127,9 @@ function App() {
                                setCurrentID={setCurrentID} />}
           />
 
-          <Route path="/my-profile" element={<MyProfile currentUser={currentUser} />} />
+          <Route path="/my-profile" element={<MyProfile currentUser={currentUser}
+                                                setCurrentUser={setCurrentUser} />} />
+                                                
           <Route path="/edit-profile" element={<EditProfile currentUser={currentUser} 
                                                      setCurrentUser={setCurrentUser}
                                                      users={users}

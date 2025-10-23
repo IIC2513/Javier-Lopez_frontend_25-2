@@ -37,18 +37,18 @@ const RegisterCard = ({ users, setUsers, setCurrentUser, currentID, setCurrentID
             <form className="flex flex-col" onSubmit={handleSubmit}>
                 <input name="name" 
                        placeholder="Nombre" 
-                       className="mb-4 p-2 rounded my-2" 
+                       className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
                        value={name} onChange={(e) => 
                        setName(e.target.value)} />
                 <input type="email" name="email" 
                        placeholder="Correo Electrónico" 
-                       className="mb-4 p-2 rounded my-2" 
+                       className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
                        value={email} onChange={(e) => 
                        setEmail(e.target.value)} />
                 <input type="password" 
                              name="password" 
                              placeholder="Contraseña" 
-                             className="mb-4 p-2 rounded  my-2" 
+                             className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
                              value={password} 
                              onChange={(e) => 
                              setPassword(e.target.value)} />
