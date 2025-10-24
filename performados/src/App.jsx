@@ -11,6 +11,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyProfile from "./pages/MyProfile";
 import EditProfile from "./pages/EditProfile";
+import HowToUse from "./pages/HowToUse";
+
 function App() {
   const items = [
     {
@@ -45,6 +47,8 @@ function App() {
       ],
     },
   ];
+
+  // --- Lógica de estado de la rama HEAD (login/profile) ---
   const [currentUser, setCurrentUser] = React.useState(() => {
     const storedUser = localStorage.getItem("currentUser");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -71,8 +75,9 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
-  localStorage.setItem("currentID", JSON.stringify(currentID));
+    localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
+  // --- Fin de la lógica de estado ---
 
   return (
     <Router>
@@ -88,7 +93,9 @@ function App() {
           ease="power3.out"
         />
 
+        {/* --- Rutas combinadas --- */}
         <Routes>
+          {/* Rutas comunes */}
           <Route path="/" element={<LandingPage />} />
           <Route
             path="/caracteristicas"
@@ -114,30 +121,51 @@ function App() {
               </div>
             }
           />
-          <Route
-            path="/login"
-            element={<Login users={users}  
-                            setCurrentUser={setCurrentUser} />}
-          />
-          <Route
-            path="/register"
-            element={<Register users={users}
-                               setUsers={setUsers} 
-                               setCurrentUser={setCurrentUser}
-                               currentID={currentID}
-                               setCurrentID={setCurrentID} />}
-          />
-
-          <Route path="/my-profile" element={<MyProfile currentUser={currentUser}
-                                                setCurrentUser={setCurrentUser} />} />
-                                                
-          <Route path="/edit-profile" element={<EditProfile currentUser={currentUser} 
-                                                     setCurrentUser={setCurrentUser}
-                                                     users={users}
-                                                     setUsers={setUsers} />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
           <Route path="/products" element={<Products />} />
+          
+          {/* Rutas de la rama HEAD (login/profile) */}
+          <Route
+            path="/login"
+            element={<Login users={users} setCurrentUser={setCurrentUser} />}
+          />
+          <Route
+            path="/register"
+            element={
+              <Register
+                users={users}
+                setUsers={setUsers}
+                setCurrentUser={setCurrentUser}
+                currentID={currentID}
+                setCurrentID={setCurrentID}
+              />
+            }
+          />
+          <Route
+            path="/my-profile"
+            element={
+              <MyProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <EditProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                users={users}
+                setUsers={setUsers}
+              />
+            }
+          />
+
+          {/* Ruta de la rama develop (howtouse-view) */}
+          <Route path="/howtouse" element={<HowToUse />} />
+
         </Routes>
       </div>
     </Router>
