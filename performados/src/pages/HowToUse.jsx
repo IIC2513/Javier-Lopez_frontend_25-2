@@ -34,10 +34,10 @@ export default function HowToUse() {
 	};
 
 	return (
-		<div className="bg-white">
+		<div className="bg-[#f6efe2]">
 			<header className="bg-[#FCA41D] py-32 md:py-40 shadow-lg pl-6 md:pl-28">
 				<h1
-					className="tracking-tighter"
+					className="tracking-tight"
 					style={{
 						fontFamily: "MidnightGelactic, sans-serif",
 						color: "#2F5B61",
