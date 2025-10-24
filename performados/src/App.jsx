@@ -16,39 +16,37 @@ import HowToUse from "./pages/HowToUse";
 function App() {
   const items = [
     {
-      label: "PlaceHolder",
+      label: "Ofertas de Primavera",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "Placeholder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        { label: "Gana tu primer concurso ", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "General",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Ver todos los productos", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "Best Sellers",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
   ];
 
-  // --- Lógica de estado de la rama HEAD (login/profile) ---
   const [currentUser, setCurrentUser] = React.useState(() => {
     const storedUser = localStorage.getItem("currentUser");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -77,7 +75,6 @@ function App() {
   useEffect(() => {
     localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
-  // --- Fin de la lógica de estado ---
 
   return (
     <Router>
@@ -93,9 +90,7 @@ function App() {
           ease="power3.out"
         />
 
-        {/* --- Rutas combinadas --- */}
         <Routes>
-          {/* Rutas comunes */}
           <Route path="/" element={<LandingPage />} />
           <Route
             path="/caracteristicas"
@@ -125,7 +120,6 @@ function App() {
           <Route path="/testing" element={<Testing />} />
           <Route path="/products" element={<Products />} />
           
-          {/* Rutas de la rama HEAD (login/profile) */}
           <Route
             path="/login"
             element={<Login users={users} setCurrentUser={setCurrentUser} />}
@@ -163,7 +157,6 @@ function App() {
             }
           />
 
-          {/* Ruta de la rama develop (howtouse-view) */}
           <Route path="/howtouse" element={<HowToUse />} />
 
         </Routes>

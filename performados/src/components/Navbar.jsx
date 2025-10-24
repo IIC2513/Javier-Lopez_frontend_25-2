@@ -182,12 +182,11 @@ const NavBar = ({
 							About Us
 						</a>
 						<a
-							href="/"
+							href="/howtouse"
 							className="flex items-center gap-2 text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
 							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
 						>
-							Search
-							<FaMagnifyingGlass />
+							How to Use
 						</a>
 					</div>
 
@@ -206,23 +205,22 @@ const NavBar = ({
 					</div>
 
 					<div className="hidden lg:flex items-center gap-3 order-3 ml-auto mr-4">
-						<button
-							type="button"
-							className="rounded-lg px-10 py-3 font-sora transition-colors duration-300 bg-[#2f5b61] text-xl text-white hover:opacity-90"
-							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
-						>
-							Login
-						</button>
-						<button
-							type="button"
+						<a
+                            href="/login"
+                            role="button"
+                            className="rounded-lg px-10 py-3 font-sora transition-colors duration-300 bg-[#2f5b61] text-xl text-white hover:opacity-90 text-center"
+                            style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
+                        >
+                            Login
+                        </a>
+						<a
+							href="/register"
+							role="button"
 							className="rounded-lg px-8 py-3 font-sora transition-colors duration-300 border border-[#2f5b61] text-[#2f5b61] text-xl hover:bg-[#2f5b61] hover:text-white"
-							style={{
-								fontFamily: "sora, sans-serif",
-								fontWeight: "bolder",
-							}}
+							style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder",}}
 						>
 							Register
-						</button>
+						</a>
 					</div>
 
 					<div className="flex lg:hidden items-center order-3 ml-auto mr-4">
