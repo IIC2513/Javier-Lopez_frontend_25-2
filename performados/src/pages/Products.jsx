@@ -1,12 +1,13 @@
 import React, { useMemo, useState, useEffect } from "react";
 import PillNav from "../components/ProductBar";
+import CategoryBar from "../components/CategoryBar";
+import FilterBar from "../components/FilterBar";
 
 import toteBagClairo from "../assets/Totebag-Clairo.png";
 import toteBagLaufey from "../assets/Totebag-Laufey.png";
 import labubu from "../assets/labubu-1.png";
 import labubu2 from "../assets/labubu-2.png";
 import labubu3 from "../assets/labubu-3.png";
-import CategoryBar from "../components/CategoryBar";
 import SegundoSexo from "../assets/libro.png";
 import KitMatcha from "../assets/kit-matcha.png";
 
@@ -310,7 +311,7 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-[#efe6d2]">
       <div className="flex flex-col">
-        <div className="bg-[#2e5b61] text-[#efe6d2] shadow-md pt-20 pb-10 sm:py-20 md:py-20 lg:pt-25 lg:pb-10 px-4">
+        <div className="bg-[#2e5b61] text-[#efe6d2] shadow-md pt-25 pb-10 sm:py-20 md:pb-10 sm:pt-30 md:pt-30 lg:pt-28 lg:pb-10 px-4">
           <h2
             className=" text-sm font-bold text-center mt-10 mb-1"
             style={{
@@ -330,14 +331,20 @@ const Products = () => {
         </div>
 
         <div className="flex-col justify-center">
-          <div className="Barra-Filtros">
-            <CategoryBar
-              currentCategory={selectedCategory}
-              onCategorySelect={setSelectedCategory}
+          <div className="Barra-Categorias">
+            <CategoryBar onCategorySelect={setSelectedCategory} />
+          </div>
+          <div>
+            <FilterBar
+              setterSort={setSelectedSortOption}
+              setterColor={setSelectedColor}
+              setterName={setSelectedName}
+              setterCondition={setSelectedCondition}
+              setterPriceRange={setSelectedPriceRange}
             />
           </div>
           <div className="Products container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}

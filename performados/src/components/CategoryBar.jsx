@@ -29,15 +29,15 @@ const category = [
 
 function CategoryBar({ currentCategory, onCategorySelect }) {
   return (
-    <div className="bg-[#2e6167] shadow-md py-8">
+    <div className="bg-[#2e6167] shadow-md py-8 overflow-x-auto">
       <div className="container mx-auto px-4 ">
-        <div className="grid grid-cols-3 gap-4 md:flex md:justify-center md:space-x-6 md:overflow-x-auto">
+        <div className="grid grid-cols-3 gap-4 justify-items-center md:flex md:justify-center md:gap-2  md:overflow-x-auto">
           {category.map((category, index) => {
             const categoryName = Object.keys(category)[0];
             return (
               <div
                 key={index}
-                className="flex-shrink-0 w-30 text-center text-white"
+                className="flex-shrink-0 w-30 text-center text-white hover:cursor-pointer"
                 onClick={() => onCategorySelect(categoryName.toLowerCase())}
               >
                 <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-15 h-15 md:w-15 md:h-15 lg:w-20 lg:h-20 flex items-center justify-center hover:bg-[#468b94] transition-colors duration-300">
