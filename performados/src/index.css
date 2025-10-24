@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+html {
+  /* 16px (default) * 0.75 = 12px */
+  font-size: 14px;
+}
