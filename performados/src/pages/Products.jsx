@@ -25,6 +25,7 @@ let products_fetched = [
     isActive: true,
     name: "Sling - Clairo (Vinyl)",
     price: 34990,
+    color: "black",
     stock: 15,
   },
   {
@@ -39,6 +40,7 @@ let products_fetched = [
     isActive: true,
     name: "Bewitched - Laufey (Vinyl)",
     price: 39990,
+    color: "black",
     stock: 10,
   },
   {
@@ -53,6 +55,7 @@ let products_fetched = [
     isActive: true,
     name: "Be The Cowboy - Mitski (Vinyl)",
     price: 36990,
+    color: "black",
     stock: 10,
   },
   {
@@ -67,6 +70,7 @@ let products_fetched = [
     isActive: true,
     name: "Did you know that there's a tunnel... - Lana Del Rey (Vinyl)",
     price: 45990,
+    color: "black",
     stock: 5,
   },
 
@@ -82,6 +86,7 @@ let products_fetched = [
     isActive: true,
     name: "Fearless (Taylor's Version)",
     price: 42990,
+    color: "white",
     stock: 20,
   },
   {
@@ -95,6 +100,7 @@ let products_fetched = [
     isActive: true,
     name: "Totebag Clairo",
     price: 15990,
+    color: "white",
     stock: 30,
   },
   {
@@ -108,6 +114,7 @@ let products_fetched = [
     isActive: true,
     name: "Totebag Laufey",
     price: 19990,
+    color: "black",
     stock: 10,
   },
   {
@@ -121,6 +128,7 @@ let products_fetched = [
     isActive: true,
     name: "Labubu 3",
     price: 29990,
+    color: "pink",
     stock: 20,
   },
   {
@@ -134,6 +142,7 @@ let products_fetched = [
     isActive: true,
     name: "Labubu 2",
     price: 39990,
+    color: "pink",
     stock: 20,
   },
   {
@@ -147,6 +156,7 @@ let products_fetched = [
     isActive: true,
     name: "Labubu 1",
     price: 29990,
+    color: "pink",
     stock: 20,
   },
   {
@@ -160,6 +170,7 @@ let products_fetched = [
     isActive: true,
     name: "El Segundo Sexo - Simone de Beauvoir",
     price: 22990,
+    color: "brown",
     stock: 25,
   },
 
@@ -175,6 +186,7 @@ let products_fetched = [
     isActive: true,
     name: "Kit de Matcha de 7 piezas",
     price: 39990,
+    color: "green",
     stock: 18,
   },
   {
@@ -189,6 +201,7 @@ let products_fetched = [
     isActive: true,
     name: "Polvo de Matcha",
     price: 18990,
+    color: "green",
     stock: 40,
   },
   {
@@ -203,6 +216,7 @@ let products_fetched = [
     isActive: true,
     name: "Cámara Polaroid Now (Blanco)",
     price: 129990,
+    color: "white",
     stock: 8,
   },
   {
@@ -217,6 +231,7 @@ let products_fetched = [
     isActive: true,
     name: "Cámara Análoga ",
     price: 16990,
+    color: "black",
     stock: 30,
   },
   {
@@ -231,6 +246,7 @@ let products_fetched = [
     isActive: true,
     name: "Audífonos Alámbricos Retro ",
     price: 12990,
+    color: "white",
     stock: 50,
   },
   {
@@ -245,6 +261,7 @@ let products_fetched = [
     isActive: true,
     name: "Vela Aromática Cozy Winter",
     price: 14990,
+    color: "brown",
     stock: 22,
   },
   {
@@ -259,6 +276,7 @@ let products_fetched = [
     isActive: true,
     name: "Totebag Lana Del Rey",
     price: 19990,
+    color: "black",
     stock: 10,
   },
   {
@@ -273,6 +291,7 @@ let products_fetched = [
     isActive: true,
     name: "This Is How Tomorrow Moves - Beabadoobee (Vinyl)",
     price: 34990,
+    color: "black",
     stock: 15,
   },
 ];
@@ -290,23 +309,56 @@ const Products = () => {
   let [selectedCategory, setSelectedCategory] = useState(null);
   let [selectedPriceRange, setSelectedPriceRange] = useState(null);
   let [selectedCondition, setSelectedCondition] = useState(null);
-  let [selectedSortOption, setSelectedSortOption] = useState(null);
   let [selectedColor, setSelectedColor] = useState(null);
   let [selectedName, setSelectedName] = useState(null);
-  let [filteredProducts, setFilteredProducts] = useState(products_fetched);
 
-  useEffect(() => {
-    let products = products_fetched;
-    if (selectedCategory) {
-      console.log("Filtrando por categoría:", selectedCategory);
-      const newFilteredList = products.filter(
-        (product) => product.categoryId === categories[selectedCategory]
-      );
-      setFilteredProducts(newFilteredList);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [selectedCategory, categories, products_fetched]);
+  //let [filteredProducts, setFilteredProducts] = useState(products_fetched);
+  const filteredProducts = useMemo(() => {
+    return products_fetched.filter((product) => {
+      if (selectedCategory) {
+        const catId = categories[selectedCategory];
+        if (product.categoryId !== catId) return false;
+      }
+      if (selectedName) {
+        const q = String(selectedName).toLowerCase();
+        if (!String(product.name).toLowerCase().includes(q)) return false;
+      }
+      if (selectedColor) {
+        if (!product.color || product.color !== selectedColor) return false;
+      }
+      if (selectedCondition) {
+        if (!product.condition || product.condition !== selectedCondition)
+          return false;
+      }
+      if (selectedPriceRange) {
+        const p = Number(product.price || 0);
+        if (selectedPriceRange === "under-20000" && p >= 20000) return false;
+        if (selectedPriceRange === "20000-40000" && (p < 20000 || p > 40000))
+          return false;
+        if (selectedPriceRange === "over-40000" && p <= 40000) return false;
+      }
+      return true;
+    });
+  }, [
+    selectedCategory,
+    selectedName,
+    selectedColor,
+    selectedCondition,
+    selectedPriceRange,
+  ]);
+
+  //useEffect(() => {
+  //  let products = products_fetched;
+  //  if (selectedCategory) {
+  //    console.log("Filtrando por categoría:", selectedCategory);
+  //    const newFilteredList = products.filter(
+  //      (product) => product.categoryId === categories[selectedCategory]
+  //    );
+  //    setFilteredProducts(newFilteredList);
+  //  } else {
+  //    setFilteredProducts(products);
+  //  }
+  //}, [selectedCategory, categories, products_fetched]);
 
   return (
     <div className="min-h-screen bg-[#efe6d2]">
@@ -336,7 +388,6 @@ const Products = () => {
           </div>
           <div>
             <FilterBar
-              setterSort={setSelectedSortOption}
               setterColor={setSelectedColor}
               setterName={setSelectedName}
               setterCondition={setSelectedCondition}
