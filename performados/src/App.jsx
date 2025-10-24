@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyProfile from "./pages/MyProfile";
 import EditProfile from "./pages/EditProfile";
+import Chat from "./components/Chat";
 function App() {
   const items = [
     {
@@ -58,6 +59,11 @@ function App() {
     return storedID ? JSON.parse(storedID) : 1;
   });
 
+  const [messages, setMessages] = useState(() => {
+    const storedMessages = localStorage.getItem("messages");
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -74,6 +80,10 @@ function App() {
   localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
 
+  useEffect(() => {
+    localStorage.setItem("messages", JSON.stringify(messages));
+  }, [messages]);
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
@@ -87,6 +97,13 @@ function App() {
           buttonTextColor="#fff"
           ease="power3.out"
         />
+        {currentUser && (
+        <Chat
+          users={users}
+          currentUser={currentUser}
+          messages={messages}
+          setMessages={setMessages}
+        />)}
 
         <Routes>
           <Route path="/" element={<LandingPage />} />
