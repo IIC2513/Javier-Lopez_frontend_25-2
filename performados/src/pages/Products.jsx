@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import PillNav from "../components/ProductBar";
 import CategoryBar from "../components/CategoryBar";
 import FilterBar from "../components/FilterBar";
+import Product from "./Product";
 
 import toteBagClairo from "../assets/Totebag-Clairo.png";
 import toteBagLaufey from "../assets/Totebag-Laufey.png";
@@ -10,6 +11,7 @@ import labubu2 from "../assets/labubu-2.png";
 import labubu3 from "../assets/labubu-3.png";
 import SegundoSexo from "../assets/libro.png";
 import KitMatcha from "../assets/kit-matcha.png";
+import { Link } from "react-router-dom";
 
 // Hardcodeo de productos
 let products_fetched = [
@@ -40,7 +42,7 @@ let products_fetched = [
     isActive: true,
     name: "Bewitched - Laufey (Vinyl)",
     price: 39990,
-    color: "black",
+    color: "blue",
     stock: 10,
   },
   {
@@ -161,9 +163,9 @@ let products_fetched = [
   },
   {
     id: 11,
-    OwnerId: 1,
+    OwnerId: 2,
     categoryId: 4,
-    condition: "nuevo",
+    condition: "usado",
     image: SegundoSexo,
     description: "Ensayo fundamental del feminismo",
     isOfficial: true,
@@ -312,6 +314,15 @@ const Products = () => {
   let [selectedColor, setSelectedColor] = useState(null);
   let [selectedName, setSelectedName] = useState(null);
 
+  let [selectedProduct, setSelectedProduct] = useState(null);
+  let [isProductOpen, setIsProductOpen] = useState(false);
+
+  const openProduct = (product) => {
+    console.log(`Producto abierto ${product.name}`);
+    setSelectedProduct(product);
+    setIsProductOpen(true);
+  };
+
   //let [filteredProducts, setFilteredProducts] = useState(products_fetched);
   const filteredProducts = useMemo(() => {
     return products_fetched.filter((product) => {
@@ -347,92 +358,86 @@ const Products = () => {
     selectedPriceRange,
   ]);
 
-  //useEffect(() => {
-  //  let products = products_fetched;
-  //  if (selectedCategory) {
-  //    console.log("Filtrando por categoría:", selectedCategory);
-  //    const newFilteredList = products.filter(
-  //      (product) => product.categoryId === categories[selectedCategory]
-  //    );
-  //    setFilteredProducts(newFilteredList);
-  //  } else {
-  //    setFilteredProducts(products);
-  //  }
-  //}, [selectedCategory, categories, products_fetched]);
-
   return (
-    <div className="min-h-screen bg-[#efe6d2]">
-      <div className="flex flex-col">
-        <div className="bg-[#2e5b61] text-[#efe6d2] shadow-md pt-25 pb-10 sm:py-20 md:pb-10 sm:pt-30 md:pt-30 lg:pt-28 lg:pb-10 px-4">
-          <h2
-            className=" text-sm font-bold text-center mt-10 mb-1"
-            style={{
-              fontFamily: "sora, sans-serif",
-            }}
-          >
-            ¡llego la hora de performarse!
-          </h2>
-          <h2
-            className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center"
-            style={{
-              fontFamily: "Anton, sans-serif",
-            }}
-          >
-            SUMATE AL CAMBIO
-          </h2>
-        </div>
+    <>
+      {isProductOpen && selectedProduct ? (
+        <Product {...selectedProduct} setIsProductOpen={setIsProductOpen} />
+      ) : (
+        <div className="min-h-screen bg-[#ece2cc]">
+          <div className="flex flex-col">
+            <div className="bg-[#2e5b61] text-[#efe6d2] shadow-md pt-25 pb-10 sm:py-20 md:pb-10 sm:pt-30 md:pt-30 lg:pt-28 lg:pb-10 px-4">
+              <h2
+                className=" text-sm font-bold text-center mt-10 mb-1"
+                style={{
+                  fontFamily: "sora, sans-serif",
+                }}
+              >
+                ¡llego la hora de performarse!
+              </h2>
+              <h2
+                className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center"
+                style={{
+                  fontFamily: "Anton, sans-serif",
+                }}
+              >
+                SUMATE AL CAMBIO
+              </h2>
+            </div>
 
-        <div className="flex-col justify-center">
-          <div className="Barra-Categorias">
-            <CategoryBar onCategorySelect={setSelectedCategory} />
-          </div>
-          <div>
-            <FilterBar
-              setterColor={setSelectedColor}
-              setterName={setSelectedName}
-              setterCondition={setSelectedCondition}
-              setterPriceRange={setSelectedPriceRange}
-            />
-          </div>
-          <div className="Products container mx-auto px-4 py-8">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-[#e7dcc775]  p-4 flex flex-col items-center text-center shadow-sm hover:shadow-xl transition-shadow duration-300"
-                >
-                  <div className="flex-grow flex flex-col items-center justify-center">
-                    <div className="image-container mb-4 flex justify-center items-center">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-24 h-24 sm:w-28 sm:h-28 md:w-50 md:h-50 lg:w-100 lg:h-100 object-contain"
-                      />
+            <div className="flex-col justify-center">
+              <div className="Barra-Categorias">
+                <CategoryBar onCategorySelect={setSelectedCategory} />
+              </div>
+              <div>
+                <FilterBar
+                  setterColor={setSelectedColor}
+                  setterName={setSelectedName}
+                  setterCondition={setSelectedCondition}
+                  setterPriceRange={setSelectedPriceRange}
+                />
+              </div>
+              <div className="Products container mx-auto px-4 py-8">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="bg-[#e7dcc775]  p-3 flex flex-col items-center text-center shadow-sm hover:shadow-2xl transition-shadow duration-300 hover:cursor-pointer "
+                      onClick={() => openProduct(product)}
+                    >
+                      <div className="flex-grow flex flex-col items-center justify-center">
+                        <div className="image-container mb-4 flex justify-center items-center">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-24 h-24 sm:w-28 sm:h-28 md:w-50 md:h-50 lg:w-80 lg:h-80 object-contain"
+                          />
+                        </div>
+                        <h2
+                          className="text-lg sm:text-xl md:text-xl lg:text-xl font-semibold mb-2 text-[#26484d]"
+                          style={{
+                            fontFamily: "sora, sans-serif",
+                          }}
+                        >
+                          {product.name}
+                        </h2>
+                        <p
+                          className=" text-sm sm:text-sm md:text-sm lg:text-sm text-[#2e5b61]"
+                          style={{
+                            fontFamily: "sora, sans-serif",
+                          }}
+                        >
+                          ${product.price}
+                        </p>
+                      </div>
                     </div>
-                    <h2
-                      className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold mb-2 text-[#26484d]"
-                      style={{
-                        fontFamily: "sora, sans-serif",
-                      }}
-                    >
-                      {product.name}
-                    </h2>
-                    <p
-                      className="text-base sm:text-lg md:text-lg lg:text-lg text-[#2e5b61]"
-                      style={{
-                        fontFamily: "sora, sans-serif",
-                      }}
-                    >
-                      ${product.price}
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

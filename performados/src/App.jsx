@@ -71,7 +71,7 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
-  localStorage.setItem("currentID", JSON.stringify(currentID));
+    localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
 
   return (
@@ -116,25 +116,42 @@ function App() {
           />
           <Route
             path="/login"
-            element={<Login users={users}  
-                            setCurrentUser={setCurrentUser} />}
+            element={<Login users={users} setCurrentUser={setCurrentUser} />}
           />
           <Route
             path="/register"
-            element={<Register users={users}
-                               setUsers={setUsers} 
-                               setCurrentUser={setCurrentUser}
-                               currentID={currentID}
-                               setCurrentID={setCurrentID} />}
+            element={
+              <Register
+                users={users}
+                setUsers={setUsers}
+                setCurrentUser={setCurrentUser}
+                currentID={currentID}
+                setCurrentID={setCurrentID}
+              />
+            }
           />
 
-          <Route path="/my-profile" element={<MyProfile currentUser={currentUser}
-                                                setCurrentUser={setCurrentUser} />} />
-                                                
-          <Route path="/edit-profile" element={<EditProfile currentUser={currentUser} 
-                                                     setCurrentUser={setCurrentUser}
-                                                     users={users}
-                                                     setUsers={setUsers} />} />
+          <Route
+            path="/my-profile"
+            element={
+              <MyProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+
+          <Route
+            path="/edit-profile"
+            element={
+              <EditProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                users={users}
+                setUsers={setUsers}
+              />
+            }
+          />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
           <Route path="/products" element={<Products />} />
