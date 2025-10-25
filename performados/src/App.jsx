@@ -11,40 +11,42 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyProfile from "./pages/MyProfile";
 import EditProfile from "./pages/EditProfile";
+import HowToUse from "./pages/HowToUse";
+
 function App() {
   const items = [
     {
-      label: "PlaceHolder",
+      label: "Ofertas de Primavera",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "Placeholder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        { label: "Gana tu primer concurso ", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "General",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Ver todos los productos", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "Best Sellers",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
   ];
+
   const [currentUser, setCurrentUser] = React.useState(() => {
     const storedUser = localStorage.getItem("currentUser");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -114,6 +116,10 @@ function App() {
               </div>
             }
           />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/testing" element={<Testing />} />
+          <Route path="/products" element={<Products />} />
+          
           <Route
             path="/login"
             element={<Login users={users} setCurrentUser={setCurrentUser} />}
@@ -130,7 +136,6 @@ function App() {
               />
             }
           />
-
           <Route
             path="/my-profile"
             element={
@@ -140,7 +145,6 @@ function App() {
               />
             }
           />
-
           <Route
             path="/edit-profile"
             element={
@@ -152,9 +156,9 @@ function App() {
               />
             }
           />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/testing" element={<Testing />} />
-          <Route path="/products" element={<Products />} />
+
+          <Route path="/howtouse" element={<HowToUse />} />
+
         </Routes>
       </div>
     </Router>

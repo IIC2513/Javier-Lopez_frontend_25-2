@@ -45,6 +45,8 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas desarolladas
 
+<img src="docs/Landing.png" alt="Landing" width="700"/>
+<img src="docs/Landing2.png" alt="Landing2" width="700"/>
 <img src="docs/AboutUs.png" alt="AboutUs" width="700"/>
 <img src="docs/AboutUs2.png" alt="AboutUs2" width="700"/>
 
