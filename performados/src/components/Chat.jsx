@@ -45,9 +45,17 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                 <div className="bg-[#f6efe2] p-4 border border-[#2f5b61] rounded shadow-lg w-80 h-96 flex flex-col">
                     {!currentOtherUser ? (
                         <div className="mb-4">
+                            <div className="flex items-center justify-between gap-2 flex-row">
                             <h2 className="text-lg font-bold mb-2 text-[#2f5b61]">
                                 Selecciona un usuario
                             </h2>
+                                <button
+                                className="bg-[#2f5b61] text-[#f6efe2] px-2 py-1 rounded"
+                                onClick={() => setOpenChat(false)}
+                                >
+                                Cerrar
+                                </button>
+                            </div>
                             <ul>
                                 {users.length < 2 && (
                                     <li className="p-2 text-[#2f5b61]">No hay otros usuarios</li>
@@ -58,9 +66,11 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                                         <li
                                             key={user.id}
                                             onClick={() => currentUser && setCurrentOtherUser(user)}
-                                            className={"cursor-pointer border border-[#2f5b61] p-2 rounded"}
-                                        >
-                                            {user.name}
+                                            className={"cursor-pointer border border-[#2f5b61] p-2 rounded text-[#2f5b61]"}
+                                        >   <div className="flex items-center gap-2 flex-row">
+                                            <img src={user.image || "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"}
+           alt="Profile" className="w-6 h-6 rounded-full" />{user.name}
+                                        </div>
                                         </li>
                                     ))}
                             </ul>
@@ -74,6 +84,12 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                                     onClick={() => setCurrentOtherUser(null)}
                                 >
                                     Seleccionar otro chat
+                                </button>
+                                <button
+                                className="bg-[#2f5b61] text-[#f6efe2] px-2 py-1 rounded"
+                                onClick={() => setOpenChat(false)}
+                                >
+                                Cerrar
                                 </button>
                             </div>
                             <div className="flex-1 overflow-y-auto">
