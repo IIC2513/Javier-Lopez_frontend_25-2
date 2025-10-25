@@ -2184,6 +2184,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"matter-js@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "matter-js@npm:0.20.0"
+  checksum: 10c0/95d58f407205ad24c96422109c959999f474ef29af79b4c2ad7550bca97cdcdac99df31ebe35ab858d9863c8f6cd5205339fbbff70909b56a3e2a6a57200c51b
+  languageName: node
+  linkType: hard
+
 "mime-db@npm:1.52.0":
   version: 1.52.0
   resolution: "mime-db@npm:1.52.0"
@@ -2487,12 +2494,14 @@ __metadata:
     framer-motion: "npm:^12.23.22"
     globals: "npm:^16.4.0"
     gsap: "npm:^3.13.0"
+    matter-js: "npm:^0.20.0"
     motion: "npm:^12.23.22"
     react: "npm:^19.1.1"
     react-dom: "npm:^19.1.1"
     react-icons: "npm:^5.5.0"
     react-router-dom: "npm:^7.9.4"
     tailwindcss: "npm:^4.1.14"
+    three: "npm:^0.180.0"
     vite: "npm:^7.1.7"
   languageName: unknown
   linkType: soft
@@ -2887,6 +2896,13 @@ __metadata:
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
   checksum: 10c0/0dad0596a61586180981133b20c32cfd93c5863c5b7140d646714e6ea8ec84583b879e5dc3928a4d683be6e6109ad7ea3de1cf71986d5194f81b3a016c8858c9
+  languageName: node
+  linkType: hard
+
+"three@npm:^0.180.0":
+  version: 0.180.0
+  resolution: "three@npm:0.180.0"
+  checksum: 10c0/2b5954b3e0946676cd606f126b1fbbe337ab6e72ae5a25b3eadbf1b8c502c17f21d851b9f5fe035edd48736306e339f143b5ee9cd4e91a2e614681abacef08de
   languageName: node
   linkType: hard
 

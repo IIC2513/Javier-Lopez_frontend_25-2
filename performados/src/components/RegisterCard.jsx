@@ -31,28 +31,28 @@ const RegisterCard = ({ users, setUsers, setCurrentUser, currentID, setCurrentID
 
     return (
         <div className="mt-[6rem] bg-[#F6EFE2] flex items-center justify-center flex-col p-6 rounded-2xl shadow-md">
-            <h1 className="font-sora px-4 text-[#2F5B61] my-2"
+            <h1 className="font-sora px-4 text-[#2F5B61] my-2 text-3xl"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}> 
             Registrarse </h1>
             <form className="flex flex-col" onSubmit={handleSubmit}>
                 <input name="name" 
                        placeholder="Nombre" 
-                       className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
+                       className="mb-4 p-2 rounded-lg my-2 border border-[#2F5B61]" 
                        value={name} onChange={(e) => 
                        setName(e.target.value)} />
                 <input type="email" name="email" 
                        placeholder="Correo Electrónico" 
-                       className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
+                       className="mb-4 p-2 rounded-lg my-2 border border-[#2F5B61]" 
                        value={email} onChange={(e) => 
                        setEmail(e.target.value)} />
                 <input type="password" 
                              name="password" 
                              placeholder="Contraseña" 
-                             className="mb-4 p-2 rounded my-2 border border-[#2F5B61]" 
+                             className="mb-4 p-2 rounded-lg my-2 border border-[#2F5B61]" 
                              value={password} 
                              onChange={(e) => 
                              setPassword(e.target.value)} />
-                <button type="submit" className="bg-[#2b555b] text-white p-2 rounded my-2">Registrarse</button>
+                <button type="submit" className="bg-[#2b555b] text-white p-2 rounded-lg my-2">Registrarse</button>
             </form>
             {errors && <><p className="text-red-500 font-sora px-4 my-2"
             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}

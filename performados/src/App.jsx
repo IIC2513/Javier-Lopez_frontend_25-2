@@ -130,6 +130,8 @@ function App() {
           buttonBgColor="#111"
           buttonTextColor="#fff"
           ease="power3.out"
+          currentUser={currentUser}       
+          setCurrentUser={setCurrentUser}
         />
 
         <Routes>
