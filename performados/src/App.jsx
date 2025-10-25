@@ -1,48 +1,136 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+import React, { useState, useEffect } from "react";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
 import AboutUs from "./pages/AboutUs";
+import Testing from "./pages/Testing";
+import Products from "./pages/Products";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import MyProfile from "./pages/MyProfile";
+import EditProfile from "./pages/EditProfile";
+import HowToUse from "./pages/HowToUse";
+import CartButton from "./components/CartButton";
+import CartOnSide from "./components/CartOnSide";
 
+import Chat from "./components/Chat";
 function App() {
   const items = [
     {
-      label: "PlaceHolder",
+      label: "Ofertas de Primavera",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "Placeholder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        {
+          label: "Gana tu primer concurso ",
+          ariaLabel: "PlaceHolder",
+          href: "/products",
+        },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "General",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        {
+          label: "Ver todos los productos",
+          ariaLabel: "PlaceHolder",
+          href: "/products",
+        },
       ],
     },
     {
-      label: "PlaceHolder",
+      label: "Best Sellers",
       bgColor: "#2f5b61",
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
-        { label: "PlaceHolder", ariaLabel: "PlaceHolder" },
+        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
       ],
     },
   ];
 
+  const [currentUser, setCurrentUser] = React.useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [users, setUsers] = React.useState(() => {
+    const storedUsers = localStorage.getItem("users");
+    return storedUsers ? JSON.parse(storedUsers) : [];
+  });
+  const [currentID, setCurrentID] = useState(() => {
+    const storedID = localStorage.getItem("currentID");
+    return storedID ? JSON.parse(storedID) : 1;
+  });
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartList, setCartList] = useState(() => {
+    try {
+      const storedCart = localStorage.getItem("shoppingCart");
+      // Si hay algo guardado, lo parseamos. Si no, devolvemos un array vacío.
+      return storedCart ? JSON.parse(storedCart) : [];
+    } catch (error) {
+      console.error("Error al leer el carrito de localStorage", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("shoppingCart", JSON.stringify(cartList));
+    } catch (error) {
+      console.error("Error al guardar el carrito en localStorage", error);
+    }
+  }, [cartList]);
+
+  const [messages, setMessages] = useState(() => {
+    const storedMessages = localStorage.getItem("messages");
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    localStorage.setItem("currentID", JSON.stringify(currentID));
+  }, [currentID]);
+
+  useEffect(() => {
+    localStorage.setItem("messages", JSON.stringify(messages));
+  }, [messages]);
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        <CartButton
+          setterCartOpen={setIsCartOpen}
+          isLogged={!!currentUser}
+          itemCount={cartList.length}
+        />
+        <CartOnSide
+          isOpen={isCartOpen}
+          isLogged={!!currentUser}
+          cartList={cartList}
+          setCartList={setCartList}
+          setterCartOpen={setIsCartOpen}
+        />
         <Navbar
           logo={logo}
           logoAlt="Company Logo"
@@ -52,7 +140,16 @@ function App() {
           buttonBgColor="#111"
           buttonTextColor="#fff"
           ease="power3.out"
+          currentUser={currentUser}       
+          setCurrentUser={setCurrentUser}
         />
+        {currentUser && (
+        <Chat
+          users={users}
+          currentUser={currentUser}
+          messages={messages}
+          setMessages={setMessages}
+        />)}
 
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -80,23 +177,57 @@ function App() {
               </div>
             }
           />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/testing" element={<Testing />} />
+          <Route
+            path="/products"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
+              />
+            }
+          />
+
           <Route
             path="/login"
+            element={<Login users={users} setCurrentUser={setCurrentUser} />}
+          />
+          <Route
+            path="/register"
             element={
-              <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold">Iniciar Sesión</h1>
-              </div>
+              <Register
+                users={users}
+                setUsers={setUsers}
+                setCurrentUser={setCurrentUser}
+                currentID={currentID}
+                setCurrentID={setCurrentID}
+              />
             }
           />
           <Route
-            path="/registro"
+            path="/my-profile"
             element={
-              <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold">Registrarse</h1>
-              </div>
+              <MyProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
             }
           />
-          <Route path="/about-us" element={<AboutUs />} />
+          <Route
+            path="/edit-profile"
+            element={
+              <EditProfile
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+                users={users}
+                setUsers={setUsers}
+              />
+            }
+          />
+
+          <Route path="/howtouse" element={<HowToUse />} />
         </Routes>
       </div>
     </Router>
