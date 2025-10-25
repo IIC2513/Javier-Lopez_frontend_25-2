@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const CloseIcon = () => (
   <svg
@@ -25,7 +25,7 @@ const colorThemes = {
   blue: "bg-[#2f5b61]",
   black: "bg-[#fca41d]",
   brown: "bg-[#7b5338]",
-  default: "#f6efe2]",
+  default: "bg-[#f6efe2]",
 };
 
 function Product({
@@ -42,7 +42,33 @@ function Product({
   color,
   stock,
   setIsProductOpen,
+  setCartList,
+  setterCartOpen,
+  cartList,
 }) {
+  const isInCart = cartList.some((item) => item.id === id);
+
+  const handleAddToCart = () => {
+    setCartList((prevCart) => {
+      const productToAdd = {
+        id,
+        name,
+        price,
+        image,
+        color,
+        quantity: 1,
+      };
+      return [...prevCart, productToAdd];
+    });
+    setIsProductOpen(false);
+    setterCartOpen(true);
+  };
+
+  const handleViewCart = () => {
+    setIsProductOpen(false);
+    setterCartOpen(true);
+  };
+
   return (
     <div
       className={`fixed inset-0 ${colorThemes[color]} flex items-center justify-center z-50 p-4`}
@@ -81,11 +107,25 @@ function Product({
               {stock}
             </p>
           </div>
-          <button className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer">
-            Añadir al Carrito
-          </button>
+          {isInCart ? (
+            <button
+              onClick={handleViewCart}
+              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            >
+              Ver en el Carrito
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            >
+              Añadir al Carrito
+            </button>
+          )}
           <button
-            onClick={() => setIsProductOpen(false)}
+            onClick={() => {
+              setIsProductOpen(false);
+            }}
             className="w-full bg-[#6b9ca3] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
           >
             Volver a la Tienda

@@ -160,7 +160,16 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
-          <Route path="/products" element={<Products />} />
+          <Route
+            path="/products"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
+              />
+            }
+          />
 
           <Route
             path="/login"

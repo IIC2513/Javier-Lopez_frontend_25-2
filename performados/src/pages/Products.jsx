@@ -307,7 +307,7 @@ const categories = {
   accesorios: 6,
 };
 
-const Products = () => {
+const Products = ({ setCartList, cartList, setterCartOpen }) => {
   let [selectedCategory, setSelectedCategory] = useState(null);
   let [selectedPriceRange, setSelectedPriceRange] = useState(null);
   let [selectedCondition, setSelectedCondition] = useState(null);
@@ -361,7 +361,13 @@ const Products = () => {
   return (
     <>
       {isProductOpen && selectedProduct ? (
-        <Product {...selectedProduct} setIsProductOpen={setIsProductOpen} />
+        <Product
+          {...selectedProduct}
+          setIsProductOpen={setIsProductOpen}
+          setCartList={setCartList}
+          cartList={cartList}
+          setterCartOpen={setterCartOpen}
+        />
       ) : (
         <div className="min-h-screen bg-[#ece2cc]">
           <div className="flex flex-col">
