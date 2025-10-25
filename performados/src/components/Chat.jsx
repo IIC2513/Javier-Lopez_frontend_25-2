@@ -50,7 +50,7 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                                 Selecciona un usuario
                             </h2>
                                 <button
-                                className="bg-[#2f5b61] text-[#f6efe2] px-2 py-1 rounded"
+                                className="text-sm text-[#2f5b61] hover:underline"
                                 onClick={() => setOpenChat(false)}
                                 >
                                 Cerrar
@@ -78,6 +78,8 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                     ) : (
                         <>
                             <div className="flex justify-between mb-2">
+                                <img src={currentOtherUser.image || "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"}
+           alt="Profile" className="w-6 h-6 rounded-full" />
                                 <h2 className="font-bold text-[#2f5b61]">{currentOtherUser.name}</h2>
                                 <button
                                     className="text-sm text-[#2f5b61] hover:underline"
@@ -86,7 +88,7 @@ const Chat = ({ users = [], currentUser, messages = [], setMessages }) => {
                                     Seleccionar otro chat
                                 </button>
                                 <button
-                                className="bg-[#2f5b61] text-[#f6efe2] px-2 py-1 rounded"
+                                className="text-sm text-[#2f5b61] hover:underline"
                                 onClick={() => setOpenChat(false)}
                                 >
                                 Cerrar
