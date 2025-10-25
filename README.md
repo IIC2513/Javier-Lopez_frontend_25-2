@@ -12,7 +12,7 @@
 
 ¡Bienvenido a la nueva plataforma de compra y venta de productos para hombres performativos!
 
-Nuestro proyecto, es un eCommerce orientado a todos aquellos hombres que rompen con lo cotidiano. Por medio de nuestra app, los usuarios registrados podrán publicar y comprar productos orientados a la moda performativa
+Nuestro proyecto, es un eCommerce orientado a todos aquellos hombres juveniles que rompen con lo cotidiano. Por medio de nuestra app, los usuarios registrados podrán publicar y comprar productos orientados a la moda performativa, ademas de gozar de una excelente experiencia de usuario a la hora de contactar a los vendedores oficiales de la pagina, o a aquiellos usuarios que deseen vender sus productos a traves de la plataforma
 
 La idea del proyecto nace de que notamos que no existen tiendas específicas de esta categoría de productos. Por lo que esta página esta totalmente orientada a las personas interesadas en este estilo de vida.
 
@@ -20,16 +20,53 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas principales (Mockups)
 
-<p align="center">
-  <img src="docs/Vista-Pc.png" alt="Vista de escritorio" width="400"/>
-  <img src="docs/Vista-iPad.png" alt="Vista de Ipad" width="200"/>
-  <img src="docs/Vista-Celular.png" alt="Vista de Celular" width="120"/>
-</p>
+### Vista Landing Page Computador
+
+<img src="docs/Vista-Pc.png" alt="Vista de escritorio" width="400"/>
+
+### Vista Landing Page Tablet
+
+<img src="docs/Vista-iPad.png" alt="Vista de Ipad" width="300"/>
+
+### Vista Landing Page Celular
+
+<img src="docs/Vista-Celular.png" alt="Vista de Celular" width="300"/>
+
+### Vista How to Use Computador
+
+<img src="docs/Uso-Vista-PC.png" alt="Vista de escritorio" width="400"/>
+
+### Vista How to Use Tablet
+
+<img src="docs/Uso-Vista-Tablet.png" alt="Vista de Ipad" width="300"/>
+
+### Vista How to Use Celular
+
+<img src="docs/Uso-Vista-Celular.png" alt="Vista de Celular" width="300"/>
+
+### Vista Productos Computador
+
+<img src="docs/Productos-Vista-PC.png" alt="Vista de escritorio" width="400"/>
+
+### Vista Productos Tablet
+
+<img src="docs/Productos-Vista-Tablet.png" alt="Vista de ipad" width="300"/>
+
+### Vista Productos Celular
+
+<img src="docs/Productos-Vista-Celular.png" alt="Vista de celular" width="300"/>
 
 ## Paleta de colores
 
 <img src="docs/Primary-Colors.png" alt="Colores primarios" width="400"/>
 <img src="docs/Secondary-Colors.png" alt="Colores secundarios" width="400"/>
+<img src="docs/Alert-Colors.png" alt="Colores de Alerta" width="400"/>
+
+### Ejemplos de Aplicacion de Diseño
+
+<img src="docs/Components-View1.png" alt="Colores primarios" width="700"/>
+
+<img src="docs/Components-View2.png" alt="Colores primarios" width="700"/>
 
 ## Fuentes
 
@@ -45,10 +82,14 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas desarolladas
 
-<img src="docs/Landing.png" alt="Landing" width="700"/>
-<img src="docs/Landing2.png" alt="Landing2" width="700"/>
-<img src="docs/AboutUs.png" alt="AboutUs" width="700"/>
-<img src="docs/AboutUs2.png" alt="AboutUs2" width="700"/>
+<img src="docs/vista3.png" alt="Landing" width="700"/>
+<img src="docs/vista1.png" alt="Landing2" width="700"/>
+<img src="docs/vista2.png" alt="AboutUs" width="700"/>
+<img src="docs/vista7.png" alt="AboutUs2" width="700"/>
+<img src="docs/vista8.png" alt="AboutUs2" width="700"/>
+<img src="docs/vista4.png" alt="AboutUs2" width="700"/>
+<img src="docs/vista5.png" alt="AboutUs2" width="700"/>
+<img src="docs/vista6.png" alt="AboutUs2" width="700"/>
 
 ## Historias de Usuario
 
