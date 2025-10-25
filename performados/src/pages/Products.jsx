@@ -296,6 +296,21 @@ let products_fetched = [
     color: "black",
     stock: 15,
   },
+  {
+    id: 28,
+    OwnerId: 1,
+    categoryId: 3,
+    condition: "nuevo",
+    image:
+      "https://imagedelivery.net/7yy6dErF9hbNfcqoZCcxBA/845cf46b-62b0-4c69-83fe-7a8a3b563500/public",
+    description: "Vinyl edición especial",
+    isOfficial: true,
+    isActive: true,
+    name: "Whenever You Need Somebody - Rick Astley",
+    price: 19990,
+    color: "black",
+    stock: 1,
+  },
 ];
 
 const categories = {

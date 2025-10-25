@@ -9,6 +9,10 @@ function CartOnSide({
 }) {
   const showCart = isOpen && isLogged;
 
+  const totalPrice = () => {
+    return cartList.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
+
   return (
     <>
       <div
@@ -22,13 +26,14 @@ function CartOnSide({
       ></div>
       <div
         className={`
-          Carrito fixed top-0 right-0 h-screen w-90 bg-[#f6efe2] shadow-xl overflow-y-auto
+          Carrito fixed top-0 right-0 h-screen w-96 bg-[#f6efe2] shadow-xl 
           z-[100]
           transition-transform duration-300 ease-in-out
           ${showCart ? "translate-x-0" : "translate-x-full"}
+          flex flex-col
         `}
       >
-        <div className="p-4">
+        <div className="flex-1 overflow-y-auto p-4">
           <div className="flex justify-between items-center mb-4">
             <h2
               className="text-2xl font-bold text-[#2e5b61]"
@@ -86,6 +91,42 @@ function CartOnSide({
               ))
             )}
           </div>
+        </div>
+
+        <div className="p-4 border-t border-gray-300">
+          {cartList.length === 0 ? (
+            <button
+              onClick={() => setterCartOpen(false)}
+              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
+            >
+              Añadir Productos
+            </button>
+          ) : (
+            <>
+              <div className="mb-4">
+                <span
+                  className="text-lg font-bold text-[#2e5b61]"
+                  style={{ fontFamily: "sora, sans-serif" }}
+                >
+                  Total: ${totalPrice()}
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  if (cartList.some((item) => item.id === 28)) {
+                    window.location.href =
+                      "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+                  } else {
+                    window.location.href =
+                      "https://www.youtube.com/watch?v=vNhs9CSI0Vc";
+                  }
+                }}
+                className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
+              >
+                Ir a Comprar
+              </button>
+            </>
+          )}
         </div>
       </div>
     </>
