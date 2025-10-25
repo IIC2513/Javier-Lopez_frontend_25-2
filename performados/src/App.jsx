@@ -15,6 +15,7 @@ import HowToUse from "./pages/HowToUse";
 import CartButton from "./components/CartButton";
 import CartOnSide from "./components/CartOnSide";
 
+import Chat from "./components/Chat";
 function App() {
   const items = [
     {
@@ -90,6 +91,11 @@ function App() {
     }
   }, [cartList]);
 
+  const [messages, setMessages] = useState(() => {
+    const storedMessages = localStorage.getItem("messages");
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -105,6 +111,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
+
+  useEffect(() => {
+    localStorage.setItem("messages", JSON.stringify(messages));
+  }, [messages]);
 
   return (
     <Router>
@@ -133,6 +143,13 @@ function App() {
           currentUser={currentUser}       
           setCurrentUser={setCurrentUser}
         />
+        {currentUser && (
+        <Chat
+          users={users}
+          currentUser={currentUser}
+          messages={messages}
+          setMessages={setMessages}
+        />)}
 
         <Routes>
           <Route path="/" element={<LandingPage />} />
