@@ -12,6 +12,8 @@ import Register from "./pages/Register";
 import MyProfile from "./pages/MyProfile";
 import EditProfile from "./pages/EditProfile";
 import HowToUse from "./pages/HowToUse";
+import CartButton from "./components/CartButton";
+import CartOnSide from "./components/CartOnSide";
 
 function App() {
   const items = [
@@ -22,7 +24,11 @@ function App() {
       fontFamily: "sora, sans-serif",
       links: [
         { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
-        { label: "Gana tu primer concurso ", ariaLabel: "PlaceHolder", href: "/products" },
+        {
+          label: "Gana tu primer concurso ",
+          ariaLabel: "PlaceHolder",
+          href: "/products",
+        },
       ],
     },
     {
@@ -31,7 +37,11 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Ver todos los productos", ariaLabel: "PlaceHolder", href: "/products" },
+        {
+          label: "Ver todos los productos",
+          ariaLabel: "PlaceHolder",
+          href: "/products",
+        },
       ],
     },
     {
@@ -60,6 +70,26 @@ function App() {
     return storedID ? JSON.parse(storedID) : 1;
   });
 
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartList, setCartList] = useState(() => {
+    try {
+      const storedCart = localStorage.getItem("shoppingCart");
+      // Si hay algo guardado, lo parseamos. Si no, devolvemos un array vacío.
+      return storedCart ? JSON.parse(storedCart) : [];
+    } catch (error) {
+      console.error("Error al leer el carrito de localStorage", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("shoppingCart", JSON.stringify(cartList));
+    } catch (error) {
+      console.error("Error al guardar el carrito en localStorage", error);
+    }
+  }, [cartList]);
+
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -79,6 +109,18 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+        <CartButton
+          setterCartOpen={setIsCartOpen}
+          isLogged={!!currentUser}
+          itemCount={cartList.length}
+        />
+        <CartOnSide
+          isOpen={isCartOpen}
+          isLogged={!!currentUser}
+          cartList={cartList}
+          setCartList={setCartList}
+          setterCartOpen={setIsCartOpen}
+        />
         <Navbar
           logo={logo}
           logoAlt="Company Logo"
@@ -118,8 +160,17 @@ function App() {
           />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/testing" element={<Testing />} />
-          <Route path="/products" element={<Products />} />
-          
+          <Route
+            path="/products"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
+              />
+            }
+          />
+
           <Route
             path="/login"
             element={<Login users={users} setCurrentUser={setCurrentUser} />}
@@ -158,7 +209,6 @@ function App() {
           />
 
           <Route path="/howtouse" element={<HowToUse />} />
-
         </Routes>
       </div>
     </Router>

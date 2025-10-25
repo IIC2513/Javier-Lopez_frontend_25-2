@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const CloseIcon = () => (
   <svg
@@ -25,7 +25,7 @@ const colorThemes = {
   blue: "bg-[#2f5b61]",
   black: "bg-[#fca41d]",
   brown: "bg-[#7b5338]",
-  default: "#f6efe2]",
+  default: "bg-[#f6efe2]",
 };
 
 function Product({
@@ -42,28 +42,61 @@ function Product({
   color,
   stock,
   setIsProductOpen,
+  setCartList,
+  setterCartOpen,
+  cartList,
 }) {
+  const isInCart = cartList.some((item) => item.id === id);
+
+  const handleAddToCart = () => {
+    setCartList((prevCart) => {
+      const productToAdd = {
+        id,
+        name,
+        price,
+        image,
+        color,
+        quantity: 1,
+      };
+      return [...prevCart, productToAdd];
+    });
+    setIsProductOpen(false);
+    setterCartOpen(true);
+  };
+
+  const handleViewCart = () => {
+    setIsProductOpen(false);
+    setterCartOpen(true);
+  };
+
   return (
     <div
       className={`fixed inset-0 ${colorThemes[color]} flex items-center justify-center z-50 p-4`}
     >
-      <div className="bg-[#f6efe2] rounded shadow-2xl max-w-4xl w-full relative grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      <div className="bg-[#f6efe2] rounded shadow-2xl max-w-4xl w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
         <button
           className="absolute top-4 right-4 text-[#2e5b61] hover:text-[#1a3a3e] z-10 hover:cursor-pointer"
           onClick={() => setIsProductOpen(false)}
         >
           <CloseIcon />
         </button>
-        <div className="p-8 flex items-center justify-center">
+        <div className="p-8 mt-8 md:p-8 flex items-center justify-center">
           <img
             src={image}
             alt={name}
-            className="w-full h-auto max-h-[70vh] object-contain rounded-md" // Alto máximo para que no se estire
+            className="w-full h-auto max-h-[60vh] object-contain rounded-md"
           />
         </div>
-        <div className="p-8 flex flex-col justify-center">
-          <h2 className="text-3xl font-bold text-[#2e5b61] mb-2">{name}</h2>
-          <p className="text-2xl font-semibold text-[#26484d] mb-4">${price}</p>
+        <div
+          className="p-4 md:p-8 flex flex-col justify-center"
+          style={{ fontFamily: "sora, sans-serif" }}
+        >
+          <h2 className="text-2xl md:text-3xl font-bold text-[#2e5b61] mb-2">
+            {name}
+          </h2>
+          <p className="text-xl md:text-2xl font-semibold text-[#26484d] mb-4">
+            ${price}
+          </p>
           <p className="text-base text-gray-700 mb-6">{description}</p>
           <div className="border-t border-[#d3c9b6] pt-4 mb-6 space-y-2">
             <p className="text-sm text-gray-800">
@@ -81,11 +114,25 @@ function Product({
               {stock}
             </p>
           </div>
-          <button className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer">
-            Añadir al Carrito
-          </button>
+          {isInCart ? (
+            <button
+              onClick={handleViewCart}
+              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            >
+              Ver en el Carrito
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            >
+              Añadir al Carrito
+            </button>
+          )}
           <button
-            onClick={() => setIsProductOpen(false)}
+            onClick={() => {
+              setIsProductOpen(false);
+            }}
             className="w-full bg-[#6b9ca3] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
           >
             Volver a la Tienda

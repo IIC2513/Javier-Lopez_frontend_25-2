@@ -296,6 +296,21 @@ let products_fetched = [
     color: "black",
     stock: 15,
   },
+  {
+    id: 28,
+    OwnerId: 1,
+    categoryId: 3,
+    condition: "nuevo",
+    image:
+      "https://imagedelivery.net/7yy6dErF9hbNfcqoZCcxBA/845cf46b-62b0-4c69-83fe-7a8a3b563500/public",
+    description: "Vinyl edición especial",
+    isOfficial: true,
+    isActive: true,
+    name: "Whenever You Need Somebody - Rick Astley",
+    price: 19990,
+    color: "black",
+    stock: 1,
+  },
 ];
 
 const categories = {
@@ -307,7 +322,7 @@ const categories = {
   accesorios: 6,
 };
 
-const Products = () => {
+const Products = ({ setCartList, cartList, setterCartOpen }) => {
   let [selectedCategory, setSelectedCategory] = useState(null);
   let [selectedPriceRange, setSelectedPriceRange] = useState(null);
   let [selectedCondition, setSelectedCondition] = useState(null);
@@ -361,7 +376,13 @@ const Products = () => {
   return (
     <>
       {isProductOpen && selectedProduct ? (
-        <Product {...selectedProduct} setIsProductOpen={setIsProductOpen} />
+        <Product
+          {...selectedProduct}
+          setIsProductOpen={setIsProductOpen}
+          setCartList={setCartList}
+          cartList={cartList}
+          setterCartOpen={setterCartOpen}
+        />
       ) : (
         <div className="min-h-screen bg-[#ece2cc]">
           <div className="flex flex-col">

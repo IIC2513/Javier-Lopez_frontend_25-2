@@ -40,7 +40,7 @@ function CategoryBar({ currentCategory, onCategorySelect }) {
                 className="flex-shrink-0 w-30 text-center text-white hover:cursor-pointer"
                 onClick={() => onCategorySelect(categoryName.toLowerCase())}
               >
-                <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-15 h-15 md:w-15 md:h-15 lg:w-20 lg:h-20 flex items-center justify-center hover:bg-[#468b94] transition-colors duration-300">
+                <div className="rounded-full bg-[#2e5b61] p-2 mx-auto w-15 h-15 md:w-15 md:h-15 lg:w-20 lg:h-20 flex items-center justify-center hover:bg-[#75adb5] transition-colors duration-300">
                   <img
                     src={category[categoryName]}
                     alt={categoryName}
