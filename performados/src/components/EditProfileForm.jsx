@@ -224,6 +224,7 @@ const SelfProfileForm = ({
           users={users}
           setUsers={setUsers}
           onCancel={handleCancelDelete}
+          token={token}
         />
       )}
     </>
