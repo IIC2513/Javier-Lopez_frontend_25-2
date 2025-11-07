@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 const CloseIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +66,8 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
     if (productImage) {
       console.warn("La subida de archivos aún no está implementada. Se enviará 'null' como imagen.");
+      // Aquí iría la lógica de subida de imagen.
+      // Por ahora, 'image' se envía como null.
     }
 
     const productData = {
@@ -76,10 +79,10 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
       condition: condition,
       description: description,
       
-      ownerId: 1, 
+      ownerId: 1, // Debería ser currentUser.id
       isOfficial: true, 
       isActive: true,               
-      image: null                   
+      image: null // Cambiar esto cuando la subida de archivos esté lista
     };
 
     console.log("Enviando datos al backend:", JSON.stringify(productData, null, 2));
@@ -121,9 +124,10 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [handleClose]); 
+  }, [handleClose]); // handleClose está memoizada por React (viene de un hook o props)
 
   useEffect(() => {
+    // Limpiar la URL del objeto cuando el componente se desmonte o la imagen cambie
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -138,7 +142,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
+      className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
       onClick={handleClose}
     >
       <div
@@ -322,6 +326,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                     src={imagePreview}
                     alt="Vista previa"
                     className="h-48 w-auto object-contain rounded-md"
+                  L
                   />
                   <button
                     type="button"
@@ -329,9 +334,12 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                       e.stopPropagation();
                       setImagePreview(null);
                       setProductImage(null);
-                      fileInputRef.current.value = null;
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = null;
+                      }
                     }}
                     className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1 text-white shadow-md hover:bg-red-600"
+                    aria-label="Quitar imagen"
                   >
                     <CloseIcon />
                   </button>
@@ -353,7 +361,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                     />
                   </svg>
                   <p className="text-sm text-gray-600">
-                    <span className="font-medium text-blue-600 hover:text-blue-500">
+                    <span className="font-medium text-[#2f5b61] hover:text-blue-500">
                       Haz clic para subir
                     </span>{' '}
                     o arrastra y suelta
@@ -384,7 +392,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
             </button>
             <button
               type="submit"
-              className="w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 sm:w-auto sm:text-sm"
+              className="w-full justify-center rounded-md border border-transparent bg-[#2f5b61] px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#2f5b61]/50 sm:w-auto sm:text-sm"
             >
               Subir Producto
             </button>
