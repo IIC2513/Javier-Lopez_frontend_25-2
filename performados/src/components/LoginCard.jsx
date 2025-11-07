@@ -14,24 +14,20 @@ const LoginCard = ({ users, setCurrentUser, setToken }) => {
   };
 
   const onLogin = async (email, password) => {
-    const { data } = await loginRequest(email, password);
-    if (!data) {
-      setErrors(true);
-      navigate("/login");
-      return;
-    }
-    const { token, user } = data;
-    localStorage.setItem("token", token);
-    if (setToken) setToken(token);
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    setCurrentUser(user);
+    setErrors(false);
+    try {
+      const { data } = await loginRequest(email, password);
+      const { token, user } = data;
 
-    if (user) {
+      localStorage.setItem("token", token);
+      if (setToken) setToken(token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
       setCurrentUser(user);
+
       navigate("/");
-    } else {
+    } catch (error) {
+      console.error("Login error:", error);
       setErrors(true);
-      navigate("/login");
     }
   };
 
