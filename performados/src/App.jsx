@@ -14,6 +14,8 @@ import EditProfile from "./pages/EditProfile";
 import HowToUse from "./pages/HowToUse";
 import CartButton from "./components/CartButton";
 import CartOnSide from "./components/CartOnSide";
+import ProductButton from "./components/AddProductButton";
+import {CreateProductModal} from "./components/CreateProductModal";
 
 import Chat from "./components/Chat";
 function App() {
@@ -83,6 +85,9 @@ function App() {
     }
   });
 
+    const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
+
+
   useEffect(() => {
     try {
       localStorage.setItem("shoppingCart", JSON.stringify(cartList));
@@ -119,6 +124,18 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+
+        <ProductButton
+          setterCreateProductModalOpen={setIsCreateProductModalOpen}
+          isLogged={!!currentUser}
+        />
+        
+        <CreateProductModal
+          isOpen={isCreateProductModalOpen}
+          onClose={() => setIsCreateProductModalOpen(false)}
+        />
+
+
         <CartButton
           setterCartOpen={setIsCartOpen}
           isLogged={!!currentUser}
