@@ -18,6 +18,14 @@ const CloseIcon = () => (
 );
 
 const URL_API = import.meta.env.VITE_API_URL;
+const categories = {
+  totebags: 1,
+  labubus: 2,
+  discos: 3,
+  libros: 4,
+  matcha: 5,
+  accesorios: 6,
+};
 
 export const EditProductModal = ({ isOpen, onClose, product }) => {
   const [productName, setProductName] = useState("");
@@ -107,6 +115,7 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
       const updatedProduct = await response.json();
       alert("¡Producto actualizado exitosamente!");
       handleClose();
+      window.location.reload();
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -176,13 +185,18 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
             <label className="block text-sm font-medium text-gray-700">
               Categoría
             </label>
-            <input
-              type="number"
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
               required
-            />
+            >
+              {Object.entries(categories).map(([name, id]) => (
+                <option key={id} value={id}>
+                  {name.charAt(0).toUpperCase() + name.slice(1)}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
