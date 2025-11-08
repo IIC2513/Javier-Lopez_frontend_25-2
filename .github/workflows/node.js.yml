@@ -26,13 +26,22 @@ jobs:
         working-directory: performados
         run: yarn install
 
-      - name: Build project with environment variables
+      # - name: Build project with environment variables
+      #   working-directory: performados
+      #   env:
+      #     VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      #   run: |
+      #     echo "Building with API URL: $VITE_API_URL"
+      #     yarn build
+
+      - name: Create .env file for Netlify Build
         working-directory: performados
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
-          echo "Building with API URL: $VITE_API_URL"
-          yarn build
+          echo "Creando archivo .env para el build de Netlify..."
+          # Escribimos el secreto en un archivo .env físico
+          # Vite lo leerá automáticamente durante el build de Netlify
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
+          echo "Archivo .env creado."
 
       - name: Deploy to Netlify
         working-directory: performados
