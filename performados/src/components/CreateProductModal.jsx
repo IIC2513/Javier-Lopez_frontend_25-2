@@ -13,6 +13,8 @@ const CloseIcon = () => (
   </svg>
 );
 
+const URL_API = import.meta.env.VITE_API_URL;
+
 export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   const [productName, setProductName] = useState('');
   const [category, setCategory] = useState('');
@@ -89,7 +91,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
     try {
 
-      const response = await fetch('http://localhost:3000/products', {
+      const response = await fetch(`${URL_API}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
