@@ -46,10 +46,13 @@ function Product({
   setCartList,
   setterCartOpen,
   cartList,
+  openEditModal,
 }) {
   const isInCart = cartList.some((item) => item.id === id);
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   const isOwner = currentUser.id === OwnerId;
+  console.log("Current User ID:", currentUser.id);
+  console.log("Product Owner ID:", OwnerId);
 
   const handleAddToCart = () => {
     setCartList((prevCart) => {
@@ -148,9 +151,7 @@ function Product({
           {isOwner ? (
             <>
               <button
-                onClick={() => {
-                  setIsProductOpen(false);
-                }}
+                onClick={openEditModal}
                 className="w-full bg-[#2e5b61] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
                 Editar Producto

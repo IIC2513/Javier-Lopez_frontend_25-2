@@ -3,7 +3,7 @@ import PillNav from "../components/ProductBar";
 import CategoryBar from "../components/CategoryBar";
 import FilterBar from "../components/FilterBar";
 import Product from "./Product";
-
+import { EditProductModal } from "../components/EditProductModal";
 import toteBagClairo from "../assets/Totebag-Clairo.png";
 import toteBagLaufey from "../assets/Totebag-Laufey.png";
 import labubu from "../assets/labubu-1.png";
@@ -36,6 +36,12 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
 
   let [selectedProduct, setSelectedProduct] = useState(null);
   let [isProductOpen, setIsProductOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const openEditModal = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
 
   useEffect(() => {
     productsFetch();
@@ -97,6 +103,11 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
 
   return (
     <>
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={selectedProduct}
+      />
       {isProductOpen && selectedProduct ? (
         <Product
           {...selectedProduct}
@@ -104,6 +115,8 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
           setCartList={setCartList}
           cartList={cartList}
           setterCartOpen={setterCartOpen}
+          OwnerId={selectedProduct.ownerId}
+          openEditModal={() => setIsEditModalOpen(true)}
         />
       ) : (
         <div className="min-h-screen bg-[#ece2cc]">
