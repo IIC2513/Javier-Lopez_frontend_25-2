@@ -14,8 +14,11 @@ import EditProfile from "./pages/EditProfile";
 import HowToUse from "./pages/HowToUse";
 import CartButton from "./components/CartButton";
 import CartOnSide from "./components/CartOnSide";
+import ProductButton from "./components/AddProductButton";
+import {CreateProductModal} from "./components/CreateProductModal";
 
 import Chat from "./components/Chat";
+import { setAuthToken } from "./api";
 function App() {
   const items = [
     {
@@ -83,6 +86,9 @@ function App() {
     }
   });
 
+    const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
+
+
   useEffect(() => {
     try {
       localStorage.setItem("shoppingCart", JSON.stringify(cartList));
@@ -94,6 +100,9 @@ function App() {
   const [messages, setMessages] = useState(() => {
     const storedMessages = localStorage.getItem("messages");
     return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token");
   });
 
   useEffect(() => {
@@ -109,6 +118,16 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      setAuthToken(token);
+    } else {
+      localStorage.removeItem("token");
+      setAuthToken(null);
+    }
+  }, [token]);
+
+  useEffect(() => {
     localStorage.setItem("currentID", JSON.stringify(currentID));
   }, [currentID]);
 
@@ -119,6 +138,18 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
+
+        <ProductButton
+          setterCreateProductModalOpen={setIsCreateProductModalOpen}
+          isLogged={!!currentUser}
+        />
+        
+        <CreateProductModal
+          isOpen={isCreateProductModalOpen}
+          onClose={() => setIsCreateProductModalOpen(false)}
+        />
+
+
         <CartButton
           setterCartOpen={setIsCartOpen}
           isLogged={!!currentUser}
@@ -140,16 +171,17 @@ function App() {
           buttonBgColor="#111"
           buttonTextColor="#fff"
           ease="power3.out"
-          currentUser={currentUser}       
+          currentUser={currentUser}
           setCurrentUser={setCurrentUser}
         />
         {currentUser && (
-        <Chat
-          users={users}
-          currentUser={currentUser}
-          messages={messages}
-          setMessages={setMessages}
-        />)}
+          <Chat
+            users={users}
+            currentUser={currentUser}
+            messages={messages}
+            setMessages={setMessages}
+          />
+        )}
 
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -192,7 +224,13 @@ function App() {
 
           <Route
             path="/login"
-            element={<Login users={users} setCurrentUser={setCurrentUser} />}
+            element={
+              <Login
+                users={users}
+                setCurrentUser={setCurrentUser}
+                setToken={setToken}
+              />
+            }
           />
           <Route
             path="/register"
@@ -203,6 +241,7 @@ function App() {
                 setCurrentUser={setCurrentUser}
                 currentID={currentID}
                 setCurrentID={setCurrentID}
+                setToken={setToken}
               />
             }
           />
@@ -223,6 +262,7 @@ function App() {
                 setCurrentUser={setCurrentUser}
                 users={users}
                 setUsers={setUsers}
+                token={token}
               />
             }
           />

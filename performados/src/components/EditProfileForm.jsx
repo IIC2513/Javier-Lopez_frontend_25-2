@@ -1,8 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import DeleteConfirmationCard from "./DeleteConfirmationCard";
+import api from "../api";
 
-const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
+const SelfProfileForm = ({
+  currentUser,
+  setCurrentUser,
+  users,
+  setUsers,
+  token,
+}) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState(false);
 
@@ -26,17 +33,30 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
     setShowDeleteModal(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const res = await api.patch(`/users/${currentUser.id}`, currentUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        const updatedUser = res.data.user;
+        setCurrentUser(updatedUser);
+        const updatedUsers = users.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user
+        );
+        setUsers(updatedUsers);
+        currentUser = updatedUser;
+        navigate("/my-profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setErrors(true);
+      return;
+    }
     if (!currentUser) return;
-
-    const updatedUser = { ...currentUser };
-
-    const update = users.map((user) =>
-      user.email === originalEmail.current ? updatedUser : user
-    );
-    setUsers(update);
-    setCurrentUser(updatedUser);
     navigate("/my-profile");
   };
 
@@ -204,6 +224,7 @@ const SelfProfileForm = ({ currentUser, setCurrentUser, users, setUsers }) => {
           users={users}
           setUsers={setUsers}
           onCancel={handleCancelDelete}
+          token={token}
         />
       )}
     </>

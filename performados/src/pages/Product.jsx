@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const CloseIcon = () => (
   <svg
@@ -45,8 +46,13 @@ function Product({
   setCartList,
   setterCartOpen,
   cartList,
+  openEditModal,
 }) {
   const isInCart = cartList.some((item) => item.id === id);
+  const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+  const isOwner = currentUser.id === OwnerId;
+  console.log("Current User ID:", currentUser.id);
+  console.log("Product Owner ID:", OwnerId);
 
   const handleAddToCart = () => {
     setCartList((prevCart) => {
@@ -67,6 +73,33 @@ function Product({
   const handleViewCart = () => {
     setIsProductOpen(false);
     setterCartOpen(true);
+  };
+
+  const URL_API = import.meta.env.VITE_API_URL;
+
+  const handleEditProduct = () => {
+    // Lógica para editar el producto
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este producto?"))
+      return;
+    try {
+      const response = await axios.delete(`${URL_API}/products/${id}`);
+      if (response.status !== 200) {
+        throw new Error("Error al eliminar el producto");
+        alert("Error al eliminar el producto");
+      }
+      alert("Producto eliminado exitosamente");
+      setIsProductOpen(false);
+      // Aquí podrías recargar la lista de productos si es necesario
+      window.location.reload();
+    } catch (error) {
+      alert(
+        "Error al eliminar el producto: " +
+          (error.response?.data?.error || error.message)
+      );
+    }
   };
 
   return (
@@ -114,7 +147,23 @@ function Product({
               {stock}
             </p>
           </div>
-          {isInCart ? (
+
+          {isOwner ? (
+            <>
+              <button
+                onClick={openEditModal}
+                className="w-full bg-[#2e5b61] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+              >
+                Editar Producto
+              </button>
+              <button
+                onClick={handleDeleteProduct}
+                className="w-full bg-[#fb2c35] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+              >
+                Eliminar Producto
+              </button>
+            </>
+          ) : isInCart ? (
             <button
               onClick={handleViewCart}
               className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
