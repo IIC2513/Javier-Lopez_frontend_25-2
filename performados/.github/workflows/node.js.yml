@@ -1,12 +1,13 @@
 name: Deploy website
 
-on: 
-    push:
-        branches: [ "main" ]
+on:
+  push:
+    branches: ["main"]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Repository Checkout
         uses: actions/checkout@v4
@@ -16,18 +17,21 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-        
-      - name: Install Netlify
+
+      - name: Install Netlify CLI
         run: yarn add netlify-cli
 
       - name: Install Dependencies
         run: yarn install
 
-      - name: Build project
-        run: yarn build
+      - name: Build project with environment variables
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          echo "Building with API URL: $VITE_API_URL"
+          yarn build
 
       - name: Deploy to Netlify
-        id: netlify_deploy
         run: |
           netlify deploy --prod \
             --dir dist \
