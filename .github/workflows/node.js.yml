@@ -1,0 +1,52 @@
+name: Deploy website
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+          cache-dependency-path: "performados/yarn.lock"
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Install Dependencies
+        working-directory: performados
+        run: yarn install
+
+      # - name: Build project with environment variables
+      #   working-directory: performados
+      #   env:
+      #     VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      #   run: |
+      #     echo "Building with API URL: $VITE_API_URL"
+      #     yarn build
+
+      - name: Create .env file for Netlify Build
+        working-directory: performados
+        run: |
+          echo "Creando archivo .env para el build de Netlify..."
+          # Escribimos el secreto en un archivo .env físico
+          # Vite lo leerá automáticamente durante el build de Netlify
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
+          echo "Archivo .env creado."
+
+      - name: Deploy to Netlify
+        working-directory: performados
+        run: |
+          netlify deploy --prod \
+            --dir dist \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_API_TOKEN }}
