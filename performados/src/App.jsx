@@ -15,7 +15,10 @@ import HowToUse from "./pages/HowToUse";
 import CartButton from "./components/CartButton";
 import CartOnSide from "./components/CartOnSide";
 import ProductButton from "./components/AddProductButton";
-import {CreateProductModal} from "./components/CreateProductModal";
+import { CreateProductModal } from "./components/CreateProductModal";
+import AdminButton from "./components/adminButton";
+import AdminUsersView from "./pages/AdminUsersView";
+import UserSalesView from "./pages/userSales";
 
 import Chat from "./components/Chat";
 import { setAuthToken } from "./api";
@@ -86,8 +89,8 @@ function App() {
     }
   });
 
-    const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
-
+  const [isCreateProductModalOpen, setIsCreateProductModalOpen] =
+    useState(false);
 
   useEffect(() => {
     try {
@@ -138,17 +141,15 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-
         <ProductButton
           setterCreateProductModalOpen={setIsCreateProductModalOpen}
           isLogged={!!currentUser}
         />
-        
+
         <CreateProductModal
           isOpen={isCreateProductModalOpen}
           onClose={() => setIsCreateProductModalOpen(false)}
         />
-
 
         <CartButton
           setterCartOpen={setIsCartOpen}
@@ -174,6 +175,8 @@ function App() {
           currentUser={currentUser}
           setCurrentUser={setCurrentUser}
         />
+        {currentUser && currentUser.role === "admin" && <AdminButton />}
+
         {currentUser && (
           <Chat
             users={users}
@@ -265,6 +268,14 @@ function App() {
                 token={token}
               />
             }
+          />
+          <Route
+            path="/admin-users"
+            element={<AdminUsersView currentUser={currentUser} token={token} />}
+          />
+          <Route
+            path="/admin-users/:id"
+            element={<UserSalesView currentUser={currentUser} token={token} />}
           />
 
           <Route path="/howtouse" element={<HowToUse />} />
