@@ -20,7 +20,7 @@ import AdminButton from "./components/adminButton";
 import AdminUsersView from "./pages/AdminUsersView";
 import UserSalesView from "./pages/userSales";
 
-import Chat from "./components/Chat";
+import Chat from "./components/ChatSocket";
 import { setAuthToken } from "./api";
 function App() {
   const items = [
@@ -183,6 +183,7 @@ function App() {
             currentUser={currentUser}
             messages={messages}
             setMessages={setMessages}
+            token={token}
           />
         )}
 
