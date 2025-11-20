@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+const URL_API = import.meta.env.VITE_API_URL;
 
 function CartOnSide({
   isOpen,
@@ -16,6 +18,20 @@ function CartOnSide({
       0
     );
     return total.toLocaleString("es-CL") + " CLP";
+  };
+
+  const deleteFromCart = async (productId) => {
+    try {
+      const response = await axios.delete(
+        `${URL_API}/cart/products/${productId}`,
+        {
+          data: { userId: JSON.parse(localStorage.getItem("currentUser")).id },
+        }
+      );
+      console.log("Producto eliminado del carrito:", response.data);
+    } catch (error) {
+      console.error("Error al eliminar el producto del carrito:", error);
+    }
   };
 
   return (
@@ -86,11 +102,12 @@ function CartOnSide({
                     </p>
                   </div>
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       setCartList((prevCart) =>
                         prevCart.filter((cartItem) => cartItem.id !== item.id)
-                      )
-                    }
+                      );
+                      deleteFromCart(item.id);
+                    }}
                     className="text-red-500 hover:text-red-700 hover:cursor-pointer"
                   >
                     Eliminar
