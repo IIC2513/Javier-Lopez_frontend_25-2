@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 const URL_API = import.meta.env.VITE_API_URL;
+import { useNavigate } from "react-router-dom";
 
 function CartOnSide({
   isOpen,
@@ -10,7 +11,7 @@ function CartOnSide({
   setterCartOpen,
 }) {
   const showCart = isOpen && isLogged;
-
+  const navigate = useNavigate();
   const totalPrice = () => {
     const total = cartList.reduce(
       (acc, item) =>
@@ -133,18 +134,13 @@ function CartOnSide({
                   className="text-lg font-bold text-[#2e5b61]"
                   style={{ fontFamily: "sora, sans-serif" }}
                 >
-                  Total: ${totalPrice()}
+                  Total: $ {totalPrice()}
                 </span>
               </div>
               <button
                 onClick={() => {
-                  if (cartList.some((item) => item.id === 28)) {
-                    window.location.href =
-                      "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-                  } else {
-                    window.location.href =
-                      "https://www.youtube.com/watch?v=vNhs9CSI0Vc";
-                  }
+                  navigate("/summary");
+                  setterCartOpen(false);
                 }}
                 className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
               >

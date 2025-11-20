@@ -19,6 +19,7 @@ import { CreateProductModal } from "./components/CreateProductModal";
 import AdminButton from "./components/adminButton";
 import AdminUsersView from "./pages/AdminUsersView";
 import UserSalesView from "./pages/userSales";
+import Summary from "./pages/Summary";
 const URL_API = import.meta.env.VITE_API_URL;
 import Chat from "./components/Chat";
 import { setAuthToken } from "./api";
@@ -293,7 +294,7 @@ function App() {
             path="/admin-users/:id"
             element={<UserSalesView currentUser={currentUser} token={token} />}
           />
-
+          <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
         </Routes>
       </div>
