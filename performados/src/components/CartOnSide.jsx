@@ -21,6 +21,21 @@ function CartOnSide({
     return total.toLocaleString("es-CL") + " CLP";
   };
 
+  const addMore = (productId, quantity) => async () => {
+    try {
+      const response = await axios.post(
+        `${URL_API}/cart/products/${productId}`,
+        {
+          userId: JSON.parse(localStorage.getItem("currentUser")).id,
+          quantity: quantity,
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al añadir el producto al carrito:", error);
+    }
+  };
+
   const deleteFromCart = async (productId) => {
     try {
       const response = await axios.delete(
@@ -95,9 +110,17 @@ function CartOnSide({
                     <p className="text-sm pt-1 font-medium text-gray-600">
                       ${item.price}
                     </p>
-                    <p className="text-xs pt-1 text-gray-600">
-                      Cantidad: {item.CartItem?.quantity || item.quantity}
-                    </p>
+                    <div className="flex">
+                      <p className="text-xs pt-1 text-gray-600">
+                        Cantidad: {item.CartItem?.quantity || item.quantity}
+                      </p>
+                      <button
+                        onClick={addMore(item.id, 1)}
+                        className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#2f5b61] px-1 rounded-md"
+                      >
+                        +
+                      </button>
+                    </div>
                     <p className="text-xs pt-1 text-gray-500">
                       stock: {item.stock}
                     </p>
