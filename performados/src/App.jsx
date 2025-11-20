@@ -19,7 +19,8 @@ import { CreateProductModal } from "./components/CreateProductModal";
 import AdminButton from "./components/adminButton";
 import AdminUsersView from "./pages/AdminUsersView";
 import UserSalesView from "./pages/userSales";
-
+import Summary from "./pages/Summary";
+const URL_API = import.meta.env.VITE_API_URL;
 import Chat from "./components/Chat";
 import { setAuthToken } from "./api";
 function App() {
@@ -108,6 +109,18 @@ function App() {
     return localStorage.getItem("token");
   });
 
+  const fetchCart = async (currentID) => {
+    const response = await fetch(`${URL_API}/cart/users/${currentID}`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw new Error("Error fetching cart data");
+    }
+    const data = await response.json();
+    console.log("Fetched cart data:", data.cart.Products);
+    setCartList(data.cart.Products || []);
+  };
+
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -115,8 +128,12 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      fetchCart(currentUser.id).catch((error) =>
+        console.error("Error fetching cart:", error)
+      );
     } else {
       localStorage.removeItem("currentUser");
+      localStorage.removeItem("shoppingCart");
     }
   }, [currentUser]);
 
@@ -277,7 +294,7 @@ function App() {
             path="/admin-users/:id"
             element={<UserSalesView currentUser={currentUser} token={token} />}
           />
-
+          <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
         </Routes>
       </div>
