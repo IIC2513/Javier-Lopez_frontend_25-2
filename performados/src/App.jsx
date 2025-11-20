@@ -31,11 +31,11 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products/matcha-days" },
         {
           label: "Gana tu primer concurso ",
           ariaLabel: "PlaceHolder",
-          href: "/products",
+          href: "/products/primer-concurso",
         },
       ],
     },
@@ -61,6 +61,8 @@ function App() {
         { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
         { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
         { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
+        { label: "Matcha Days", href: "/products/matcha-days" }, 
+        { label: "Gana tu primer concurso", href: "/products/concurso" },
       ],
     },
   ];
@@ -82,7 +84,6 @@ function App() {
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
-      // Si hay algo guardado, lo parseamos. Si no, devolvemos un array vacío.
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
@@ -283,6 +284,16 @@ function App() {
                 users={users}
                 setUsers={setUsers}
                 token={token}
+              />
+            }
+          />
+          <Route
+            path="/products/:categoryName"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
               />
             }
           />
