@@ -17,8 +17,8 @@ const categories = {
 };
 
 const SPECIAL_COLLECTIONS = {
-  "matcha-days": [],
-  "primer-concurso": []
+  "matcha-days": [3,1,12,13,11],
+  "primer-concurso": [2,6,14,16,11,4]
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -107,7 +107,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
            if (Number(product.categoryId) !== Number(catId)) return false;
         }
       }
-      
+
       // Resto de filtros (Color, Precio, etc.) - Estos siguen funcionando igual
       if (selectedName) {
         const q = String(selectedName).toLowerCase();
