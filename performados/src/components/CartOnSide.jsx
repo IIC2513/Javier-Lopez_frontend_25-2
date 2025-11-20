@@ -10,12 +10,12 @@ function CartOnSide({
   const showCart = isOpen && isLogged;
 
   const totalPrice = () => {
-    console.log("Calculating total price...");
-    console.log(cartList);
-    return cartList.reduce(
-      (acc, item) => acc + item.price * item.CartItem?.quantity,
+    const total = cartList.reduce(
+      (acc, item) =>
+        acc + item.price * (item.CartItem?.quantity || item.quantity || 1),
       0
     );
+    return total.toLocaleString("es-CL") + " CLP";
   };
 
   return (

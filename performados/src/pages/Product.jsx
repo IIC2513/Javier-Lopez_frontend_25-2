@@ -80,6 +80,7 @@ function Product({
         image,
         color,
         quantity: 1,
+        stock: stock,
       };
       return [...prevCart, productToAdd];
     });
