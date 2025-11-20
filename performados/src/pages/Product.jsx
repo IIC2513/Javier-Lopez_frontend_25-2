@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const URL_API = import.meta.env.VITE_API_URL;
 
 const CloseIcon = () => (
   <svg
@@ -54,7 +55,23 @@ function Product({
   console.log("Current User ID:", currentUser.id);
   console.log("Product Owner ID:", OwnerId);
 
+  const addToCart = async (productId) => {
+    try {
+      const response = await axios.post(
+        `${URL_API}/cart/products/${productId}`,
+        {
+          userId: currentUser.id,
+          quantity: 1,
+        }
+      );
+      console.log("Producto añadido al carrito:", response.data);
+    } catch (error) {
+      console.error("Error al añadir el producto al carrito:", error);
+    }
+  };
+
   const handleAddToCart = () => {
+    addToCart(id);
     setCartList((prevCart) => {
       const productToAdd = {
         id,
@@ -77,10 +94,6 @@ function Product({
 
   const URL_API = import.meta.env.VITE_API_URL;
 
-  const handleEditProduct = () => {
-    // Lógica para editar el producto
-  };
-
   const handleDeleteProduct = async () => {
     if (!window.confirm("¿Estás seguro de que deseas eliminar este producto?"))
       return;
@@ -92,7 +105,6 @@ function Product({
       }
       alert("Producto eliminado exitosamente");
       setIsProductOpen(false);
-      // Aquí podrías recargar la lista de productos si es necesario
       window.location.reload();
     } catch (error) {
       alert(

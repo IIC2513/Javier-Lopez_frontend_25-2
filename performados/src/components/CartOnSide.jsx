@@ -10,7 +10,12 @@ function CartOnSide({
   const showCart = isOpen && isLogged;
 
   const totalPrice = () => {
-    return cartList.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    console.log("Calculating total price...");
+    console.log(cartList);
+    return cartList.reduce(
+      (acc, item) => acc + item.price * item.CartItem?.quantity,
+      0
+    );
   };
 
   return (
@@ -74,7 +79,10 @@ function CartOnSide({
                       ${item.price}
                     </p>
                     <p className="text-xs pt-1 text-gray-600">
-                      Cantidad: {item.quantity}
+                      Cantidad: {item.CartItem?.quantity || item.quantity}
+                    </p>
+                    <p className="text-xs pt-1 text-gray-500">
+                      stock: {item.stock}
                     </p>
                   </div>
                   <button
