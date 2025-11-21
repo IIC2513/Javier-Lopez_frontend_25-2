@@ -51,9 +51,7 @@ function Product({
 }) {
   const isInCart = cartList.some((item) => item.id === id);
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-  const isOwner = currentUser.id === OwnerId;
-  console.log("Current User ID:", currentUser.id);
-  console.log("Product Owner ID:", OwnerId);
+  const isOwner = currentUser && currentUser.id === OwnerId;
 
   const verifyColor = (color) => {
     return colorThemes[color] ? color : "default";
