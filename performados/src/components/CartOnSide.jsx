@@ -145,7 +145,10 @@ function CartOnSide({
         <div className="p-4 border-t border-gray-300">
           {cartList.length === 0 ? (
             <button
-              onClick={() => setterCartOpen(false)}
+              onClick={() => {
+                setterCartOpen(false);
+                navigate("/products");
+              }}
               className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
             >
               Añadir Productos
