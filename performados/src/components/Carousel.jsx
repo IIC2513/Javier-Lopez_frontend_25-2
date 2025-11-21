@@ -3,12 +3,13 @@ import matcha from "../assets/matcha.png";
 import libro from "../assets/libro.png";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue } from "framer-motion";
+import { motion, useMotionValue, AnimatePresence } from "framer-motion";
 import AnimatedContent from "./animacion";
 import CircleRevealStyle from "./circulito";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// Datos por defecto del carrusel
 const DEFAULT_ITEMS = [
     {
         title: "TOTE BAG",
@@ -25,6 +26,7 @@ const DEFAULT_ITEMS = [
         offsetY: "-10vh",
         color: "#FCA41D",
         textColor: "#2F5B61",
+        starColor: "#cc8417" // Color de las estrellas más oscuro
     },
     {
         title: "MATCHA LATTE",
@@ -41,6 +43,7 @@ const DEFAULT_ITEMS = [
         offsetY: "-10vh",
         color: "#839243",
         textColor: "#FFFFFF",
+        starColor: "#6a7635" // Color de las estrellas más oscuro
     },
     {
         title: "LITERATURA",
@@ -57,6 +60,7 @@ const DEFAULT_ITEMS = [
         offsetY: "-10vh",
         color: "#fd538d",
         textColor: "#FFFFFF",
+        starColor: "#c9426f" // Color de las estrellas más oscuro
     },
 ];
 
@@ -69,6 +73,32 @@ const usePrevious = (value) => {
     }, [value]);
     return ref.current;
 };
+
+// Componente para las estrellas
+const Star = ({ color, style, delay }) => (
+  <motion.div
+    initial={{ scale: 1, opacity: 0, x: 0, y: 0 }}
+    animate={{ scale: 3, opacity: 1, ...style }}
+    exit={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+    transition={{ 
+      duration: 0.8,
+      delay: delay,
+      type: "spring",
+      stiffness: 100
+    }}
+    className="absolute z-20"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill={color}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+    </svg>
+  </motion.div>
+);
 
 export default function Carousel({
     items = DEFAULT_ITEMS,
@@ -152,6 +182,13 @@ export default function Carousel({
     const baseBgColor =
         items[prevActiveIndex]?.color || items[items.length - 1].color;
 
+    const starPositions = [
+        { x: -200, y: -170, delay: 0.2, rotate: -15 },
+        { x: 250, y: -190, delay: 0.3, rotate: 10 },
+        { x: -280, y: 80, delay: 0.4, rotate: -18 },
+        { x: 200, y: 160, delay: 0.5, rotate: 6 }
+    ];
+
     return (
         <>
             <CircleRevealStyle />
@@ -192,7 +229,17 @@ export default function Carousel({
 
                                 <div className="flex flex-col items-center text-center px-8 w-full h-full absolute top-0 left-0 z-[10] pt-[30vh] pb-24">
                                     <div className="flex flex-col items-center">
-                                        <div className="h-auto flex items-center justify-center">
+                                        <div className="h-auto flex items-center justify-center relative">
+                                            <AnimatePresence>
+                                                {isCurrentItem && starPositions.map((pos, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        color={item.starColor}
+                                                        style={{ x: pos.x, y: pos.y,rotate: pos.rotate }}
+                                                        delay={pos.delay}
+                                                    />
+                                                ))}
+                                            </AnimatePresence>
                                             <span
                                                 className="flex justify-center items-center cursor-pointer relative z-50"
                                                 style={{
