@@ -239,6 +239,11 @@ const Chat = ({
                             user.image ||
                             "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
                           }
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src =
+                              "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+                          }}
                           alt="Profile"
                           className="w-6 h-6 rounded-full"
                         />
@@ -256,6 +261,11 @@ const Chat = ({
                     currentOtherUser.image ||
                     "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
                   }
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src =
+                      "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+                  }}
                   alt="Profile"
                   className="w-6 h-6 rounded-full"
                 />
