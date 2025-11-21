@@ -4,8 +4,7 @@ import CategoryBar from "../components/CategoryBar";
 import FilterBar from "../components/FilterBar";
 import Product from "./Product";
 import { EditProductModal } from "../components/EditProductModal";
-// ... tus imports de imágenes ...
-import { Link, useParams, useNavigate } from "react-router-dom"; // 1. Importamos Hooks
+import { Link, useParams, useNavigate } from "react-router-dom"; 
 
 const categories = {
   totebags: 1,
@@ -24,13 +23,11 @@ const SPECIAL_COLLECTIONS = {
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Products = ({ setCartList, cartList, setterCartOpen }) => {
-  // 2. Inicializamos Hooks de Router
   const { categoryName } = useParams();
   const navigate = useNavigate();
 
   let [products, setProducts] = useState([]);
   
-  // 3. Inicializamos la categoría basada en la URL actual
   let [selectedCategory, setSelectedCategory] = useState(
     categoryName && categories[categoryName] ? categoryName : null
   );
@@ -44,7 +41,6 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
   let [isProductOpen, setIsProductOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // 4. EFECTO: Escucha cambios en la URL (Ej: click en Carrusel o botones Atrás/Adelante)
   useEffect(() => {
     if (categoryName && (categories[categoryName] || SPECIAL_COLLECTIONS[categoryName])) {
       setSelectedCategory(categoryName);
@@ -53,13 +49,10 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
     }
   }, [categoryName]);
 
-  // 5. FUNCIÓN DE NAVEGACIÓN: Esto reemplaza al setState directo en la CategoryBar
   const handleCategorySelect = (category) => {
     if (category) {
-      // Si seleccionan una categoría, navegamos a la URL correspondiente
       navigate(`/products/${category}`);
     } else {
-      // Si limpian el filtro, volvemos a la base
       navigate("/products");
     }
   };
@@ -89,26 +82,20 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
     setIsEditModalOpen(true);
   };
 
-  // 6. MEMO: Filtramos usando el estado 'products' (más seguro que la variable externa)
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       
-      // 4. LOGICA DE FILTRADO MEJORADA
       if (selectedCategory) {
-        // A) ¿Es una colección especial? (Ej: matcha-days)
         if (SPECIAL_COLLECTIONS[selectedCategory]) {
-           // Solo dejamos pasar los productos cuyo ID esté en la lista
            const allowedIds = SPECIAL_COLLECTIONS[selectedCategory];
            if (!allowedIds.includes(product.id)) return false;
         } 
-        // B) ¿Es una categoría normal? (Ej: totebags)
         else if (categories[selectedCategory]) {
            const catId = categories[selectedCategory];
            if (Number(product.categoryId) !== Number(catId)) return false;
         }
       }
 
-      // Resto de filtros (Color, Precio, etc.) - Estos siguen funcionando igual
       if (selectedName) {
         const q = String(selectedName).toLowerCase();
         if (!String(product.name).toLowerCase().includes(q)) return false;
@@ -130,7 +117,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
       return true;
     });
   }, [
-    products, // Dependencia importante
+    products, 
     selectedCategory,
     selectedName,
     selectedColor,
@@ -169,10 +156,9 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
 
             <div className="flex-col justify-center">
               <div className="Barra-Categorias">
-                {/* 7. Pasamos la función de navegación y la categoría seleccionada */}
                 <CategoryBar 
                     onCategorySelect={handleCategorySelect} 
-                    selectedCategory={selectedCategory} // Para que el botón se pinte como activo
+                    selectedCategory={selectedCategory} 
                 />
               </div>
               <div>

@@ -58,11 +58,10 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Matcha Days", href: "/products/matcha-days" }, 
-        { label: "Gana tu primer concurso", href: "/products/concurso" },
+        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products/labubus" },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products/libros" },
+        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products/accesorios" },
+
       ],
     },
   ];
