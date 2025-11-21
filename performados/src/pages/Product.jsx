@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 const URL_API = import.meta.env.VITE_API_URL;
+import { useNavigate } from "react-router-dom";
 
 const CloseIcon = () => (
   <svg
@@ -52,7 +53,7 @@ function Product({
   const isInCart = cartList.some((item) => item.id === id);
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   const isOwner = currentUser && currentUser.id === OwnerId;
-
+  const navigate = useNavigate();
   const verifyColor = (color) => {
     return colorThemes[color] ? color : "default";
   };
@@ -73,6 +74,11 @@ function Product({
   };
 
   const handleAddToCart = () => {
+    if (!currentUser) {
+      alert("Por favor, inicia sesión para añadir productos al carrito.");
+      navigate("/login");
+      return;
+    }
     addToCart(id);
     setCartList((prevCart) => {
       const productToAdd = {
@@ -192,7 +198,7 @@ function Product({
               onClick={handleAddToCart}
               className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
             >
-              Añadir al Carrito
+              {currentUser ? "Añadir al Carrito" : "Inicia sesión para comprar"}
             </button>
           )}
           <button
