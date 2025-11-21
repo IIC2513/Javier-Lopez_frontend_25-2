@@ -38,12 +38,15 @@ function Summary() {
     return total.toLocaleString("es-CL") + " CLP";
   };
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
     //alert("¡Compra realizada con éxito! (Simulación)");
-    cleanCart();
-    navigate("/my-profile");
-    window.location.reload();
+    const data = await handleBuy();
+    if (data) {
+      cleanCart();
+      navigate("/my-profile");
+      //window.location.reload();
+    }
   };
 
   const cleanCart = async () => {
@@ -61,33 +64,48 @@ function Summary() {
 
   const handleBuy = async () => {
     try {
-      const response = await fetch(`${URL_API}/orders`, {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Por favor, inicia sesion para completar la compra.");
+        return;
+      }
+      const response = await fetch(`${URL_API}/sales`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: currentUser.id,
-          products: cartList.map((item) => ({
+          clientId: currentUser.id,
+          items: cartList.map((item) => ({
             productId: item.id,
             quantity: item.CartItem?.quantity ?? item.quantity ?? 1,
           })),
         }),
       });
 
+      if (response.status === 401) {
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        setCurrentUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("currentUser");
+        navigate("/login");
+        window.location.reload();
+        return null;
+      }
+
       if (!response.ok) {
-        throw new Error("Error creating order");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error creando la venta");
       }
 
       const data = await response.json();
-      console.log("Order created successfully:", data);
-      alert("¡Compra realizada con éxito!");
-      setCartList([]);
-      localStorage.removeItem("shoppingCart");
-      navigate("/products");
+      console.log(">>> Order created successfully:", data);
+      alert("¡¡¡Compra realizada con exito!!!");
+      return data;
     } catch (error) {
       console.error("Error creating order:", error);
-      alert("Error al procesar la compra. Por favor, inténtalo de nuevo.");
+      alert("Error al procesar la compra. Por favor, intentalo de nuevo.");
     }
   };
 
