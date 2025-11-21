@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
 const CloseIcon = () => (
   <svg
@@ -9,40 +9,44 @@ const CloseIcon = () => (
     stroke="currentColor"
     className="w-6 h-6"
   >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
   </svg>
 );
 
 const URL_API = import.meta.env.VITE_API_URL;
 
 export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
-  const [productName, setProductName] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [color, setColor] = useState('');
-  const [condition, setCondition] = useState('new');
-  const [description, setDescription] = useState('');
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [color, setColor] = useState("");
+  const [condition, setCondition] = useState("new");
+  const [description, setDescription] = useState("");
   const [productImage, setProductImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  
+
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fileInputRef = useRef(null);
 
-
   const handleClose = () => {
-    setProductName('');
-    setCategory('');
-    setPrice('');
-    setStock('');
-    setColor('');
-    setCondition('new');
-    setDescription('');
+    setProductName("");
+    setCategory("");
+    setPrice("");
+    setStock("");
+    setColor("");
+    setCondition("new");
+    setDescription("");
     setProductImage(null);
     setImagePreview(null);
-    setErrorMessage(null); 
+    setErrorMessage(null);
     onClose();
+    window.location.reload();
   };
 
   const handleImageChange = (e) => {
@@ -52,12 +56,11 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
     }
-
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null); 
+    setErrorMessage(null);
 
     // Validar que el usuario (ownerId) existe
     // if (!currentUser || !currentUser.id) { // <-- Se mantiene comentado
@@ -65,53 +68,56 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     //   return;
     // }
 
-
     if (productImage) {
-      console.warn("La subida de archivos aún no está implementada. Se enviará 'null' como imagen.");
+      console.warn(
+        "La subida de archivos aún no está implementada. Se enviará 'null' como imagen."
+      );
       // Aquí iría la lógica de subida de imagen.
       // Por ahora, 'image' se envía como null.
     }
 
     const productData = {
       name: productName,
-      categoryId: parseInt(category), 
-      price: parseInt(price),       
-      stock: parseInt(stock),       
+      categoryId: parseInt(category),
+      price: parseInt(price),
+      stock: parseInt(stock),
       color: color,
       condition: condition,
       description: description,
-      
-      ownerId: 1, // Debería ser currentUser.id
-      isOfficial: true, 
-      isActive: true,               
-      image: null // Cambiar esto cuando la subida de archivos esté lista
+
+      ownerId: currentUser.id, // Debería ser currentUser.id
+      isOfficial: true,
+      isActive: true,
+      image: null, // Cambiar esto cuando la subida de archivos esté lista
     };
 
-    console.log("Enviando datos al backend:", JSON.stringify(productData, null, 2));
+    console.log(
+      "Enviando datos al backend:",
+      JSON.stringify(productData, null, 2)
+    );
 
     try {
-
       const response = await fetch(`${URL_API}/products`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(productData),
       });
 
       if (!response.ok) {
-
         const errorData = await response.json();
-        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+        throw new Error(
+          errorData.message || `Error del servidor: ${response.status}`
+        );
       }
 
       const newProduct = await response.json();
       console.log("Producto creado exitosamente:", newProduct);
-      
-      alert("¡Producto creado exitosamente!"); 
-      
-      handleClose(); 
 
+      alert("¡Producto creado exitosamente!");
+
+      handleClose();
     } catch (error) {
       console.error("Error al crear el producto:", error);
       setErrorMessage(error.message);
@@ -120,12 +126,12 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
   useEffect(() => {
     const handleEsc = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         handleClose();
       }
     };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, [handleClose]); // handleClose está memoizada por React (viene de un hook o props)
 
   useEffect(() => {
@@ -140,7 +146,6 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   if (!isOpen) {
     return null;
   }
-
 
   return (
     <div
@@ -164,7 +169,6 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <label
@@ -328,7 +332,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                     src={imagePreview}
                     alt="Vista previa"
                     className="h-48 w-auto object-contain rounded-md"
-                  L
+                    L
                   />
                   <button
                     type="button"
@@ -365,7 +369,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                   <p className="text-sm text-gray-600">
                     <span className="font-medium text-[#2f5b61] hover:text-blue-500">
                       Haz clic para subir
-                    </span>{' '}
+                    </span>{" "}
                     o arrastra y suelta
                   </p>
                   <p className="text-xs text-gray-500">
@@ -375,12 +379,10 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
               )}
             </div>
           </div>
-          
+
           {errorMessage && (
             <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-700">
-                {errorMessage}
-              </p>
+              <p className="text-sm font-medium text-red-700">{errorMessage}</p>
             </div>
           )}
 
