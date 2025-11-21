@@ -1,4 +1,7 @@
 import React from "react";
+import axios from "axios";
+const URL_API = import.meta.env.VITE_API_URL;
+import { useNavigate } from "react-router-dom";
 
 function CartOnSide({
   isOpen,
@@ -8,9 +11,43 @@ function CartOnSide({
   setterCartOpen,
 }) {
   const showCart = isOpen && isLogged;
-
+  const navigate = useNavigate();
   const totalPrice = () => {
-    return cartList.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const total = cartList.reduce(
+      (acc, item) =>
+        acc + item.price * (item.CartItem?.quantity || item.quantity || 1),
+      0
+    );
+    return total.toLocaleString("es-CL") + " CLP";
+  };
+
+  const addMore = (productId, quantity) => async () => {
+    try {
+      const response = await axios.post(
+        `${URL_API}/cart/products/${productId}`,
+        {
+          userId: JSON.parse(localStorage.getItem("currentUser")).id,
+          quantity: quantity,
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al añadir el producto al carrito:", error);
+    }
+  };
+
+  const deleteFromCart = async (productId) => {
+    try {
+      const response = await axios.delete(
+        `${URL_API}/cart/products/${productId}`,
+        {
+          data: { userId: JSON.parse(localStorage.getItem("currentUser")).id },
+        }
+      );
+      console.log("Producto eliminado del carrito:", response.data);
+    } catch (error) {
+      console.error("Error al eliminar el producto del carrito:", error);
+    }
   };
 
   return (
@@ -73,16 +110,28 @@ function CartOnSide({
                     <p className="text-sm pt-1 font-medium text-gray-600">
                       ${item.price}
                     </p>
-                    <p className="text-xs pt-1 text-gray-600">
-                      Cantidad: {item.quantity}
+                    <div className="flex">
+                      <p className="text-xs pt-1 text-gray-600">
+                        Cantidad: {item.CartItem?.quantity || item.quantity}
+                      </p>
+                      <button
+                        onClick={addMore(item.id, 1)}
+                        className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#2f5b61] px-1 rounded-md"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-xs pt-1 text-gray-500">
+                      stock: {item.stock}
                     </p>
                   </div>
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       setCartList((prevCart) =>
                         prevCart.filter((cartItem) => cartItem.id !== item.id)
-                      )
-                    }
+                      );
+                      deleteFromCart(item.id);
+                    }}
                     className="text-red-500 hover:text-red-700 hover:cursor-pointer"
                   >
                     Eliminar
@@ -108,18 +157,13 @@ function CartOnSide({
                   className="text-lg font-bold text-[#2e5b61]"
                   style={{ fontFamily: "sora, sans-serif" }}
                 >
-                  Total: ${totalPrice()}
+                  Total: $ {totalPrice()}
                 </span>
               </div>
               <button
                 onClick={() => {
-                  if (cartList.some((item) => item.id === 28)) {
-                    window.location.href =
-                      "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-                  } else {
-                    window.location.href =
-                      "https://www.youtube.com/watch?v=vNhs9CSI0Vc";
-                  }
+                  navigate("/summary");
+                  setterCartOpen(false);
                 }}
                 className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
               >
