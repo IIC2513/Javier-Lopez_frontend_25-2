@@ -4,6 +4,7 @@ import FeedbackModal from "../components/FeedbackModal";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import CreateReviewModal from "../components/CreateReviewModal";
+import Seller from "./Seller";
 const URL_API = import.meta.env.VITE_API_URL;
 
 const CloseIcon = () => (
@@ -57,7 +58,6 @@ function Product({
   const [reviews, setReviews] = useState([]);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [sellerModalOpen, setSellerModalOpen] = useState(false);
-  const [sellerReviews, setSellerReviews] = useState([]);
 
   const [feedback, setFeedback] = useState({
     isOpen: false,
@@ -71,20 +71,9 @@ function Product({
     return colorThemes[colorName] ? colorName : "default";
   };
 
-  // LOGICA DE RESEÑAS VENDEDOR---
-  const fetchSellerReviews = async () => {
-    try {
-      const response = await axios.get(
-        `${URL_API}/userreviews/user/reviewed/${OwnerId}`
-      );
-      if (response.status !== 200) {
-        throw new Error("Error al obtener las reseñas del vendedor");
-      }
-      console.log("Reseñas del vendedor:", response.data);
-      setSellerReviews(response.data);
-    } catch (error) {
-      console.error("Error al obtener las reseñas del vendedor:", error);
-    }
+  // Mostrar modal Seller
+  const handleShowSeller = () => {
+    setSellerModalOpen(true);
   };
 
   // --- LÓGICA DE RESEÑAS ---
@@ -286,8 +275,8 @@ function Product({
               ${price}
             </p>
             <p
-              className="text-l md:text-xl font-semibold text-[#9362bb] mb-4"
-              onClick={() => fetchSellerReviews()}
+              className="text-l md:text-xl font-semibold text-[#9362bb] mb-4 hover:underline hover:cursor-pointer"
+              onClick={handleShowSeller}
               style={{ cursor: "pointer" }}
             >
               Ver al vendedor: {OwnerId}
@@ -363,6 +352,10 @@ function Product({
           </div>
         </div>
       </div>
+
+      {sellerModalOpen && (
+        <Seller sellerId={OwnerId} setIsSellerOpen={setSellerModalOpen} />
+      )}
 
       <ConfirmationModal
         isOpen={showConfirm}
