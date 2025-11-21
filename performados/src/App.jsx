@@ -23,6 +23,7 @@ import Summary from "./pages/Summary";
 const URL_API = import.meta.env.VITE_API_URL;
 import Chat from "./components/Chat";
 import { setAuthToken } from "./api";
+import MyPurchases from "./pages/MyPurchases";
 function App() {
   const items = [
     {
@@ -307,6 +308,17 @@ function App() {
           />
           <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
+
+          <Route 
+          path="/my-purchases" 
+          element={
+              <MyPurchases 
+                currentUser={currentUser} 
+                cartList={cartList}           
+                setCartList={setCartList}     
+                setterCartOpen={setIsCartOpen} 
+              />
+            }/>
         </Routes>
       </div>
     </Router>
