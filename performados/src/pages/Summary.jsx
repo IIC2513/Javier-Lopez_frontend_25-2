@@ -1,17 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateReviewModal from "../components/CreateReviewModal";
 import Products from "./Products";
+import axios from "axios";
+
+const URL_API = import.meta.env.VITE_API_URL;
 
 function Summary() {
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [productsToReview, setProductsToReview] = useState([]);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const navigate = useNavigate();
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
+      console.log(storedCart);
+      console.log("Stored Cart:", JSON.parse(storedCart));
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
       return [];
     }
+  });
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
   });
 
   const handleInputChange = (e) => {
@@ -28,9 +42,76 @@ function Summary() {
     return total.toLocaleString("es-CL") + " CLP";
   };
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
-    alert("¡Compra realizada con éxito! (Simulación)");
+    //alert("¡Compra realizada con éxito! (Simulación)");
+    const data = await handleBuy();
+    if (data) {
+      cleanCart();
+      setProductsToReview(cartList);
+      setCurrentReviewIndex(0);
+      setReviewModalOpen(true);
+    }
+  };
+
+  const cleanCart = async () => {
+    try {
+      setCartList([]);
+      localStorage.removeItem("shoppingCart");
+      const response = await axios.delete(
+        `${URL_API}/cart/users/${currentUser.id}`
+      );
+      console.log("Carrito limpiado:", response.data);
+    } catch (error) {
+      console.error("Error al limpiar el carrito:", error);
+    }
+  };
+
+  const handleBuy = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Por favor, inicia sesion para completar la compra.");
+        return;
+      }
+      const response = await fetch(`${URL_API}/sales`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          clientId: currentUser.id,
+          items: cartList.map((item) => ({
+            productId: item.id,
+            quantity: item.CartItem?.quantity ?? item.quantity ?? 1,
+          })),
+        }),
+      });
+
+      if (response.status === 401) {
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        setCurrentUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("currentUser");
+        navigate("/login");
+        window.location.reload();
+        return null;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error creando la venta");
+      }
+
+      const data = await response.json();
+      console.log(">>> Order created successfully:", data);
+      //alert("¡¡¡Compra realizada con exito!!!");
+      return data;
+    } catch (error) {
+      console.error("Error creating order:", error);
+      alert("Error al procesar la compra. Por favor, intentalo de nuevo.");
+    }
   };
 
   return (
@@ -38,6 +119,27 @@ function Summary() {
       className="min-h-screen w-full flex items-center justify-center py-45"
       style={{ background: "#2f5b61" }}
     >
+      {reviewModalOpen && productsToReview.length > 0 && (
+        <CreateReviewModal
+          productName={productsToReview[currentReviewIndex]?.name}
+          ModalOpen={reviewModalOpen}
+          productId={productsToReview[currentReviewIndex]?.id}
+          currentUser={currentUser}
+          onClose={() => {
+            //console.log("Products to Review:", productsToReview);
+            //console.log("Current Review Index:", currentReviewIndex);
+            if (currentReviewIndex < productsToReview.length - 1) {
+              setCurrentReviewIndex(currentReviewIndex + 1);
+            } else {
+              setReviewModalOpen(false);
+              setProductsToReview([]);
+              setCurrentReviewIndex(0);
+              navigate("/my-profile");
+              window.location.reload();
+            }
+          }}
+        />
+      )}
       <div
         className="w-[90%] max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#f6efe2] rounded-lg shadow-lg p-8"
         style={{ boxShadow: "0 8px 32px 0 rgba(31, 91, 97, 0.2)" }}

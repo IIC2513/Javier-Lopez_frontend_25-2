@@ -27,10 +27,10 @@ const colorThemes = {
   white: "bg-[#ece2cc]",
   green: "bg-[#839243]",
   gray: "bg-[#fca41d]",
-  blue: "bg-[#2f5b61]",
+  blue: "bg-[#8467bb]",
   black: "bg-[#fca41d]",
-  brown: "bg-[#7b5338]",
-  default: "bg-[#f6efe2]",
+  brown: "bg-[#a07348]",
+  default: "bg-[#2f5b61]",
 };
 
 function Product({
@@ -56,6 +56,9 @@ function Product({
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   const isOwner = currentUser && currentUser.id === OwnerId;
 
+  // --- CONFLICTO RESUELTO: COMBINAMOS AMBAS RAMAS ---
+  
+  // 1. Estados para los Modales (Viene de feature/alert-modals)
   const [feedback, setFeedback] = useState({
     isOpen: false,
     type: "success",
@@ -63,6 +66,12 @@ function Product({
   });
 
   const [showConfirm, setShowConfirm] = useState(false);
+
+  // 2. Función Helper para verificar color (Viene de develop)
+  const verifyColor = (colorName) => {
+    return colorThemes[colorName] ? colorName : "default";
+  };
+  // --------------------------------------------------
 
   const addToCart = async (productId) => {
     if (!currentUser) {
@@ -151,7 +160,10 @@ function Product({
   return (
     <>
       <div
-        className={`fixed inset-0 ${colorThemes[color] || colorThemes.default} flex items-center justify-center z-50 p-4`}
+        // Usamos verifyColor (de develop) porque es más seguro
+        className={`fixed inset-0 ${
+          colorThemes[verifyColor(color)]
+        } flex items-center justify-center z-50 p-4`}
       >
         <div className="bg-[#f6efe2] rounded shadow-2xl max-w-4xl w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
           <button
@@ -180,7 +192,6 @@ function Product({
               ${price}
             </p>
             <p className="text-base text-gray-700 mb-6">{description}</p>
-            
             <div className="border-t border-[#d3c9b6] pt-4 mb-6 space-y-2">
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">
