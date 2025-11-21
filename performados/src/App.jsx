@@ -23,7 +23,7 @@ import UserSalesView from "./pages/userSales";
 import Chat from "./components/ChatSocket";
 import Summary from "./pages/Summary";
 const URL_API = import.meta.env.VITE_API_URL;
-import Chat from "./components/Chat";
+
 import { setAuthToken } from "./api";
 function App() {
   const items = [
