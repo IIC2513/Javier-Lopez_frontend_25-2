@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CreateReviewModal from "../components/CreateReviewModal";
 import Products from "./Products";
 import axios from "axios";
 
 const URL_API = import.meta.env.VITE_API_URL;
 
 function Summary() {
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [productsToReview, setProductsToReview] = useState([]);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const navigate = useNavigate();
   const [cartList, setCartList] = useState(() => {
     try {
@@ -44,8 +48,9 @@ function Summary() {
     const data = await handleBuy();
     if (data) {
       cleanCart();
-      navigate("/my-profile");
-      //window.location.reload();
+      setProductsToReview(cartList);
+      setCurrentReviewIndex(0);
+      setReviewModalOpen(true);
     }
   };
 
@@ -101,7 +106,7 @@ function Summary() {
 
       const data = await response.json();
       console.log(">>> Order created successfully:", data);
-      alert("¡¡¡Compra realizada con exito!!!");
+      //alert("¡¡¡Compra realizada con exito!!!");
       return data;
     } catch (error) {
       console.error("Error creating order:", error);
@@ -114,6 +119,27 @@ function Summary() {
       className="min-h-screen w-full flex items-center justify-center py-45"
       style={{ background: "#2f5b61" }}
     >
+      {reviewModalOpen && productsToReview.length > 0 && (
+        <CreateReviewModal
+          productName={productsToReview[currentReviewIndex]?.name}
+          ModalOpen={reviewModalOpen}
+          productId={productsToReview[currentReviewIndex]?.id}
+          currentUser={currentUser}
+          onClose={() => {
+            //console.log("Products to Review:", productsToReview);
+            //console.log("Current Review Index:", currentReviewIndex);
+            if (currentReviewIndex < productsToReview.length - 1) {
+              setCurrentReviewIndex(currentReviewIndex + 1);
+            } else {
+              setReviewModalOpen(false);
+              setProductsToReview([]);
+              setCurrentReviewIndex(0);
+              navigate("/my-profile");
+              window.location.reload();
+            }
+          }}
+        />
+      )}
       <div
         className="w-[90%] max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#f6efe2] rounded-lg shadow-lg p-8"
         style={{ boxShadow: "0 8px 32px 0 rgba(31, 91, 97, 0.2)" }}
