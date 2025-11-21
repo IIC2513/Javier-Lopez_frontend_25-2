@@ -187,9 +187,14 @@ function Product({
                   key={review.id}
                   className="border border-gray-300 rounded p-4 mb-4 bg-white"
                 >
-                  <h4 className="font-semibold text-[#26484d]">
-                    {review.title}
-                  </h4>
+                  <div className="flex justify-between items-center">
+                    <h4 className="font-semibold text-[#26484d]">
+                      {review.title}
+                    </h4>
+                    <h4 className="font-normal text-[#26484d] text-right">
+                      By: {review.user.name}
+                    </h4>
+                  </div>
                   <p className="text-yellow-500">
                     {"★".repeat(review.stars)}
                     {"☆".repeat(5 - review.stars)}
