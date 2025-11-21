@@ -32,6 +32,26 @@ function Seller({ sellerId, setIsSellerOpen }) {
     }
   };
 
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("¿Seguro que quieres eliminar esta reseña?")) return;
+    try {
+      await axios.delete(`${URL_API}/userreviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "Reseña eliminada exitosamente.",
+      });
+    } catch (error) {
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message:
+          error.response?.data?.message || "No se pudo eliminar la reseña.",
+      });
+    }
+  };
+
   const fetchSellerReviews = async () => {
     try {
       const response = await axios.get(
@@ -176,6 +196,14 @@ function Seller({ sellerId, setIsSellerOpen }) {
                     {"☆".repeat(5 - review.stars)}
                   </p>
                   <p className="text-gray-700">{review.body}</p>
+                  {review.author?.id === currentUser?.id && (
+                    <button
+                      className="mt-2 px-3 py-1 bg-[#fb2c35] text-white rounded hover:bg-[#d91b23] text-sm"
+                      onClick={() => handleDeleteReview(review.id)}
+                    >
+                      Eliminar
+                    </button>
+                  )}
                 </div>
               ))
             )}
