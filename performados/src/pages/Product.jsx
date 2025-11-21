@@ -24,10 +24,10 @@ const colorThemes = {
   white: "bg-[#ece2cc]",
   green: "bg-[#839243]",
   gray: "bg-[#fca41d]",
-  blue: "bg-[#2f5b61]",
+  blue: "bg-[#8467bb]",
   black: "bg-[#fca41d]",
-  brown: "bg-[#7b5338]",
-  default: "bg-[#f6efe2]",
+  brown: "bg-[#a07348]",
+  default: "bg-[#2f5b61]",
 };
 
 function Product({
@@ -54,6 +54,10 @@ function Product({
   const isOwner = currentUser.id === OwnerId;
   console.log("Current User ID:", currentUser.id);
   console.log("Product Owner ID:", OwnerId);
+
+  const verifyColor = (color) => {
+    return colorThemes[color] ? color : "default";
+  };
 
   const addToCart = async (productId) => {
     try {
@@ -117,7 +121,9 @@ function Product({
 
   return (
     <div
-      className={`fixed inset-0 ${colorThemes[color]} flex items-center justify-center z-50 p-4`}
+      className={`fixed inset-0 ${
+        colorThemes[verifyColor(color)]
+      } flex items-center justify-center z-50 p-4`}
     >
       <div className="bg-[#f6efe2] rounded shadow-2xl max-w-4xl w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
         <button

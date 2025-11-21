@@ -166,6 +166,7 @@ function App() {
         <CreateProductModal
           isOpen={isCreateProductModalOpen}
           onClose={() => setIsCreateProductModalOpen(false)}
+          currentUser={currentUser}
         />
 
         <CartButton
