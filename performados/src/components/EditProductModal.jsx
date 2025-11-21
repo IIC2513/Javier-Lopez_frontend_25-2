@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import FeedbackModal from "./FeedbackModal";
 
 const CloseIcon = () => (
   <svg
@@ -39,6 +40,14 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
 
   const [errorMessage, setErrorMessage] = useState(null);
 
+
+  const [feedback, setFeedback] = useState({
+    isOpen: false,
+    type: "success",
+    message: ""
+  });
+
+
   const fileInputRef = useRef(null);
 
   // Rellenar campos al abrir el modal
@@ -77,13 +86,30 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
     }
   };
 
+  const handleFeedbackClose = () => {
+    setFeedback({ ...feedback, isOpen: false });
+    
+    // Si fue un éxito, cerramos el modal de edición y recargamos la página
+    if (feedback.type === "success") {
+      handleClose();
+      window.location.reload();
+    }
+    // Si fue error, solo se cierra el feedback y el usuario puede seguir editando
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(null);
 
     let imageToSend = product.image;
     if (productImage) {
-      alert("La subida de imagenes aun no esta implementada");
+      // Usamos el feedback modal en lugar de alert normal
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message: "La subida de imágenes aún no está implementada."
+      });
+      return;
     }
 
     const productData = {
@@ -112,12 +138,18 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
         );
       }
 
-      const updatedProduct = await response.json();
-      alert("¡Producto actualizado exitosamente!");
-      handleClose();
-      window.location.reload();
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "¡El producto se actualizó correctamente!"
+      });
+
     } catch (error) {
-      setErrorMessage(error.message);
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message: error.message || "Ocurrió un error al actualizar el producto."
+      });
     }
   };
 
@@ -148,6 +180,7 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
   }
 
   return (
+    <>
     <div
       className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
       onClick={handleClose}
@@ -264,5 +297,12 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
         </form>
       </div>
     </div>
+    <FeedbackModal 
+        isOpen={feedback.isOpen}
+        type={feedback.type}
+        message={feedback.message}
+        onClose={handleFeedbackClose}
+      />
+    </>
   );
 };
