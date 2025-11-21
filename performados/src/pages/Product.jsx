@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 const URL_API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
@@ -54,8 +54,24 @@ function Product({
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   const isOwner = currentUser && currentUser.id === OwnerId;
   const navigate = useNavigate();
+  const [reviews, setReviews] = useState([]);
   const verifyColor = (color) => {
     return colorThemes[color] ? color : "default";
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(
+        `${URL_API}/productreviews/product/${id}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Error al obtener las reseñas del producto");
+      }
+      console.log("Reseñas del producto:", response.data);
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error al obtener las reseñas del producto:", error);
+    }
   };
 
   const addToCart = async (productId) => {
@@ -123,25 +139,66 @@ function Product({
     }
   };
 
+  useEffect(() => {
+    // Fetch reviews or any other data if needed when the component mounts
+    fetchReviews();
+  }, []);
+
   return (
     <div
       className={`fixed inset-0 ${
         colorThemes[verifyColor(color)]
       } flex items-center justify-center z-50 p-4`}
     >
-      <div className="bg-[#f6efe2] rounded shadow-2xl max-w-4xl w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#f6efe2] rounded shadow-2xl max-w-[85%] w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto md:mt-20">
         <button
           className="absolute top-4 right-4 text-[#2e5b61] hover:text-[#1a3a3e] z-10 hover:cursor-pointer"
           onClick={() => setIsProductOpen(false)}
         >
           <CloseIcon />
         </button>
-        <div className="p-8 mt-8 md:p-8 flex items-center justify-center">
+        <div
+          className="p-8 mt-8 md:p-8 flex-col items-center justify-center"
+          style={{ fontFamily: "sora, sans-serif" }}
+        >
           <img
             src={image}
             alt={name}
-            className="w-full h-auto max-h-[60vh] object-contain rounded-md"
+            className="w-full h-auto max-h-[45vh] object-contain rounded-md" // Imagen más pequeña
           />
+          <div
+            className="Reviews"
+            style={{
+              maxHeight: "150px", // Altura máxima para el área de reseñas
+              overflowY: "auto", // Scroll vertical si hay muchas reseñas
+              marginTop: "1rem",
+            }}
+          >
+            <h3 className="text-lg font-semibold text-[#2e5b61] mt-4 mb-2">
+              Reseñas del Producto
+            </h3>
+            {reviews.length === 0 ? (
+              <p className="text-gray-600">
+                No hay reseñas para este producto.
+              </p>
+            ) : (
+              reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="border border-gray-300 rounded p-4 mb-4 bg-white"
+                >
+                  <h4 className="font-semibold text-[#26484d]">
+                    {review.title}
+                  </h4>
+                  <p className="text-yellow-500">
+                    {"★".repeat(review.stars)}
+                    {"☆".repeat(5 - review.stars)}
+                  </p>
+                  <p className="text-gray-700">{review.body}</p>
+                </div>
+              ))
+            )}
+          </div>
         </div>
         <div
           className="p-4 md:p-8 flex flex-col justify-center"
@@ -175,7 +232,7 @@ function Product({
             <>
               <button
                 onClick={openEditModal}
-                className="w-full bg-[#2e5b61] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+                className="w-full bg-[#8467bb] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
                 Editar Producto
               </button>
@@ -189,25 +246,35 @@ function Product({
           ) : isInCart ? (
             <button
               onClick={handleViewCart}
-              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+              className="w-full bg-[#8467bb] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
             >
               Ver en el Carrito
             </button>
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-full bg-[#2e5b61] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+              className="w-full bg-[#8467bb] text-[#f6efe2] py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
             >
               {currentUser ? "Añadir al Carrito" : "Inicia sesión para comprar"}
+            </button>
+          )}
+          {!isOwner && (
+            <button
+              onClick={() => {
+                setIsProductOpen(false);
+              }}
+              className="w-full bg-[#027f47] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            >
+              Dejar una Reseña
             </button>
           )}
           <button
             onClick={() => {
               setIsProductOpen(false);
             }}
-            className="w-full bg-[#6b9ca3] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
+            className="w-full bg-[#2e5b61] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
           >
-            Volver a la Tienda
+            Volver a la Tienda ⏎
           </button>
         </div>
       </div>
