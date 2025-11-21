@@ -3,7 +3,7 @@ import axios from "axios";
 import FeedbackModal from "../components/FeedbackModal";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-
+import CreateReviewModal from "../components/CreateReviewModal";
 const URL_API = import.meta.env.VITE_API_URL;
 
 const CloseIcon = () => (
@@ -55,6 +55,9 @@ function Product({
   const isOwner = currentUser && currentUser.id === OwnerId;
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [sellerModalOpen, setSellerModalOpen] = useState(false);
+  const [sellerReviews, setSellerReviews] = useState([]);
 
   const [feedback, setFeedback] = useState({
     isOpen: false,
@@ -66,6 +69,22 @@ function Product({
   // Función helper para verificar color
   const verifyColor = (colorName) => {
     return colorThemes[colorName] ? colorName : "default";
+  };
+
+  // LOGICA DE RESEÑAS VENDEDOR---
+  const fetchSellerReviews = async () => {
+    try {
+      const response = await axios.get(
+        `${URL_API}/userreviews/user/reviewed/${OwnerId}`
+      );
+      if (response.status !== 200) {
+        throw new Error("Error al obtener las reseñas del vendedor");
+      }
+      console.log("Reseñas del vendedor:", response.data);
+      setSellerReviews(response.data);
+    } catch (error) {
+      console.error("Error al obtener las reseñas del vendedor:", error);
+    }
   };
 
   // --- LÓGICA DE RESEÑAS ---
@@ -185,6 +204,19 @@ function Product({
           colorThemes[verifyColor(color)]
         } flex items-center justify-center z-50 p-4`}
       >
+        {reviewModalOpen && (
+          <CreateReviewModal
+            ModalOpen={reviewModalOpen}
+            onClose={() => {
+              setReviewModalOpen(false);
+              navigate("/my-purchases");
+              window.location.reload();
+            }}
+            productId={id}
+            currentUser={currentUser}
+            productName={name}
+          />
+        )}
         <div className="bg-[#f6efe2] rounded shadow-2xl max-w-[85%] w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto md:mt-20">
           <button
             className="absolute top-4 right-4 text-[#2e5b61] hover:text-[#1a3a3e] z-10 hover:cursor-pointer"
@@ -229,7 +261,7 @@ function Product({
                       <h4 className="font-normal text-[#26484d] text-right">
                         By:{" "}
                         {review.user.id === currentUser?.id
-                          ? "You"
+                          ? "You - press to edit..."
                           : review.user.name}
                       </h4>
                     </div>
@@ -253,6 +285,14 @@ function Product({
             <p className="text-xl md:text-2xl font-semibold text-[#26484d] mb-4">
               ${price}
             </p>
+            <p
+              className="text-l md:text-xl font-semibold text-[#9362bb] mb-4"
+              onClick={() => fetchSellerReviews()}
+              style={{ cursor: "pointer" }}
+            >
+              Ver al vendedor: {OwnerId}
+            </p>
+
             <p className="text-base text-gray-700 mb-6">{description}</p>
             <div className="border-t border-[#d3c9b6] pt-4 mb-6 space-y-2">
               <p className="text-sm text-gray-800">
@@ -305,9 +345,7 @@ function Product({
 
             {!isOwner && (
               <button
-                onClick={() => {
-                  setIsProductOpen(false);
-                }}
+                onClick={() => setReviewModalOpen(true)}
                 className="w-full bg-[#027f47] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
                 Dejar una Reseña
