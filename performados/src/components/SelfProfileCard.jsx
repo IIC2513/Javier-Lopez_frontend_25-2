@@ -11,6 +11,9 @@ const SelfProfileCard = ({ currentUser, setCurrentUser }) => {
     setCurrentUser(null);
     navigate("/");
   };
+  const handlepurchases = () => {
+    navigate("/my-purchases");
+  };
 
   return (
     <div
@@ -49,6 +52,13 @@ const SelfProfileCard = ({ currentUser, setCurrentUser }) => {
           >
             Cerrar sesión
           </button>
+          <button
+            onClick={handlepurchases}
+            className="rounded-lg px-8 py-3 font-sora transition-colors duration-300 bg-[#2F5B61] text-white text-lg hover:opacity-90 w-full sm:w-auto"
+          >
+            Mis compras
+          </button>
+          
         </div>
         <div className="mt-8 text-left">
           <p className="text-lg font-bold my-2 text-[#2F5B61]">
