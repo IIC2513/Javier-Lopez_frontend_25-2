@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import FeedbackModal from "./FeedbackModal";
 
 const CloseIcon = () => (
   <svg
@@ -15,6 +16,9 @@ const CloseIcon = () => (
 
 const URL_API = import.meta.env.VITE_API_URL;
 
+const CLOUD_NAME = "df4lpj4ay"; 
+const UPLOAD_PRESET = "javierlopez_default";
+
 export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   const [productName, setProductName] = useState('');
   const [category, setCategory] = useState('');
@@ -26,6 +30,17 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   const [productImage, setProductImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   
+
+
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const [feedback, setFeedback] = useState({
+    isOpen: false,
+    type: "success",
+    message: ""
+  });
+
+
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fileInputRef = useRef(null);
@@ -45,6 +60,14 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     onClose();
   };
 
+  const handleFeedbackClose = () => {
+    setFeedback({ ...feedback, isOpen: false });
+    if (feedback.type === "success") {
+      handleClose();
+      window.location.reload();
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -52,44 +75,60 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
     }
+  };
 
+
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error("Error al subir imagen a Cloudinary");
+      return data.secure_url; 
+    } catch (error) {
+      console.error("Error subiendo imagen:", error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null); 
 
-    // Validar que el usuario (ownerId) existe
-    // if (!currentUser || !currentUser.id) { // <-- Se mantiene comentado
-    //   setErrorMessage("Error: Debes iniciar sesión para crear un producto.");
-    //   return;
-    // }
-
-
-    if (productImage) {
-      console.warn("La subida de archivos aún no está implementada. Se enviará 'null' como imagen.");
-      // Aquí iría la lógica de subida de imagen.
-      // Por ahora, 'image' se envía como null.
+    if (!currentUser || !currentUser.id) {
+       setFeedback({ isOpen: true, type: "error", message: "Error: Usuario no identificado." });
+       return;
     }
 
-    const productData = {
-      name: productName,
-      categoryId: parseInt(category), 
-      price: parseInt(price),       
-      stock: parseInt(stock),       
-      color: color,
-      condition: condition,
-      description: description,
-      
-      ownerId: 1, // Debería ser currentUser.id
-      isOfficial: true, 
-      isActive: true,               
-      image: null // Cambiar esto cuando la subida de archivos esté lista
-    };
-
-    console.log("Enviando datos al backend:", JSON.stringify(productData, null, 2));
+    setIsUploading(true); 
+    let imageUrl = null;
 
     try {
+      if (productImage) {
+        imageUrl = await uploadImageToCloudinary(productImage);
+      }
+
+      const productData = {
+        name: productName,
+        categoryId: parseInt(category), 
+        price: parseInt(price),       
+        stock: parseInt(stock),       
+        color: color,
+        condition: condition,
+        description: description,
+        ownerId: currentUser.id,
+        isOfficial: true, 
+        isActive: true,               
+        image: imageUrl 
+      };
 
       const response = await fetch(`${URL_API}/products`, {
         method: 'POST',
@@ -100,21 +139,24 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
       });
 
       if (!response.ok) {
-
         const errorData = await response.json();
-        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+        throw new Error(errorData.message || `Error del servidor`);
       }
 
-      const newProduct = await response.json();
-      console.log("Producto creado exitosamente:", newProduct);
-      
-      alert("¡Producto creado exitosamente!"); 
-      
-      handleClose(); 
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "¡Producto creado exitosamente!"
+      });
 
     } catch (error) {
-      console.error("Error al crear el producto:", error);
-      setErrorMessage(error.message);
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message: error.message || "Error al crear producto."
+      });
+    } finally {
+      setIsUploading(false); 
     }
   };
 
@@ -126,10 +168,9 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [handleClose]); // handleClose está memoizada por React (viene de un hook o props)
+  }, [handleClose]); 
 
   useEffect(() => {
-    // Limpiar la URL del objeto cuando el componente se desmonte o la imagen cambie
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -143,6 +184,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
 
   return (
+    <>
     <div
       className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
       onClick={handleClose}
@@ -402,5 +444,12 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
         </form>
       </div>
     </div>
+    <FeedbackModal 
+        isOpen={feedback.isOpen}
+        type={feedback.type}
+        message={feedback.message}
+        onClose={handleFeedbackClose}
+      />
+    </>
   );
 };
