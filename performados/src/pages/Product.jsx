@@ -192,7 +192,10 @@ function Product({
                       {review.title}
                     </h4>
                     <h4 className="font-normal text-[#26484d] text-right">
-                      By: {review.user.name}
+                      By:{" "}
+                      {review.user.id === currentUser.id
+                        ? "You"
+                        : review.user.name}
                     </h4>
                   </div>
                   <p className="text-yellow-500">
