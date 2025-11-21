@@ -19,6 +19,8 @@ import { CreateProductModal } from "./components/CreateProductModal";
 import AdminButton from "./components/adminButton";
 import AdminUsersView from "./pages/AdminUsersView";
 import UserSalesView from "./pages/userSales";
+
+import Chat from "./components/ChatSocket";
 import Summary from "./pages/Summary";
 const URL_API = import.meta.env.VITE_API_URL;
 import Chat from "./components/Chat";
@@ -31,7 +33,11 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products/matcha-days" },
+        {
+          label: "Matcha Days",
+          ariaLabel: "Placeholder",
+          href: "/products/matcha-days",
+        },
         {
           label: "Gana tu primer concurso ",
           ariaLabel: "PlaceHolder",
@@ -58,10 +64,17 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products/labubus" },
+        {
+          label: "Labubus",
+          ariaLabel: "PlaceHolder",
+          href: "/products/labubus",
+        },
         { label: "Libros", ariaLabel: "PlaceHolder", href: "/products/libros" },
-        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products/accesorios" },
-
+        {
+          label: "Accesorios",
+          ariaLabel: "PlaceHolder",
+          href: "/products/accesorios",
+        },
       ],
     },
   ];
@@ -201,6 +214,7 @@ function App() {
             currentUser={currentUser}
             messages={messages}
             setMessages={setMessages}
+            token={token}
           />
         )}
 
