@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import FeedbackModal from "./FeedbackModal";
 
 const CloseIcon = () => (
   <svg
@@ -9,15 +10,15 @@ const CloseIcon = () => (
     stroke="currentColor"
     className="w-6 h-6"
   >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M6 18L18 6M6 6l12 12"
-    />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
   </svg>
 );
 
 const URL_API = import.meta.env.VITE_API_URL;
+
+const CLOUD_NAME = "df4lpj4ay"; 
+const UPLOAD_PRESET = "javierlopez_default";
+
 const categories = {
   totebags: 1,
   labubus: 2,
@@ -37,11 +38,16 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
   const [productImage, setProductImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [feedback, setFeedback] = useState({
+    isOpen: false,
+    type: "success",
+    message: ""
+  });
 
   const fileInputRef = useRef(null);
 
-  // Rellenar campos al abrir el modal
   useEffect(() => {
     if (product && isOpen) {
       setProductName(product.name || "");
@@ -64,7 +70,7 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
     setDescription("");
     setProductImage(null);
     setImagePreview(null);
-    setErrorMessage(null);
+    setIsUploading(false);
     onClose();
   };
 
@@ -77,77 +83,102 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage(null);
-
-    let imageToSend = product.image;
-    if (productImage) {
-      alert("La subida de imagenes aun no esta implementada");
-    }
-
-    const productData = {
-      name: productName,
-      categoryId: parseInt(category),
-      price: parseInt(price),
-      stock: parseInt(stock),
-      color: color,
-      description: description,
-      image: imageToSend,
-    };
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
 
     try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error("Error al subir imagen a Cloudinary");
+      return data.secure_url;
+    } catch (error) {
+      console.error("Error subiendo imagen:", error);
+      throw error;
+    }
+  };
+
+  const handleFeedbackClose = () => {
+    setFeedback({ ...feedback, isOpen: false });
+    if (feedback.type === "success") {
+      handleClose();
+      window.location.reload();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
+
+    try {
+      let finalImageUrl = product.image; 
+
+      if (productImage) {
+        finalImageUrl = await uploadImageToCloudinary(productImage);
+      }
+
+      const productData = {
+        name: productName,
+        categoryId: parseInt(category),
+        price: parseInt(price),
+        stock: parseInt(stock),
+        color: color,
+        description: description,
+        image: finalImageUrl 
+      };
+
       const response = await fetch(`${URL_API}/products/${product.id}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json", 
         },
         body: JSON.stringify(productData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(
-          errorData.message || `Error del servidor: ${response.status}`
-        );
+        throw new Error(errorData.message || `Error del servidor: ${response.status}`);
       }
 
-      const updatedProduct = await response.json();
-      alert("¡Producto actualizado exitosamente!");
-      handleClose();
-      window.location.reload();
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "¡El producto se actualizó correctamente!"
+      });
+
     } catch (error) {
-      setErrorMessage(error.message);
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message: error.message || "Ocurrió un error al actualizar."
+      });
+    } finally {
+      setIsUploading(false);
     }
   };
 
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape") {
-        handleClose();
-      }
-    };
+    const handleEsc = (event) => { if (event.key === "Escape") handleClose(); };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [handleClose]);
 
   useEffect(() => {
     return () => {
-      if (
-        imagePreview &&
-        typeof imagePreview === "string" &&
-        imagePreview.startsWith("blob:")
-      ) {
+      if (imagePreview && typeof imagePreview === "string" && imagePreview.startsWith("blob:")) {
         URL.revokeObjectURL(imagePreview);
       }
     };
   }, [imagePreview]);
 
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
 
   return (
+    <>
     <div
       className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
       onClick={handleClose}
@@ -157,112 +188,90 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between pb-4 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Editar Producto
-          </h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
+          <h2 className="text-2xl font-semibold text-gray-800">Editar Producto</h2>
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
             <CloseIcon />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Nombre
-            </label>
-            <input
-              type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Categoría
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            >
+            <label className="block text-sm font-medium text-gray-700">Categoría</label>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
               {Object.entries(categories).map(([name, id]) => (
-                <option key={id} value={id}>
-                  {name.charAt(0).toUpperCase() + name.slice(1)}
-                </option>
+                <option key={id} value={id}>{name.charAt(0).toUpperCase() + name.slice(1)}</option>
               ))}
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Precio
-            </label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+                <label className="block text-sm font-medium text-gray-700">Precio</label>
+                <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
+            </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700">Stock</label>
+                <input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
+            </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Stock
-            </label>
-            <input
-              type="number"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Color
-            </label>
-            <input
-              type="text"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-700">Color</label>
+            <input type="text" value={color} onChange={(e) => setColor(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Descripción
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              required
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-2">Imagen del Producto</label>
+            <div className="flex items-center space-x-6">
+              <div className="shrink-0">
+                {imagePreview ? (
+                  <img className="h-32 w-32 object-cover rounded-lg border border-gray-200" src={imagePreview} alt="Vista previa" />
+                ) : (
+                  <div className="h-32 w-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 bg-gray-50">
+                    <span className="text-xs">Sin imagen</span>
+                  </div>
+                )}
+              </div>
+              <label className="block">
+                <span className="sr-only">Elegir nueva foto</span>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange} 
+                  ref={fileInputRef}
+                  className="block w-full text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                    file:text-sm file:font-semibold file:bg-[#2e5b61] file:text-white
+                    hover:file:bg-[#24484d] cursor-pointer"
+                />
+              </label>
+            </div>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Descripción</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
+          </div>
+          
           <div className="flex flex-col-reverse gap-4 pt-4 border-t border-gray-200 sm:flex-row sm:justify-end sm:gap-3">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:w-auto sm:text-sm"
-            >
+            <button type="button" onClick={handleClose} disabled={isUploading} className="w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:w-auto sm:text-sm">
               Cancelar
             </button>
-            <button
-              type="submit"
-              className="w-full justify-center rounded-md border border-transparent bg-[#2f5b61] px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#2f5b61]/50 sm:w-auto sm:text-sm"
-            >
-              Guardar Cambios
+            <button type="submit" disabled={isUploading} className={`w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm sm:w-auto sm:text-sm ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#2e5b61] hover:bg-opacity-90'}`}>
+              {isUploading ? 'Guardando...' : 'Guardar Cambios'}
             </button>
           </div>
         </form>
       </div>
     </div>
+    <FeedbackModal 
+        isOpen={feedback.isOpen} 
+        type={feedback.type} 
+        message={feedback.message} 
+        onClose={handleFeedbackClose} 
+    />
+    </>
   );
 };

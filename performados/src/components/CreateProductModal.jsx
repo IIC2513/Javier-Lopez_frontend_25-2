@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import FeedbackModal from "./FeedbackModal";
 
 const CloseIcon = () => (
   <svg
@@ -19,6 +20,10 @@ const CloseIcon = () => (
 
 const URL_API = import.meta.env.VITE_API_URL;
 
+// Constantes de Cloudinary (Necesarias para que funcione la subida)
+const CLOUD_NAME = "df4lpj4ay"; 
+const UPLOAD_PRESET = "javierlopez_default";
+
 export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
@@ -30,6 +35,17 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   const [productImage, setProductImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+  // --- ESTADOS DE FEATURE (Para subida y feedback) ---
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const [feedback, setFeedback] = useState({
+    isOpen: false,
+    type: "success",
+    message: ""
+  });
+  // --------------------------------------------------
+
+  // Mantenemos errorMessage por si acaso, aunque usaremos principalmente el modal
   const [errorMessage, setErrorMessage] = useState(null);
 
   const fileInputRef = useRef(null);
@@ -46,7 +62,15 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     setImagePreview(null);
     setErrorMessage(null);
     onClose();
-    window.location.reload();
+    // Eliminamos el reload aquí para dejar que el feedback modal lo maneje al confirmar éxito
+  };
+
+  const handleFeedbackClose = () => {
+    setFeedback({ ...feedback, isOpen: false });
+    if (feedback.type === "success") {
+      handleClose();
+      window.location.reload();
+    }
   };
 
   const handleImageChange = (e) => {
@@ -58,45 +82,63 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage(null);
-
-    // Validar que el usuario (ownerId) existe
-    // if (!currentUser || !currentUser.id) { // <-- Se mantiene comentado
-    //   setErrorMessage("Error: Debes iniciar sesión para crear un producto.");
-    //   return;
-    // }
-
-    if (productImage) {
-      console.warn(
-        "La subida de archivos aún no está implementada. Se enviará 'null' como imagen."
-      );
-      // Aquí iría la lógica de subida de imagen.
-      // Por ahora, 'image' se envía como null.
-    }
-
-    const productData = {
-      name: productName,
-      categoryId: parseInt(category),
-      price: parseInt(price),
-      stock: parseInt(stock),
-      color: color,
-      condition: condition,
-      description: description,
-
-      ownerId: currentUser.id, // Debería ser currentUser.id
-      isOfficial: true,
-      isActive: true,
-      image: null, // Cambiar esto cuando la subida de archivos esté lista
-    };
-
-    console.log(
-      "Enviando datos al backend:",
-      JSON.stringify(productData, null, 2)
-    );
+  // --- LÓGICA DE CLOUDINARY (De feature/alert-modals) ---
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
 
     try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error("Error al subir imagen a Cloudinary");
+      return data.secure_url; 
+    } catch (error) {
+      console.error("Error subiendo imagen:", error);
+      throw error;
+    }
+  };
+
+  // --- SUBMIT AVANZADO (De feature/alert-modals) ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!currentUser || !currentUser.id) {
+       setFeedback({ isOpen: true, type: "error", message: "Error: Usuario no identificado." });
+       return;
+    }
+
+    setIsUploading(true); 
+    let imageUrl = null;
+
+    try {
+      // 1. Subir imagen si existe
+      if (productImage) {
+        imageUrl = await uploadImageToCloudinary(productImage);
+      }
+
+      // 2. Preparar datos
+      const productData = {
+        name: productName,
+        categoryId: parseInt(category), 
+        price: parseInt(price),       
+        stock: parseInt(stock),       
+        color: color,
+        condition: condition,
+        description: description,
+        ownerId: currentUser.id,
+        isOfficial: true, 
+        isActive: true,               
+        image: imageUrl 
+      };
+
+      // 3. Guardar en Backend
       const response = await fetch(`${URL_API}/products`, {
         method: "POST",
         headers: {
@@ -107,20 +149,24 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(
-          errorData.message || `Error del servidor: ${response.status}`
-        );
+        throw new Error(errorData.message || `Error del servidor`);
       }
 
-      const newProduct = await response.json();
-      console.log("Producto creado exitosamente:", newProduct);
+      // 4. Feedback Exitoso
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "¡Producto creado exitosamente!"
+      });
 
-      alert("¡Producto creado exitosamente!");
-
-      handleClose();
     } catch (error) {
-      console.error("Error al crear el producto:", error);
-      setErrorMessage(error.message);
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message: error.message || "Error al crear producto."
+      });
+    } finally {
+      setIsUploading(false); 
     }
   };
 
@@ -130,12 +176,11 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
         handleClose();
       }
     };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, [handleClose]); // handleClose está memoizada por React (viene de un hook o props)
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [handleClose]); 
 
   useEffect(() => {
-    // Limpiar la URL del objeto cuando el componente se desmonte o la imagen cambie
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -148,6 +193,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
   }
 
   return (
+    <>
     <div
       className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
       onClick={handleClose}
@@ -311,6 +357,7 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
             ></textarea>
           </div>
 
+          {/* SECCION IMAGEN */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Imagen del Producto
@@ -332,7 +379,6 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
                     src={imagePreview}
                     alt="Vista previa"
                     className="h-48 w-auto object-contain rounded-md"
-                    L
                   />
                   <button
                     type="button"
@@ -380,29 +426,34 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
             </div>
           </div>
 
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-700">{errorMessage}</p>
-            </div>
-          )}
-
+          {/* BOTONES */}
           <div className="flex flex-col-reverse gap-4 pt-4 border-t border-gray-200 sm:flex-row sm:justify-end sm:gap-3">
             <button
               type="button"
               onClick={handleClose}
+              disabled={isUploading}
               className="w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:w-auto sm:text-sm"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="w-full justify-center rounded-md border border-transparent bg-[#2f5b61] px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#2f5b61]/50 sm:w-auto sm:text-sm"
+              disabled={isUploading}
+              className={`w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm sm:w-auto sm:text-sm
+                ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#2e5b61] hover:bg-[#24484d]'}`}
             >
-              Subir Producto
+              {isUploading ? 'Subiendo...' : 'Subir Producto'}
             </button>
           </div>
         </form>
       </div>
     </div>
+    <FeedbackModal 
+      isOpen={feedback.isOpen}
+      type={feedback.type}
+      message={feedback.message}
+      onClose={handleFeedbackClose}
+    />
+    </>
   );
 };
