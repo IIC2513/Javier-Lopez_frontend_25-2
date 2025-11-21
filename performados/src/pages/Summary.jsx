@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Products from "./Products";
+import axios from "axios";
+
+const URL_API = import.meta.env.VITE_API_URL;
 
 function Summary() {
   const navigate = useNavigate();
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
+      console.log(storedCart);
+      console.log("Stored Cart:", JSON.parse(storedCart));
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
       return [];
     }
+  });
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
   });
 
   const handleInputChange = (e) => {
@@ -30,7 +40,55 @@ function Summary() {
 
   const handleCheckout = (e) => {
     e.preventDefault();
-    alert("¡Compra realizada con éxito! (Simulación)");
+    //alert("¡Compra realizada con éxito! (Simulación)");
+    cleanCart();
+    navigate("/my-profile");
+    window.location.reload();
+  };
+
+  const cleanCart = async () => {
+    try {
+      setCartList([]);
+      localStorage.removeItem("shoppingCart");
+      const response = await axios.delete(
+        `${URL_API}/cart/users/${currentUser.id}`
+      );
+      console.log("Carrito limpiado:", response.data);
+    } catch (error) {
+      console.error("Error al limpiar el carrito:", error);
+    }
+  };
+
+  const handleBuy = async () => {
+    try {
+      const response = await fetch(`${URL_API}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          products: cartList.map((item) => ({
+            productId: item.id,
+            quantity: item.CartItem?.quantity ?? item.quantity ?? 1,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error creating order");
+      }
+
+      const data = await response.json();
+      console.log("Order created successfully:", data);
+      alert("¡Compra realizada con éxito!");
+      setCartList([]);
+      localStorage.removeItem("shoppingCart");
+      navigate("/products");
+    } catch (error) {
+      console.error("Error creating order:", error);
+      alert("Error al procesar la compra. Por favor, inténtalo de nuevo.");
+    }
   };
 
   return (
