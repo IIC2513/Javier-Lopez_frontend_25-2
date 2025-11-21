@@ -197,12 +197,20 @@ function Seller({ sellerId, setIsSellerOpen }) {
                   </p>
                   <p className="text-gray-700">{review.body}</p>
                   {review.author?.id === currentUser?.id && (
-                    <button
-                      className="mt-2 px-3 py-1 bg-[#fb2c35] text-white rounded hover:bg-[#d91b23] text-sm"
-                      onClick={() => handleDeleteReview(review.id)}
-                    >
-                      Eliminar
-                    </button>
+                    <div>
+                      <button
+                        className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
+                        onClick={() => handleDeleteReview(review.id)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="mt-2 px-3 py-1 bg-[#fb2c35] text-white rounded hover:bg-[#d91b23] text-sm"
+                        onClick={() => handleDeleteReview(review.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   )}
                 </div>
               ))

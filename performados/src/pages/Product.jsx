@@ -116,6 +116,26 @@ function Product({
     }
   };
 
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("¿Seguro que quieres eliminar esta reseña?")) return;
+    try {
+      await axios.delete(`${URL_API}/productreviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "Reseña eliminada exitosamente.",
+      });
+    } catch (error) {
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message:
+          error.response?.data?.message || "No se pudo eliminar la reseña.",
+      });
+    }
+  };
+
   const handleAddToCart = () => {
     if (!currentUser) {
       setFeedback({
@@ -247,10 +267,10 @@ function Product({
                       <h4 className="font-semibold text-[#26484d]">
                         {review.title}
                       </h4>
-                      <h4 className="font-normal text-[#26484d] text-right">
+                      <h4 className="font-normal text-[#26484d] text-right ">
                         By:{" "}
                         {review.user.id === currentUser?.id
-                          ? "You - press to edit..."
+                          ? "You"
                           : review.user.name}
                       </h4>
                     </div>
@@ -259,6 +279,22 @@ function Product({
                       {"☆".repeat(5 - review.stars)}
                     </p>
                     <p className="text-gray-700">{review.body}</p>
+                    {review.user.id === currentUser?.id && (
+                      <div>
+                        <button
+                          className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="mt-2 px-3 py-1 bg-[#fb2c35] text-white rounded hover:bg-[#d91b23] text-sm"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
