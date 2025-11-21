@@ -19,9 +19,11 @@ import { CreateProductModal } from "./components/CreateProductModal";
 import AdminButton from "./components/adminButton";
 import AdminUsersView from "./pages/AdminUsersView";
 import UserSalesView from "./pages/userSales";
+
+import Chat from "./components/ChatSocket";
 import Summary from "./pages/Summary";
 const URL_API = import.meta.env.VITE_API_URL;
-import Chat from "./components/Chat";
+
 import { setAuthToken } from "./api";
 function App() {
   const items = [
@@ -31,11 +33,15 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        {
+          label: "Matcha Days",
+          ariaLabel: "Placeholder",
+          href: "/products/matcha-days",
+        },
         {
           label: "Gana tu primer concurso ",
           ariaLabel: "PlaceHolder",
-          href: "/products",
+          href: "/products/primer-concurso",
         },
       ],
     },
@@ -58,9 +64,17 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
+        {
+          label: "Labubus",
+          ariaLabel: "PlaceHolder",
+          href: "/products/labubus",
+        },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products/libros" },
+        {
+          label: "Accesorios",
+          ariaLabel: "PlaceHolder",
+          href: "/products/accesorios",
+        },
       ],
     },
   ];
@@ -82,7 +96,6 @@ function App() {
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
-      // Si hay algo guardado, lo parseamos. Si no, devolvemos un array vacío.
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
@@ -201,6 +214,7 @@ function App() {
             currentUser={currentUser}
             messages={messages}
             setMessages={setMessages}
+            token={token}
           />
         )}
 
@@ -284,6 +298,16 @@ function App() {
                 users={users}
                 setUsers={setUsers}
                 token={token}
+              />
+            }
+          />
+          <Route
+            path="/products/:categoryName"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
               />
             }
           />
