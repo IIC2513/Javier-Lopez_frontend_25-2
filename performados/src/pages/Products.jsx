@@ -189,7 +189,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
                           {product.name}
                         </h2>
                         <p className=" text-sm sm:text-sm md:text-sm lg:text-sm text-[#2e5b61]" style={{ fontFamily: "sora, sans-serif" }}>
-                          ${product.price}
+                          {product.stock <= 0 ? "Agotado" : `$ ${product.price}`}
                         </p>
                       </div>
                     </div>
