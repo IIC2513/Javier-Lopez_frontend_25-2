@@ -20,6 +20,17 @@ const CloseIcon = () => (
 
 const URL_API = import.meta.env.VITE_API_URL;
 
+const colorOptions = [
+  { value: "pink", label: "Rosado" },
+  { value: "white", label: "Blanco" },
+  { value: "green", label: "Verde" },
+  { value: "gray", label: "Gris" },
+  { value: "blue", label: "Azul" },
+  { value: "black", label: "Negro" },
+  { value: "brown", label: "Café" },
+  { value: "default", label: "Otro" },
+];
+
 // Constantes de Cloudinary (Necesarias para que funcione la subida)
 const CLOUD_NAME = "df4lpj4ay"; 
 const UPLOAD_PRESET = "javierlopez_default";
@@ -309,15 +320,20 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
               >
                 Color
               </label>
-              <input
-                type="text"
+              <select
                 id="color"
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
                 required
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Ej: Rojo, Azul, Negro"
-              />
+              >
+                <option value="" disabled>Selecciona un color</option>
+                {colorOptions.map((col) => (
+                  <option key={col.value} value={col.value}>
+                    {col.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label
