@@ -264,7 +264,7 @@ function Product({
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="border border-gray-300 rounded p-4 mb-4 bg-white"
+                    className="border border-gray-300 rounded p-4 mb-4 bg-[#f2eadd]"
                   >
                     <div className="flex justify-between items-center">
                       <h4 className="font-semibold text-[#26484d]">
@@ -321,10 +321,12 @@ function Product({
               onClick={handleShowSeller}
               style={{ cursor: "pointer" }}
             >
-              Ver al vendedor: {OwnerId}
+              Visitar perfil del vendedor
             </p>
 
-            <p className="text-base text-gray-700 mb-6">{description}</p>
+            <p className="text-base text-gray-700 mb-6">
+              Descripcion: {description}
+            </p>
             <div className="border-t border-[#d3c9b6] pt-4 mb-6 space-y-2">
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">
@@ -368,9 +370,11 @@ function Product({
                 onClick={handleAddToCart}
                 className="w-full bg-[#8467bb] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
-                {currentUser
-                  ? "Añadir al Carrito"
-                  : "Inicia sesión para comprar"}
+                {!currentUser
+                  ? "Inicia sesión para comprar"
+                  : stock <= 0
+                  ? "Producto agotado"
+                  : "Añadir al Carrito"}
               </button>
             )}
 

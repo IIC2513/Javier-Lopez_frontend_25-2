@@ -110,7 +110,7 @@ function Seller({ sellerId, setIsSellerOpen }) {
 
   return (
     <div
-      className="fixed inset-0 bg-[#027f47] flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-[#2e5b61] flex items-center justify-center z-50 p-4"
       style={{ fontFamily: "sora, sans-serif" }}
     >
       {reviewModalOpen && (
@@ -152,7 +152,7 @@ function Seller({ sellerId, setIsSellerOpen }) {
               </p>
               {saleIdForReview ? (
                 <button
-                  className="w-full bg-[#027f47] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
+                  className="w-full bg-[#2e5b61] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
                   onClick={() => setReviewModalOpen(true)}
                 >
                   Reseña al Vendedor
@@ -162,6 +162,15 @@ function Seller({ sellerId, setIsSellerOpen }) {
                   Debes haber comprado a este vendedor para dejar una reseña.
                 </p>
               )}
+              <button
+                className="w-full bg-[#9362bb] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors"
+                onClick={() => {
+                  navigate("/products");
+                  setIsSellerOpen(false);
+                }}
+              >
+                Volver a la tienda
+              </button>
             </>
           ) : (
             <p className="text-gray-600">
@@ -184,7 +193,7 @@ function Seller({ sellerId, setIsSellerOpen }) {
               reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="border border-gray-300 rounded p-4 mb-4 bg-white"
+                  className="border border-gray-300 rounded p-4 mb-4 bg-[#ede6da]"
                 >
                   <div className="flex justify-between items-center">
                     <h4 className="font-semibold text-[#26484d]">
