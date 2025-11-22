@@ -29,12 +29,23 @@ const colorThemes = {
   pink: "bg-[#fd538d]",
   white: "bg-[#ece2cc]",
   green: "bg-[#839243]",
-  gray: "bg-[#fca41d]",
+  gray: "bg-[#7f7d7e]",
   blue: "bg-[#8467bb]",
-  black: "bg-[#fca41d]",
+  black: "bg-[#535152]",
   brown: "bg-[#a07348]",
   default: "bg-[#2f5b61]",
 };
+
+const colorOptions = [
+  { value: "pink", label: "Rosado" },
+  { value: "white", label: "Blanco" },
+  { value: "green", label: "Verde" },
+  { value: "gray", label: "Gris" },
+  { value: "blue", label: "Azul" },
+  { value: "black", label: "Negro" },
+  { value: "brown", label: "Café" },
+  { value: "default", label: "Otro" },
+];
 
 function Product({
   id,
@@ -248,7 +259,7 @@ function Product({
             style={{ fontFamily: "sora, sans-serif" }}
           >
             <img
-              src={image}
+              src={image === null ? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png" : image}
               alt={name}
               className="w-full h-auto max-h-[45vh] object-contain rounded-md"
             />
@@ -343,7 +354,10 @@ function Product({
               </p>
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">Color:</strong>{" "}
-                {color}
+                {colorOptions.find((c) => c.value === verifyColor(color))
+                  ? colorOptions.find((c) => c.value === verifyColor(color))
+                      .label
+                  : "Otro"}
               </p>
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">Stock:</strong>{" "}
