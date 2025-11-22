@@ -26,13 +26,11 @@ jobs:
         working-directory: performados
         run: yarn install
 
-      # - name: Build project with environment variables
-      #   working-directory: performados
-      #   env:
-      #     VITE_API_URL: ${{ secrets.VITE_API_URL }}
-      #   run: |
-      #     echo "Building with API URL: $VITE_API_URL"
-      #     yarn build
+
+      - name: Run ESLint (no bloqueante)
+        working-directory: performados
+        run: |
+          yarn eslint .
 
       - name: Create .env file for Netlify Build
         working-directory: performados
