@@ -41,7 +41,7 @@ const SpotlightCard = ({
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative bg-linear-to-br from-[#2F5B61] via-[#246067] to-[#73568b] overflow-hidden 
+      className={`relative bg-linear-to-br from-[#2F5B61] via-[#246067] to-[#73568b] overflow-auto 
       p-4 sm:p-8 w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-3xl 
       h-64 sm:h-72 rounded-3xl border-2 border-[#966fb6] 
       shadow-xl hover:shadow-2xl 
