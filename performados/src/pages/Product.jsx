@@ -399,7 +399,7 @@ function Product({
               </button>
             )}
 
-            {!isOwner && (
+            {!isOwner && currentUser && (
               <button
                 onClick={() => setReviewModalOpen(true)}
                 className="w-full bg-[#027f47] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
