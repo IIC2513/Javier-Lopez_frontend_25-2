@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import SpotlightCard from "./../components/TeamCard";
-import Estebankiito from "../assets/Estebankiito.JPG";
-import Manguito from "../assets/vicho.JPG";
+import Estebankiito from "../assets/Estebankiito.jpg";
+import Manguito from "../assets/vicho.jpg";
 import Miguel from "../assets/miguel.jpg";
 
 function AboutUs() {
