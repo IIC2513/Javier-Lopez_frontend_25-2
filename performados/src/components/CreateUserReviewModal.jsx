@@ -43,7 +43,7 @@ function CreateUserReviewModal({
         stars,
         body,
       });
-      console.log("Reseña creada:", response.data);
+      //console.log("Reseña creada:", response.data);
       setFeedback({
         isOpen: true,
         type: "success",

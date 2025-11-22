@@ -29,7 +29,7 @@ function CreateReviewModal({
         stars,
         body,
       });
-      console.log("Reseña creada:", response.data);
+      //console.log("Reseña creada:", response.data);
       onClose();
     } catch (error) {
       console.error("Error al crear la reseña:", error);
