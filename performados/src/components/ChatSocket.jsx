@@ -1,325 +1,333 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import io from "socket.io-client";
 import api from "../api";
 
-const Chat = ({
-  users = [],
-  currentUser,
-  messages = [],
-  setMessages,
-  token,
-}) => {
-  const [input, setInput] = useState("");
-  const [openChat, setOpenChat] = useState(false);
-  const [currentOtherUser, setCurrentOtherUser] = useState(null);
-  const [vendors, setVendors] = useState([]);
-  const [currentChatId, setCurrentChatId] = useState(null);
+const URL_API = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const SOCKET_URL = URL_API.replace("/api", "");
+const socket = io.connect(SOCKET_URL);
 
-  const ws = useRef(null);
+const Chat = ({ currentUser, token }) => {
+	const [isOpen, setIsOpen] = useState(false);
+	const [view, setView] = useState("list");
 
-  useEffect(() => {
-    if (!currentUser) return;
-    if (ws.current) return;
+	const [vendors, setVendors] = useState([]);
+	const [currentChatUser, setCurrentChatUser] = useState(null);
+	const [currentChatId, setCurrentChatId] = useState(null);
+	const [messages, setMessages] = useState([]);
+	const [inputText, setInputText] = useState("");
 
-    const wsUrl = import.meta.env.VITE_API_URL.replace(/^http/, "ws");
-    ws.current = new WebSocket(wsUrl);
+	const scrollRef = useRef(null);
+	const [hasNotification, setHasNotification] = useState(false);
 
-    ws.current.onopen = () => {
-      ws.current.send(
-        JSON.stringify({
-          type: "AUTH",
-          userId: currentUser.id,
-        })
-      );
-    };
+	useEffect(() => {
+		if (currentUser && token) {
+			getVendors();
+		}
+	}, [currentUser, token]);
 
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+	useEffect(() => {
+		const handleRefresh = () => {
+			console.log("Actualizando lista de usuarios...");
+			getVendors();
+		};
 
-      if (data.type === "NEW_MESSAGE") {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: data.message.id,
-            content: data.message.content,
-            senderId: data.senderId,
-          },
-        ]);
-      }
-    };
+		socket.on("refresh_user_list", handleRefresh);
 
-    ws.current.onclose = () => console.log("WS cerrado");
-    ws.current.onerror = (e) => console.log("WS error", e);
+		return () => {
+			socket.off("refresh_user_list", handleRefresh);
+		};
+	}, [currentUser, token]);
 
-    return () => {};
-  }, [currentUser]);
+	const getVendors = async () => {
+		try {
+			const [usersRes, chatsRes] = await Promise.all([
+				api.get(`/users`),
+				api.get(`/chats/${currentUser.id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				}),
+			]);
 
-  const handleSend = async () => {
-    if (!currentUser || !currentOtherUser) return;
-    const text = input.trim();
-    if (!text) return;
+			const allUsers = usersRes.data;
+			const myChats = chatsRes.data || [];
 
-    // Ensure we have a chat id
-    let chatId = currentChatId;
-    if (!chatId) {
-      // create chat and set id
-      try {
-        const newChat = await createChat(currentUser.id, currentOtherUser.id);
-        if (newChat && newChat.id) {
-          chatId = newChat.id;
-          setCurrentChatId(chatId);
-        }
-      } catch (err) {
-        console.error("Error creating chat before sending:", err);
-      }
-    }
+			myChats.forEach((chat) => {
+				socket.emit("join_room", chat.id);
+			});
 
-    const payload = {
-      chatId: chatId || null,
-      senderId: currentUser.id,
-      content: text,
-    };
+			const chatPartnerIds = new Set();
+			myChats.forEach((chat) => {
+				if (chat.buyerId === currentUser.id) chatPartnerIds.add(chat.sellerId);
+				if (chat.sellerId === currentUser.id) chatPartnerIds.add(chat.buyerId);
+			});
 
-    setMessages((prev) => [...prev, { ...payload, id: Date.now() }]);
-    setInput("");
+			const availableUsers = allUsers.filter(
+				(user) =>
+					user.id !== currentUser.id &&
+					(user.role === "seller" ||
+						user.role === "admin" ||
+						chatPartnerIds.has(user.id))
+			);
 
-    try {
-      await api.post(
-        "/messages",
-        {
-          chatId: chatId,
-          senderId: currentUser.id,
-          content: text,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-    } catch (error) {
-      console.error("Error sending message to API:", error);
-    }
-  };
-  const getchats = async (currentID) => {
-    try {
-      const response = await api.get(`/chats/${currentID}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching chats:", error);
-      return [];
-    }
-  };
-  const createChat = async (currentUserID, otherUserID) => {
-    try {
-      const response = await api.post(
-        `/chats`,
-        {
-          clientId: currentUserID,
-          SellerId: otherUserID,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error creating chat:", error);
-      return null;
-    }
-  };
+			setVendors(availableUsers);
+		} catch (error) {
+			console.error("Error cargando contactos:", error);
+		}
+	};
 
-  const getVendors = async () => {
-    try {
-      const response = await api.get(`/users`);
-      const chats = await getchats(currentUser.id);
-      const clients = chats.map((chat) => chat.buyerId);
+	const handleSelectUser = async (user) => {
+		try {
+			const chatsRes = await api.get(`/chats/${currentUser.id}`, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
 
-      const vs = response.data.filter(
-        (user) => user.role === "seller" || user.role === "admin"
-      );
-      let set = new Set();
-      for (let c of clients) {
-        set.add(c);
-      }
-      for (let v of vs) {
-        set.add(v.id);
-      }
-      const uniqueVendorIds = Array.from(set);
-      const uniqueVendors = response.data.filter((user) =>
-        uniqueVendorIds.includes(user.id)
-      );
-      setVendors(uniqueVendors);
-      return uniqueVendors;
-    } catch (error) {
-      console.error("Error fetching vendors:", error);
-      setVendors([]);
-      return [];
-    }
-  };
-  const getChatMessages = async (chatId) => {
-    try {
-      const response = await api.get(`/messages/${chatId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      return [];
-    }
-  };
+			let chat = chatsRes.data.find(
+				(c) =>
+					(c.buyerId === currentUser.id && c.sellerId === user.id) ||
+					(c.buyerId === user.id && c.sellerId === currentUser.id)
+			);
 
-  // load vendors when component mounts or when token changes
-  useEffect(() => {
-    getVendors();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+			if (!chat) {
+				const newChatRes = await api.post(
+					`/chats`,
+					{
+						clientId: currentUser.id,
+						SellerId: user.id,
+					},
+					{ headers: { Authorization: `Bearer ${token}` } }
+				);
+				chat = newChatRes.data;
+			}
 
-  return (
-    <div className="fixed bottom-4 left-4 z-50">
-      {!openChat && (
-        <button
-          className="bg-[#2f5b61] text-[#f6efe2] px-4 py-2 rounded"
-          onClick={() => setOpenChat(true)}
-        >
-          Abrir Chat
-        </button>
-      )}
+			if (chat && chat.id) {
+				setCurrentChatId(chat.id);
+				setCurrentChatUser(user);
+				const msgsRes = await api.get(`/messages/${chat.id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				setMessages(msgsRes.data);
 
-      {openChat && (
-        <div className="bg-[#f6efe2] p-4 border border-[#2f5b61] rounded shadow-lg w-80 h-96 flex flex-col">
-          {!currentOtherUser ? (
-            <div className="mb-4">
-              <div className="flex items-center justify-between gap-2 flex-row">
-                <h2 className="text-lg font-bold mb-2 text-[#2f5b61]">
-                  Selecciona un usuario
-                </h2>
-                <button
-                  className="text-sm text-[#2f5b61] hover:underline"
-                  onClick={() => setOpenChat(false)}
-                >
-                  Cerrar
-                </button>
-              </div>
-              <ul>
-                {vendors
-                  .filter((user) => currentUser && user.id !== currentUser.id)
-                  .map((user) => (
-                    <li
-                      key={user.id}
-                      onClick={() => {
-                        (async () => {
-                          try {
-                            const chats = await getchats(currentUser.id);
-                            let chat = chats.find(
-                              (c) =>
-                                (c.buyerId === currentUser.id &&
-                                  c.sellerId === user.id) ||
-                                (c.buyerId === user.id &&
-                                  c.sellerId === currentUser.id)
-                            );
-                            if (!chat) {
-                              chat = await createChat(currentUser.id, user.id);
-                            }
-                            if (chat && chat.id) {
-                              const msgs = await getChatMessages(chat.id);
-                              setMessages(msgs);
-                              setCurrentOtherUser(user);
-                              setCurrentChatId(chat.id);
-                            }
-                          } catch (err) {
-                            console.error("Error selecting chat:", err);
-                          }
-                        })();
-                      }}
-                      className={
-                        "cursor-pointer border border-[#2f5b61] p-2 rounded text-[#2f5b61]"
-                      }
-                    >
-                      <div className="flex items-center gap-2 flex-row">
-                        <img
-                          src={
-                            user.image ||
-                            "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
-                          }
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src =
-                              "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
-                          }}
-                          alt="Profile"
-                          className="w-6 h-6 rounded-full"
-                        />
-                        {user.name}
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ) : (
-            <>
-              <div className="flex justify-between mb-2">
-                <img
-                  src={
-                    currentOtherUser.image ||
-                    "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
-                  }
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src =
-                      "https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
-                  }}
-                  alt="Profile"
-                  className="w-6 h-6 rounded-full"
-                />
-                <h2 className="font-bold text-[#2f5b61]">
-                  {currentOtherUser.name}
-                </h2>
-                <button
-                  className="text-sm text-[#2f5b61] hover:underline"
-                  onClick={() => setCurrentOtherUser(null)}
-                >
-                  Seleccionar otro chat
-                </button>
-                <button
-                  className="text-sm text-[#2f5b61] hover:underline"
-                  onClick={() => setOpenChat(false)}
-                >
-                  Cerrar
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`p-2 my-2 rounded max-w-[80%] ${
-                      msg.senderId === currentUser.id
-                        ? "bg-[#2f5b61] text-[#f6efe2] self-end ml-auto"
-                        : "bg-[#f6efe2] text-[#2f5b61] border border-[#2f5b61]"
-                    }`}
-                  >
-                    {msg.content}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  className="border border-[#2f5b61] text-[#2f5b61] p-2 rounded w-full"
-                  placeholder={`Enviar mensaje a ${currentOtherUser.name}`}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                />
-                <button
-                  className="bg-[#2f5b61] text-[#f6efe2] px-4 py-2 rounded mt-2 w-full"
-                  onClick={handleSend}
-                >
-                  Enviar
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
+				socket.emit("join_room", chat.id);
+
+				setView("chat");
+			}
+		} catch (error) {
+			console.error("Error al entrar al chat:", error);
+		}
+	};
+
+	useEffect(() => {
+		const handleReceiveMessage = (newMessage) => {
+			console.log("Mensaje recibido. Chat abierto?:", isOpen);
+
+			if (currentChatId && newMessage.chatId === currentChatId) {
+				setMessages((prev) => [...prev, newMessage]);
+			}
+
+			getVendors();
+
+			if (!isOpen) {
+				console.log("!!! ACTIVANDO NOTIFICACIÓN !!!");
+				setHasNotification(true);
+			}
+		};
+
+		socket.on("receive_message", handleReceiveMessage);
+
+		return () => {
+			socket.off("receive_message", handleReceiveMessage);
+		};
+	}, [currentChatId, isOpen, token, currentUser]);
+
+	useEffect(() => {
+		scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages, view]);
+
+	const handleSendMessage = async () => {
+		if (!inputText.trim() || !currentChatId) return;
+
+		const messageData = {
+			chatId: currentChatId,
+			senderId: currentUser.id,
+			content: inputText,
+			createdAt: new Date().toISOString(),
+		};
+		setMessages((prev) => [...prev, messageData]);
+
+		await socket.emit("send_message", { room: currentChatId, ...messageData });
+
+		try {
+			await api.post(
+				"/messages",
+				{
+					chatId: currentChatId,
+					senderId: currentUser.id,
+					content: inputText,
+				},
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+		} catch (error) {
+			console.error("Error guardando mensaje:", error);
+		}
+
+		setInputText("");
+	};
+	if (!currentUser) return null; // No mostrar si no hay login
+
+	return (
+		<div className="fixed bottom-4 left-4 z-50 flex flex-col items-end">
+			{isOpen && (
+				<div className="mb-4 w-80 md:w-96 h-[500px] bg-[#f6efe2] border border-[#2e5b61] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-200">
+					<div className="bg-[#2e5b61] p-4 flex justify-between items-center shadow-md shrink-0">
+						{view === "chat" ? (
+							<div className="flex items-center gap-2">
+								<button
+									onClick={() => setView("list")}
+									className="text-white hover:text-gray-300 mr-2"
+								>
+									←
+								</button>
+								<img
+									src={
+										currentChatUser?.image ||
+										"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
+									}
+									className="w-8 h-8 rounded-full bg-white object-cover"
+								/>
+								<h3 className="text-white font-bold truncate w-32">
+									{currentChatUser?.name}
+								</h3>
+							</div>
+						) : (
+							<h3 className="text-white font-bold font-anton tracking-wide">
+								COMUNIDAD
+							</h3>
+						)}
+
+						<button
+							onClick={() => setIsOpen(false)}
+							className="text-white hover:text-gray-300"
+						>
+							✕
+						</button>
+					</div>
+
+					<div className="flex-1 overflow-y-auto p-4 bg-[#f6efe2]">
+						{view === "list" && (
+							<ul className="space-y-2">
+								{vendors.length === 0 && (
+									<p className="text-center text-gray-500 mt-4">
+										No hay contactos disponibles.
+									</p>
+								)}
+								{vendors.map((user) => (
+									<li
+										key={user.id}
+										onClick={() => handleSelectUser(user)}
+										className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[#d3c9b6] cursor-pointer hover:shadow-md hover:border-[#2e5b61] transition-all"
+									>
+										<img
+											src={
+												user.image ||
+												"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
+											}
+											className="w-10 h-10 rounded-full object-cover bg-gray-200"
+											onError={(e) => {
+												e.currentTarget.src =
+													"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+											}}
+										/>
+										<div>
+											<p className="font-bold text-[#2e5b61]">{user.name}</p>
+											<p className="text-xs text-gray-500 capitalize">
+												{user.role}
+											</p>
+										</div>
+									</li>
+								))}
+							</ul>
+						)}
+
+						{view === "chat" && (
+							<div className="flex flex-col gap-3">
+								{messages.map((msg, idx) => {
+									const isMe = msg.senderId === currentUser.id;
+									return (
+										<div
+											key={idx}
+											className={`flex flex-col ${
+												isMe ? "items-end" : "items-start"
+											}`}
+										>
+											<div
+												className={`px-4 py-2 rounded-xl text-sm shadow-sm max-w-[85%] break-words ${
+													isMe
+														? "bg-[#2e5b61] text-white rounded-br-none"
+														: "bg-white text-[#2e5b61] border border-[#d3c9b6] rounded-bl-none"
+												}`}
+											>
+												{msg.content}
+											</div>
+										</div>
+									);
+								})}
+								<div ref={scrollRef} />
+							</div>
+						)}
+					</div>
+
+					{view === "chat" && (
+						<div className="p-3 bg-white border-t border-[#d3c9b6] flex gap-2 shrink-0">
+							<input
+								type="text"
+								value={inputText}
+								onChange={(e) => setInputText(e.target.value)}
+								onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+								placeholder="Escribe un mensaje..."
+								className="flex-1 px-4 py-2 bg-gray-100 rounded-full border border-transparent focus:border-[#2e5b61] focus:bg-white outline-none text-sm text-gray-700 transition-all"
+							/>
+							<button
+								onClick={handleSendMessage}
+								className="bg-[#2e5b61] text-white p-2 rounded-full hover:bg-[#1e3d41] transition-colors shadow-sm flex items-center justify-center w-10 h-10"
+							>
+								➤
+							</button>
+						</div>
+					)}
+				</div>
+			)}
+
+			{!isOpen && (
+				<button
+					onClick={() => {
+						setIsOpen(true);
+						setHasNotification(false);
+					}}
+					className="relative w-14 h-14 bg-[#2e5b61] hover:bg-[#1e3d41] text-white rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 cursor-pointer"
+				>
+					<svg
+						className="w-7 h-7"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+						/>
+					</svg>
+
+					{hasNotification && (
+						<span className="absolute -top-1 -right-1 flex h-5 w-5 z-50">
+							<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+							<span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 border-2 border-white"></span>
+						</span>
+					)}
+				</button>
+			)}
+		</div>
+	);
 };
 
 export default Chat;
