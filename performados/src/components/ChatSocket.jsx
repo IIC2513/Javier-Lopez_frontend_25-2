@@ -18,21 +18,45 @@ const Chat = ({ currentUser, token }) => {
 
 	const scrollRef = useRef(null);
 	const [hasNotification, setHasNotification] = useState(false);
+	const [unreadSenders, setUnreadSenders] = useState(new Set());
 
 	useEffect(() => {
 		if (currentUser && token) {
+			socket.emit("register_user", currentUser.id);
 			getVendors();
 		}
 	}, [currentUser, token]);
 
 	useEffect(() => {
-		const handleRefresh = () => {
-			console.log("Actualizando lista de usuarios...");
+		const handleNewChatInvite = (data) => {
+			console.log("¡Me han creado un chat nuevo!", data);
+
+			socket.emit("join_room", data.chatId);
 			getVendors();
+			setHasNotification(true);
+
+			if (data.senderId) {
+				setUnreadSenders((prev) => {
+					const newSet = new Set(prev);
+					newSet.add(data.senderId);
+					return newSet;
+				});
+			}
 		};
 
-		socket.on("refresh_user_list", handleRefresh);
+		socket.on("new_chat_invite", handleNewChatInvite);
 
+		return () => {
+			socket.off("new_chat_invite", handleNewChatInvite);
+		};
+	}, [currentUser]);
+
+	useEffect(() => {
+		const handleRefresh = () => {
+			console.log("Refrescando lista...");
+			getVendors();
+		};
+		socket.on("refresh_user_list", handleRefresh);
 		return () => {
 			socket.off("refresh_user_list", handleRefresh);
 		};
@@ -75,6 +99,14 @@ const Chat = ({ currentUser, token }) => {
 	};
 
 	const handleSelectUser = async (user) => {
+		if (unreadSenders.has(user.id)) {
+			setUnreadSenders((prev) => {
+				const newSet = new Set(prev);
+				newSet.delete(user.id);
+				return newSet;
+			});
+		}
+
 		try {
 			const chatsRes = await api.get(`/chats/${currentUser.id}`, {
 				headers: { Authorization: `Bearer ${token}` },
@@ -107,7 +139,6 @@ const Chat = ({ currentUser, token }) => {
 				setMessages(msgsRes.data);
 
 				socket.emit("join_room", chat.id);
-
 				setView("chat");
 			}
 		} catch (error) {
@@ -117,16 +148,26 @@ const Chat = ({ currentUser, token }) => {
 
 	useEffect(() => {
 		const handleReceiveMessage = (newMessage) => {
-			console.log("Mensaje recibido. Chat abierto?:", isOpen);
+			console.log("Mensaje recibido:", newMessage);
 
-			if (currentChatId && newMessage.chatId === currentChatId) {
+			if (
+				currentChatId &&
+				newMessage.chatId === currentChatId &&
+				isOpen &&
+				view === "chat"
+			) {
 				setMessages((prev) => [...prev, newMessage]);
+			} else {
+				setUnreadSenders((prev) => {
+					const newSet = new Set(prev);
+					newSet.add(newMessage.senderId);
+					return newSet;
+				});
 			}
 
 			getVendors();
 
 			if (!isOpen) {
-				console.log("!!! ACTIVANDO NOTIFICACIÓN !!!");
 				setHasNotification(true);
 			}
 		};
@@ -136,7 +177,7 @@ const Chat = ({ currentUser, token }) => {
 		return () => {
 			socket.off("receive_message", handleReceiveMessage);
 		};
-	}, [currentChatId, isOpen, token, currentUser]);
+	}, [currentChatId, isOpen, view, token, currentUser]);
 
 	useEffect(() => {
 		scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -144,6 +185,14 @@ const Chat = ({ currentUser, token }) => {
 
 	const handleSendMessage = async () => {
 		if (!inputText.trim() || !currentChatId) return;
+
+		if (messages.length === 0) {
+			socket.emit("notify_new_chat", {
+				recipientId: currentChatUser.id,
+				chatId: currentChatId,
+				senderId: currentUser.id,
+			});
+		}
 
 		const messageData = {
 			chatId: currentChatId,
@@ -171,10 +220,11 @@ const Chat = ({ currentUser, token }) => {
 
 		setInputText("");
 	};
-	if (!currentUser) return null; // No mostrar si no hay login
+
+	if (!currentUser) return null;
 
 	return (
-		<div className="fixed bottom-4 left-4 z-50 flex flex-col items-end">
+		<div className="fixed bottom-6 left-6 z-50 flex flex-col items-start">
 			{isOpen && (
 				<div className="mb-4 w-80 md:w-96 h-[500px] bg-[#f6efe2] border border-[#2e5b61] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-200">
 					<div className="bg-[#2e5b61] p-4 flex justify-between items-center shadow-md shrink-0">
@@ -223,21 +273,37 @@ const Chat = ({ currentUser, token }) => {
 									<li
 										key={user.id}
 										onClick={() => handleSelectUser(user)}
-										className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[#d3c9b6] cursor-pointer hover:shadow-md hover:border-[#2e5b61] transition-all"
+										className="flex items-center gap-3 p-3 bg-white rounded-lg border border-[#d3c9b6] cursor-pointer hover:shadow-md hover:border-[#2e5b61] transition-all relative"
 									>
-										<img
-											src={
-												user.image ||
-												"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
-											}
-											className="w-10 h-10 rounded-full object-cover bg-gray-200"
-											onError={(e) => {
-												e.currentTarget.src =
-													"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
-											}}
-										/>
-										<div>
-											<p className="font-bold text-[#2e5b61]">{user.name}</p>
+										<div className="relative">
+											<img
+												src={
+													user.image ||
+													"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg"
+												}
+												className="w-10 h-10 rounded-full object-cover bg-gray-200"
+												onError={(e) => {
+													e.currentTarget.src =
+														"https://icon-library.com/images/default-profile-icon/default-profile-icon-24.jpg";
+												}}
+											/>
+											{unreadSenders.has(user.id) && (
+												<span className="absolute top-0 right-0 flex h-3 w-3">
+													<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+													<span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border-2 border-white"></span>
+												</span>
+											)}
+										</div>
+
+										<div className="flex-1">
+											<div className="flex justify-between items-center">
+												<p className="font-bold text-[#2e5b61]">{user.name}</p>
+												{unreadSenders.has(user.id) && (
+													<span className="text-[10px] font-bold text-red-500">
+														¡Nuevo!
+													</span>
+												)}
+											</div>
 											<p className="text-xs text-gray-500 capitalize">
 												{user.role}
 											</p>
