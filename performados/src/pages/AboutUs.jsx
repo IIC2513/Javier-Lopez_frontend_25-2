@@ -1,5 +1,8 @@
 import React, { useRef } from "react";
 import SpotlightCard from "./../components/TeamCard";
+import Estebankiito from "../assets/Estebankiito.JPG";
+import Manguito from "../assets/vicho.JPG";
+import Miguel from "../assets/miguel.jpg";
 
 function AboutUs() {
   const cardsRef = useRef(null);
@@ -10,23 +13,23 @@ function AboutUs() {
   let members = [
     {
       nombre: "Vicente Cuitiño",
-      image: "https://avatars.githubusercontent.com/u/162657721?v=4",
+      image: Manguito,
       title: "Frontend Leader",
-      description: "Mi compa le aplica al frontend",
+      description: "Coordinador del cuerpo de tutores - 2026, Coordinador Open source eUC (OSUC) - 2025 (React + tailwind lo mejor del mundo mundial)",
       github: "https://github.com/mangofrapuccino",
     },
     {
       nombre: "Esteban Ortega",
-      image: "http://avatars.githubusercontent.com/u/130420779?v=4",
+      image: Estebankiito,
       title: "Project Leader",
-      description: "Mi compa le aplica al react",
+      description: "Organizador de la AntiHackathon 2025 (Worst UI/UX) auspiciada por el CCC, Desarrollador de Tutorías/Apuntes para LICC en Github. Apasionado por el desarrollo web y diseño de UI, la musica, y el anime.",
       github: "https://github.com/estebankiito",
     },
     {
       nombre: "Miguel Ulloa",
-      image: "https://avatars.githubusercontent.com/u/130802805?v=4",
+      image: Miguel,
       title: "Backend Leader",
-      description: "Mi compa le aplica al backend",
+      description: "Estudiante de tercer año de LICC. Me especializo en el desarrollo de APIs, servidores y sistemas de autenticación.",
       github: "https://github.com/miguelulloawood",
     },
   ];
@@ -68,7 +71,7 @@ function AboutUs() {
           {members.map((member) => (
             <SpotlightCard
               key={member.nombre}
-              spotlightColor="#f6efe2"
+              spotlightColor="rgba(119, 170, 176, 0.65)"
               member={member}
             />
           ))}
