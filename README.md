@@ -6,6 +6,11 @@
 
 - https://enchanting-sherbet-f5ff2c.netlify.app/
 
+### Cuenta Admin para revision:
+
+- email: javierlopez@javierlopez.jl
+- contraseña: hola12345
+
 ### Integrantes:
 
 - Vicente Cuitiño
