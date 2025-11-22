@@ -1,7 +1,9 @@
 import React from "react";
+import { useState } from "react";
 import axios from "axios";
 const URL_API = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
+import FeedbackModal from "./FeedbackModal";
 
 function CartOnSide({
   isOpen,
@@ -20,9 +22,29 @@ function CartOnSide({
     );
     return total.toLocaleString("es-CL") + " CLP";
   };
+  const [feedback, setFeedback] = useState({
+    isOpen: false,
+    type: "success",
+    message: "",
+  });
+  const handleFeedbackClose = () => {
+    setFeedback({ ...feedback, isOpen: false });
+    if (feedback.type === "success" && feedback.message.includes("eliminado")) {
+      setIsProductOpen(false);
+      window.location.reload();
+    }
+  };
 
-  const addMore = (productId, quantity) => async () => {
+  const addMore = (productId, quantity, stock) => async () => {
     try {
+      if (quantity >= stock) {
+        setFeedback({
+          isOpen: true,
+          type: "info",
+          message: "No hay más stock disponible para este producto.",
+        });
+        return;
+      }
       const response = await axios.post(
         `${URL_API}/cart/products/${productId}`,
         {
@@ -115,7 +137,7 @@ function CartOnSide({
                         Cantidad: {item.CartItem?.quantity || item.quantity}
                       </p>
                       <button
-                        onClick={addMore(item.id, 1)}
+                        onClick={addMore(item.id, 1, item.stock)}
                         className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#2f5b61] px-1 rounded-md"
                       >
                         +
@@ -176,6 +198,12 @@ function CartOnSide({
           )}
         </div>
       </div>
+      <FeedbackModal
+        isOpen={feedback.isOpen}
+        type={feedback.type}
+        message={feedback.message}
+        onClose={handleFeedbackClose}
+      />
     </>
   );
 }
