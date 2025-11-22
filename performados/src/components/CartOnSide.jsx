@@ -30,7 +30,6 @@ function CartOnSide({
   const handleFeedbackClose = () => {
     setFeedback({ ...feedback, isOpen: false });
     if (feedback.type === "success" && feedback.message.includes("eliminado")) {
-      setIsProductOpen(false);
       window.location.reload();
     }
   };

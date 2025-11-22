@@ -28,6 +28,8 @@ function Summary() {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  const [formData, setFormData] = useState({});
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
