@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import logo from "./assets/react.svg";
@@ -327,7 +327,14 @@ function App() {
           />
           <Route
             path="/admin-users/:id"
-            element={<UserSalesView currentUser={currentUser} token={token} />}
+            element={
+              <ProtectAdminUsersView
+                currentUser={currentUser}
+                children={
+                  <UserSalesView currentUser={currentUser} token={token} />
+                }
+              />
+            }
           />
           <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
