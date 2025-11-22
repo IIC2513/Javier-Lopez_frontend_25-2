@@ -229,7 +229,6 @@ function Product({
             ModalOpen={reviewModalOpen}
             onClose={() => {
               setReviewModalOpen(false);
-              navigate("/my-purchases");
               window.location.reload();
             }}
             productId={id}
