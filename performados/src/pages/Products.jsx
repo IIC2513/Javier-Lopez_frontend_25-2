@@ -180,7 +180,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
                       <div className="grow flex flex-col items-center justify-center">
                         <div className="image-container mb-4 flex justify-center items-center">
                           <img
-                            src={product.image}
+                            src={product.image === null ? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png" : product.image}
                             alt={product.name}
                             className="w-24 h-24 sm:w-28 sm:h-28 md:w-50 md:h-50 lg:w-80 lg:h-80 object-contain"
                           />

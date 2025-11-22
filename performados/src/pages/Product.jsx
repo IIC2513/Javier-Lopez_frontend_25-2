@@ -259,7 +259,7 @@ function Product({
             style={{ fontFamily: "sora, sans-serif" }}
           >
             <img
-              src={image}
+              src={image === null ? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png" : image}
               alt={name}
               className="w-full h-auto max-h-[45vh] object-contain rounded-md"
             />
