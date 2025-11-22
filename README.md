@@ -91,79 +91,85 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas desarolladas
 
-<img src="docs/vista3.png" alt="Landing" width="700"/>
+<img src="docs/0.png" alt="Vista 0" width="700"/>
+<img src="docs/1.png" alt="Vista 1" width="700"/>
+<img src="docs/2.png" alt="Vista 2" width="700"/>
+<img src="docs/3.png" alt="Vista 3" width="700"/>
+<img src="docs/4.png" alt="Vista 4" width="700"/>
+<img src="docs/5.png" alt="Vista 5" width="700"/>
+<img src="docs/6.png" alt="Vista 6" width="700"/>
+<img src="docs/7.png" alt="Vista 7" width="700"/>
+<img src="docs/8.png" alt="Vista 8" width="700"/>
+<img src="docs/9.png" alt="Vista 9" width="700"/>
+<img src="docs/10.png" alt="Vista 10" width="700"/>
+<img src="docs/11.png" alt="Vista 11" width="700"/>
 <img src="docs/vista1.png" alt="Landing2" width="700"/>
 <img src="docs/vista2.png" alt="AboutUs" width="700"/>
-<img src="docs/vista7.png" alt="AboutUs2" width="700"/>
-<img src="docs/vista8.png" alt="AboutUs2" width="700"/>
-<img src="docs/vista4.png" alt="AboutUs2" width="700"/>
 <img src="docs/vista5.png" alt="AboutUs2" width="700"/>
 <img src="docs/vista6.png" alt="AboutUs2" width="700"/>
+<img src="docs/12.png" alt="Vista 12" width="700"/>
 
-## Historias de Usuario
+---
+# Historias de Usuario por Rol
 
-- Como usuario registrado o no registrado, quiero poder ver los productos en stock, para ver lo que puedo comprar.
+### 1. Usuario No Registrado
 
-- Como usuario registrado o no, quiero poder agregar productos en stock a mi carro de compras, especificando la cantidad mientras quede stock, para poder comprar más de un producto a la vez.
+1. Como usuario no registrado, quiero poder crear una cuenta, para poder comprar los productos, vender y dejar reseñas.
 
-- Como usuario registrado o no, quiero poder ver mi carro, para poder administrarlo o proceder al pago.
+2. Como usuario no logueado, quiero poder ingresar a mi cuenta anteriormente creada, con mi mail y mi contraseña, para poder comprar o vender productos, dejar reseñas y/o editar mi perfil.
 
-- Como usuario registrado o no, quiero poder editar mi carro, para eliminar productos que ya no quiero comprar.
+### 2. Usuario Registrado o No Registrado (Ambos)
 
-- Como usuario no registrado, quiero poder crear una cuenta, para poder comprar los productos, vender y dejar reseñas.
+3. Como usuario registrado o no registrado, quiero poder ver los productos en stock, para ver lo que puedo comprar.
 
-- Como usuario no registrado, quiero poder ingresar a mi cuenta anteriormente creada, con mi mail y mi contraseña, para poder comprar o vender productos, dejar reseñas y/o editar mi perfil.
+4. Como usuario registrado o no registrado, quiero poder ver las reseñas de un producto, para saber si comprarlo o no.
 
-- Como usuario registrado, quiero poder editar mi perfil, cambiando mi nombre, correo, foto, o contraseña, para poder actualizar mis datos.
+5. Como usuario registrado o no registrado, quiero poder ver las reseñas sobre un vendedor, para orientarme al comprar sus productos.
 
-- Como usuario registrado, quiero poder hacer una reseña al vendedor luego de hacer una compra de uno de sus productos, para recomendar o no recomendar al vendedor.
+6. Como usuario registrado o no, quiero poder ver el perfil de un vendedor, para poder saber si comprar sus productos.
 
-- Como usuario registrado, quiero poder hacer una reseña de cualquier producto de la página, para recomendar o no el producto.
+7. Como usuario registrado o no, quiero ser capaz de filtrar productos, para encontrar fácilmente los productos que se adecuen a mis preferencias.
 
-- Como usuario registrado, quiero poder ver el estado de mis pedidos, para saber si ya fueron enviados, recibidos, o se están procesando.
+### 3. Usuario Registrado
 
-- Como usuario registrado, quiero poder ver mi perfil, para saber cuales son mis datos.
+8. Como usuario registrado, quiero poder agregar productos en stock a mi carro de compras, especificando la cantidad mientras quede stock, para poder comprar más de un producto a la vez.
 
-- Como vendedor, quiero poder ser notificado que uno de mis productos fue vendido exitosamente, para poder ver al comprador y poder contactarme con el
+9. Como usuario registrado, quiero poder ver mi carro, para poder administrarlo o proceder al pago
 
-- Como vendedor quiero poder cambiar el estado de los productos que me compraron, para informar a los clientes.
+10. Como usuario registrado, quiero poder editar mi carro, para eliminar productos que ya no quiero comprar.
 
-- Como vendedor quiero poder ver los productos que me han comprado y su estado de entrega, para organizar mis pedidos.
+11. Como usuario registrado, quiero poder editar mi perfil, cambiando mi nombre, correo, foto, o contraseña, para poder actualizar mis datos.
 
-- Como usuario registrado o no registrado, quiero poder ver las reseñas de un producto, para saber si comprarlo o no.
+12. Como usuario registrado, quiero poder hacer una reseña al vendedor luego de hacer una compra de uno de sus productos, para recomendar o no recomendar al vendedor.
 
-- Como usuario registrado o no registrado, quiero poder ver las reseñas sobre un vendedor, para orientarme al comprar sus productos.
+13. Como usuario registrado, quiero poder hacer una reseña de cualquier producto de la página, para recomendar o no el producto.
 
-- Como usuario registrado, quiero poder ver mi historial de compras, para saber que productos compré en la página.
+14. Como usuario registrado, quiero poder ver el estado de los pedidos, para saber si ya fueron enviados, recibidos, o se están procesando.
 
-- Como usuario registrado o no registrado, quiero poder saber si un producto es de la tienda oficial, para saber si comprarlo o no.
+15. Como usuario registrado, quiero poder ver mi perfil, para saber cuales son mis datos.
 
-- Como usuario registrado o no, quiero poder ver el perfil de un vendedor, para poder saber si comprar sus productos.
+16. Como usuario registrado, quiero poder ver mi historial de compras, para saber que productos compré en la página.
 
-- Como usuario registrado, quiero poder ingresar mis datos de pago y envío (falsos), para poder completar mi compra.
+17. Como usuario registrado, quiero poder ingresar mis datos de pago y envío (falsos), para poder completar mi compra.
 
-- Como usuario administrador, quiero poder eliminar cualquier producto, para administrar la tienda.
+18. Como usuario con sesión iniciada, quiero poder cerrar sesión, para que no quede mi cuenta y mis datos siempre conectados en el dispositivo.
 
-- Como usuario administrador, quiero poder eliminar una publicación, para poder moderar el contenido que se publica.
+### 4. Vendedor
 
-- Como usuario administrador, quiero poder eliminar una reseña, para poder moderar las interacciones entre usuarios.
+19. Como usuario registrado, quiero ser capaz de publicar mis artículos a vender, para poder generar ingresos a través de la plataforma.
 
-- Como usuario administrador, quiero poder eliminar un usuario, para poder administrar la página.
+### 5. Administrador (Admin)
 
-- Como usuario administrador, quiero poder editar cualquier reseña, para filtrar contenido inapropiado.
+20. Como admin, quiero poder cambiar el estado de los productos que me compraron, para informar a los clientes.
 
-- Como usuario administrador, quiero poder editar cualquier usuario, para filtrar contenido inapropiado.
+21. Como admin quiero poder ver los productos que se han comprado y su estado de entrega, para organizar los pedidos.
 
-- Como usuario administrador, quiero poder editar cualquier producto, para actualizar el contenido del producto.
+22. Como usuario administrador, quiero poder eliminar cualquier Usuario, para administrar la tienda.
 
-- Como usuario con sesión iniciada, quiero poder cerrar sesión, para que no quede mi cuenta y mis datos siempre conectados en el dispositivo.
+23. Como usuario administrador, quiero poder eliminar una reseña, para poder moderar las interacciones entre usuarios.
 
-- Como usuario registrado o no, quiero ser capaz de filtrar productos, para encontrar fácilmente los productos que se adecuen a mis preferencias.
+24. Como usuario administrador, quiero poder editar cualquier reseña, para filtrar contenido inapropiado.
 
-- Como usuario administrador, quiero ser capaz de publicar un producto oficial, para que este se distinga del resto de productos de usuarios vendedores sin verificar.
+25. Como usuario administrador, quiero poder editar cualquier producto, para actualizar el contenido del producto.
 
-- Como usuario registrado, quiero ser capaz de publicar mis artículos a vender, para poder generar ingresos a través de la plataforma.
-
-- Como usuario administrador, quiero contar con un panel de estadísticas, para analizar el tráfico de la plataforma, ventas realizadas en el último tiempo, etc.
-
-- Como usuario administrador, quiero poder crear categorias de interes para usuarios, asi poder volver más atractiva la plataforma con secciones de descuentos semanales/diarios, ofertas por temporada, etc.
+26. Como usuario administrador, quiero contar con un panel de usuarios, para poder moderar tanto usuarios, como ver las compras que han realizado dentro de la pagina.
