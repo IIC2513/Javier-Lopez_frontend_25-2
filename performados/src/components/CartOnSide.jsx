@@ -35,23 +35,31 @@ function CartOnSide({
     }
   };
 
-  const addMore = (productId, quantity, stock) => async () => {
+  const addMore = (productId, change, stock) => async () => {
     try {
-      if (quantity >= stock) {
+      const item = cartList.find((i) => i.id === productId);
+      const currentQty = item?.CartItem?.quantity || item?.quantity || 1;
+      const newQty = currentQty + change;
+      if (change > 0 && newQty > stock) {
         setFeedback({
           isOpen: true,
           type: "info",
-          message: "No hay más stock disponible para este producto.",
+          message: "No hay mas stock disponible para este producto.",
         });
         return;
       }
-      const response = await axios.post(
-        `${URL_API}/cart/products/${productId}`,
-        {
-          userId: JSON.parse(localStorage.getItem("currentUser")).id,
-          quantity: quantity,
-        }
-      );
+      if (change < 0 && newQty < 1) {
+        setFeedback({
+          isOpen: true,
+          type: "info",
+          message: "No puedes tener menos de 1 unidad en el carrito.",
+        });
+        return;
+      }
+      await axios.patch(`${URL_API}/cart/products/${productId}`, {
+        userId: JSON.parse(localStorage.getItem("currentUser")).id,
+        quantity: newQty,
+      });
       window.location.reload();
     } catch (error) {
       console.error("Error al añadir el producto al carrito:", error);
@@ -138,9 +146,15 @@ function CartOnSide({
                       </p>
                       <button
                         onClick={addMore(item.id, 1, item.stock)}
-                        className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#2f5b61] px-1 rounded-md"
+                        className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#9362bb] px-1 rounded-md"
                       >
                         +
+                      </button>
+                      <button
+                        onClick={addMore(item.id, -1, item.stock)}
+                        className="ml-2 text-[#f6efe2] hover:text-blue-700 hover:cursor-pointer text-xs bg-[#2f5b61] px-1 rounded-md"
+                      >
+                        -
                       </button>
                     </div>
                     <p className="text-xs pt-1 text-gray-500">
