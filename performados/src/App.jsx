@@ -26,6 +26,8 @@ const URL_API = import.meta.env.VITE_API_URL;
 
 import { setAuthToken } from "./api";
 import MyPurchases from "./pages/MyPurchases";
+
+import ProtectAdminUsersView from "./pages/adminUsersViewProtect.jsx";
 function App() {
   const items = [
     {
@@ -314,7 +316,14 @@ function App() {
           />
           <Route
             path="/admin-users"
-            element={<AdminUsersView currentUser={currentUser} token={token} />}
+            element={
+              <ProtectAdminUsersView
+                currentUser={currentUser}
+                children={
+                  <AdminUsersView currentUser={currentUser} token={token} />
+                }
+              />
+            }
           />
           <Route
             path="/admin-users/:id"
@@ -323,16 +332,17 @@ function App() {
           <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
 
-          <Route 
-          path="/my-purchases" 
-          element={
-              <MyPurchases 
-                currentUser={currentUser} 
-                cartList={cartList}           
-                setCartList={setCartList}     
-                setterCartOpen={setIsCartOpen} 
+          <Route
+            path="/my-purchases"
+            element={
+              <MyPurchases
+                currentUser={currentUser}
+                cartList={cartList}
+                setCartList={setCartList}
+                setterCartOpen={setIsCartOpen}
               />
-            }/>
+            }
+          />
         </Routes>
       </div>
     </Router>
