@@ -300,7 +300,7 @@ function Product({
                       {"☆".repeat(5 - review.stars)}
                     </p>
                     <p className="text-gray-700">{review.body}</p>
-                    {review.user.id === currentUser?.id && (
+                    {(review.user.id === currentUser?.id || currentUser?.id === 1) && (
                       <div>
                         <button
                           className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
