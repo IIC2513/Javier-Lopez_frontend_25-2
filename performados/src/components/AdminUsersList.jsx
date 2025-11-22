@@ -16,6 +16,20 @@ export default function AdminUsersList({ currentUser, token }) {
       return [];
     }
   };
+  const deleteUser = async (userId) => {
+    try {
+      const response = await api.delete(`/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      window.location.reload();
+      return response.status === 200;
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -31,7 +45,7 @@ export default function AdminUsersList({ currentUser, token }) {
   }, []);
 
   return (
-    <div className="mt-[10rem] bg-[#F6EFE2] rounded-lg shadow-xl max-w-3xl w-full overflow-hidden relative">
+    <div className="mt-[10rem] bg-[#F6EFE2] rounded-lg shadow-xl max-w-4xl w-full overflow-hidden relative">
       <div className="p-6">
         <h2
           className="text-2xl font-semibold mb-4"
@@ -57,6 +71,9 @@ export default function AdminUsersList({ currentUser, token }) {
                 </th>
                 <th className="py-2 px-4 border-b border-gray-200 text-left">
                   Ver envios
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 text-left">
+                  Eliminar
                 </th>
               </tr>
             </thead>
@@ -104,6 +121,19 @@ export default function AdminUsersList({ currentUser, token }) {
                       >
                         Ver envios
                       </button>
+                    </td>
+                    <td className="py-2 px-4 border-b border-gray-200">
+                      {user.role !== "admin" && (
+                        <button
+                          onClick={() => deleteUser(user.id)}
+                          className="rounded-lg px-8 py-3 my-2 font-sora transition-colors duration-300 bg-red-600 text-sm text-white hover:opacity-90 w-full sm:w-auto"
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                      {user.role === "admin" && (
+                        <span className="text-gray-400">No permitido</span>
+                      )}
                     </td>
                   </tr>
                 ))
