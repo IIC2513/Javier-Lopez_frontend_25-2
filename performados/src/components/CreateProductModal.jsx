@@ -5,7 +5,7 @@ const CloseIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    viewBox="0 0 24"
+    viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
     className="w-6 h-6"
@@ -205,271 +205,227 @@ export const CreateProductModal = ({ isOpen, onClose, currentUser }) => {
 
   return (
     <>
-    <div
-      className="fixed inset-0 z-500 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 transition-opacity duration-300"
-      onClick={handleClose}
-    >
       <div
-        className="relative w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl transition-transform duration-300 max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 z-500 flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 md:p-6 transition-opacity duration-300"
+        onClick={handleClose}
       >
-        <div className="flex items-start justify-between pb-4 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Subir Nuevo Producto
-          </h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="productName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Nombre del Producto
-              </label>
-              <input
-                type="text"
-                id="productName"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="category"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Categoría
-              </label>
-              <select
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="">Selecciona una categoría</option>
-                <option value="1">Totebag</option>
-                <option value="2">Labubu</option>
-                <option value="3">Disco</option>
-                <option value="4">Libro</option>
-                <option value="5">Matcha</option>
-                <option value="6">Accesorio</option>
-              </select>
-            </div>
+        <div
+          className="relative w-full max-w-2xl overflow-y-auto rounded-2xl bg-[#f6efe2] p-6 md:p-10 shadow-2xl transition-transform duration-300 max-h-[92vh] border border-[#d3c9b6]"
+          onClick={(e) => e.stopPropagation()}
+          style={{ fontFamily: "sora, sans-serif" }}
+        >
+          <div className="flex items-start justify-between pb-6 border-b border-[#d3c9b6]">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#2e5b61]">Subir Nuevo Producto</h2>
+            <button
+              onClick={handleClose}
+              className="text-[#2e5b61] hover:text-[#fb2c35] transition-colors"
+            >
+              <CloseIcon />
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Precio (CLP)
-              </label>
-              <div className="relative mt-1">
-                <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                  $
-                </span>
+          <form onSubmit={handleSubmit} className="mt-4 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label htmlFor="productName" className="block text-base font-semibold text-[#26484d] mb-2">Nombre del Producto</label>
+                <input
+                  type="text"
+                  id="productName"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                  required
+                  className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-4 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                />
+              </div>
+              <div>
+                <label htmlFor="category" className="block text-base font-semibold text-[#26484d] mb-2">Categoría</label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                  className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-4 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                >
+                  <option value="">Selecciona una categoría</option>
+                  <option value="1">Totebag</option>
+                  <option value="2">Labubu</option>
+                  <option value="3">Disco</option>
+                  <option value="4">Libro</option>
+                  <option value="5">Matcha</option>
+                  <option value="6">Accesorio</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label htmlFor="price" className="block text-base font-semibold text-[#26484d] mb-2">Precio (CLP)</label>
+                <div className="relative mt-1">
+                  <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8467bb] font-bold">$</span>
+                  <input
+                    type="number"
+                    id="price"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                    min="0"
+                    className="block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] pl-8 pr-2 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                    placeholder="10000"
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="stock" className="block text-base font-semibold text-[#26484d] mb-2">Stock Disponible</label>
                 <input
                   type="number"
-                  id="price"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  id="stock"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
                   required
                   min="0"
-                  className="block w-full rounded-md border-gray-300 shadow-sm pl-7 focus:border-blue-500 focus:ring-blue-500"
-                  placeholder="10000"
+                  className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-4 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                  placeholder="50"
                 />
               </div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label htmlFor="color" className="block text-base font-semibold text-[#26484d] mb-2">Color</label>
+                <select
+                  id="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  required
+                  className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-4 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                >
+                  <option value="" disabled>Selecciona un color</option>
+                  {colorOptions.map((col) => (
+                    <option key={col.value} value={col.value}>
+                      {col.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="condition" className="block text-base font-semibold text-[#26484d] mb-2">Condición</label>
+                <select
+                  id="condition"
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
+                  required
+                  className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-4 py-3 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                >
+                  <option value="new">Nuevo</option>
+                  <option value="used">Usado</option>
+                </select>
+              </div>
+            </div>
+
             <div>
-              <label
-                htmlFor="stock"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Stock Disponible
-              </label>
+              <label htmlFor="description" className="block text-base font-semibold text-[#26484d] mb-2">Descripción</label>
+              <textarea
+                id="description"
+                rows="2"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="mt-1 block w-full rounded-lg border border-[#d3c9b6] bg-[#f6efe2] px-3 py-2 shadow-sm focus:border-[#8467bb] focus:ring-[#8467bb] text-[#2e5b61]"
+                placeholder="Detalles del producto, materiales, etc."
+                style={{ minHeight: '48px', maxHeight: '50px' }}
+              ></textarea>
+            </div>
+
+            {/* SECCION IMAGEN */}
+            <div>
+              <label className="block text-base font-semibold text-[#26484d] mb-2">Imagen del Producto</label>
               <input
-                type="number"
-                id="stock"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
-                required
-                min="0"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                placeholder="50"
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className="hidden"
               />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="color"
-                className="block text-sm font-medium text-gray-700"
+              <div
+                className="mt-2 flex justify-center rounded-xl border-2 border-dashed border-[#d3c9b6] px-4 pt-4 pb-4 cursor-pointer hover:border-[#8467bb] bg-[#f6efe2]"
+                onClick={() => fileInputRef.current.click()}
+                style={{ minHeight: '120px', maxHeight: '180px' }}
               >
-                Color
-              </label>
-              <select
-                id="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="" disabled>Selecciona un color</option>
-                {colorOptions.map((col) => (
-                  <option key={col.value} value={col.value}>
-                    {col.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label
-                htmlFor="condition"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Condición
-              </label>
-              <select
-                id="condition"
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="new">Nuevo</option>
-                <option value="used">Usado</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Descripción
-            </label>
-            <textarea
-              id="description"
-              rows="4"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Detalles del producto, materiales, etc."
-            ></textarea>
-          </div>
-
-          {/* SECCION IMAGEN */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Imagen del Producto
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              className="hidden"
-            />
-            <div
-              className="mt-1 flex justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 cursor-pointer hover:border-blue-500"
-              onClick={() => fileInputRef.current.click()}
-            >
-              {imagePreview ? (
-                <div className="relative">
-                  <img
-                    src={imagePreview}
-                    alt="Vista previa"
-                    className="h-48 w-auto object-contain rounded-md"
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setImagePreview(null);
-                      setProductImage(null);
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = null;
-                      }
-                    }}
-                    className="absolute -top-2 -right-2 rounded-full bg-red-500 p-1 text-white shadow-md hover:bg-red-600"
-                    aria-label="Quitar imagen"
-                  >
-                    <CloseIcon />
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-1 text-center">
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                {imagePreview ? (
+                  <div className="relative">
+                    <img
+                      src={imagePreview}
+                      alt="Vista previa"
+                      className="h-32 w-auto object-contain rounded-lg border border-[#d3c9b6]"
                     />
-                  </svg>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium text-[#2f5b61] hover:text-blue-500">
-                      Haz clic para subir
-                    </span>{" "}
-                    o arrastra y suelta
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF hasta 10MB
-                  </p>
-                </div>
-              )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImagePreview(null);
+                        setProductImage(null);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = null;
+                        }
+                      }}
+                      className="absolute -top-3 -right-3 rounded-full bg-[#fb2c35] p-2 text-white shadow-md hover:bg-[#d91b23]"
+                      aria-label="Quitar imagen"
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2 text-center">
+                    <svg
+                      className="mx-auto h-10 w-10 text-[#8467bb]"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <p className="text-sm text-[#2e5b61]">
+                      <span className="font-semibold hover:text-[#8467bb]">Haz clic para subir</span> o arrastra y suelta
+                    </p>
+                    <p className="text-xs text-[#8467bb]">PNG, JPG, GIF hasta 10MB</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* BOTONES */}
-          <div className="flex flex-col-reverse gap-4 pt-4 border-t border-gray-200 sm:flex-row sm:justify-end sm:gap-3">
-            <button
-              type="button"
-              onClick={handleClose}
-              disabled={isUploading}
-              className="w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:w-auto sm:text-sm"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isUploading}
-              className={`w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm sm:w-auto sm:text-sm
-                ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#2e5b61] hover:bg-[#24484d]'}`}
-            >
-              {isUploading ? 'Subiendo...' : 'Subir Producto'}
-            </button>
-          </div>
-        </form>
+            {/* BOTONES */}
+            <div className="flex flex-col-reverse gap-4 mt-4 sm:flex-row sm:justify-center sm:gap-3">
+              <button
+                type="button"
+                onClick={handleClose}
+                disabled={isUploading}
+                className="w-full justify-center rounded-lg border border-[#d3c9b6] bg-white px-4 py-3 text-base font-semibold text-[#2e5b61] shadow-sm hover:bg-[#ece2cc] sm:w-auto sm:text-sm transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={isUploading}
+                className={`w-full justify-center rounded-lg border border-transparent px-4 py-3 text-base font-semibold text-white shadow-sm sm:w-auto sm:text-sm transition-colors ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#2e5b61] hover:bg-[#8467bb]'}`}
+              >
+                {isUploading ? 'Subiendo...' : 'Subir Producto'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
-    <FeedbackModal 
-      isOpen={feedback.isOpen}
-      type={feedback.type}
-      message={feedback.message}
-      onClose={handleFeedbackClose}
-    />
+      <FeedbackModal
+        isOpen={feedback.isOpen}
+        type={feedback.type}
+        message={feedback.message}
+        onClose={handleFeedbackClose}
+      />
     </>
   );
 };
