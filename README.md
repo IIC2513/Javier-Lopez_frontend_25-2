@@ -91,16 +91,23 @@ Las funcionalidades minimas de la pagina, incluyen un carro de compras, perfiles
 
 ## Vistas desarolladas
 
-<img src="docs/vista3.png" alt="Landing" width="700"/>
+<img src="docs/0.png" alt="Vista 0" width="700"/>
+<img src="docs/1.png" alt="Vista 1" width="700"/>
+<img src="docs/2.png" alt="Vista 2" width="700"/>
+<img src="docs/3.png" alt="Vista 3" width="700"/>
+<img src="docs/4.png" alt="Vista 4" width="700"/>
+<img src="docs/5.png" alt="Vista 5" width="700"/>
+<img src="docs/6.png" alt="Vista 6" width="700"/>
+<img src="docs/7.png" alt="Vista 7" width="700"/>
+<img src="docs/8.png" alt="Vista 8" width="700"/>
+<img src="docs/9.png" alt="Vista 9" width="700"/>
+<img src="docs/10.png" alt="Vista 10" width="700"/>
+<img src="docs/11.png" alt="Vista 11" width="700"/>
 <img src="docs/vista1.png" alt="Landing2" width="700"/>
 <img src="docs/vista2.png" alt="AboutUs" width="700"/>
-<img src="docs/vista7.png" alt="AboutUs2" width="700"/>
-<img src="docs/vista8.png" alt="AboutUs2" width="700"/>
-<img src="docs/vista4.png" alt="AboutUs2" width="700"/>
 <img src="docs/vista5.png" alt="AboutUs2" width="700"/>
 <img src="docs/vista6.png" alt="AboutUs2" width="700"/>
-
-
+<img src="docs/12.png" alt="Vista 12" width="700"/>
 
 ---
 # Historias de Usuario por Rol
