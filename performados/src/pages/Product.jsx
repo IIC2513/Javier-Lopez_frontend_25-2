@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import CreateReviewModal from "../components/CreateReviewModal";
 import Seller from "./Seller";
 const URL_API = import.meta.env.VITE_API_URL;
+import EditReviewModal from "../components/EditReviewModal";
 
 const CloseIcon = () => (
   <svg
@@ -58,6 +59,8 @@ function Product({
   const [reviews, setReviews] = useState([]);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [sellerModalOpen, setSellerModalOpen] = useState(false);
+  const [editReviewModalOpen, setEditReviewModalOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   const [feedback, setFeedback] = useState({
     isOpen: false,
@@ -283,7 +286,10 @@ function Product({
                       <div>
                         <button
                           className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
-                          onClick={() => handleDeleteReview(review.id)}
+                          onClick={() => {
+                            setSelectedReview(review);
+                            setEditReviewModalOpen(true);
+                          }}
                         >
                           Editar
                         </button>
@@ -391,6 +397,15 @@ function Product({
 
       {sellerModalOpen && (
         <Seller sellerId={OwnerId} setIsSellerOpen={setSellerModalOpen} />
+      )}
+
+      {editReviewModalOpen && selectedReview && (
+        <EditReviewModal
+          ModalOpen={editReviewModalOpen}
+          onClose={() => setEditReviewModalOpen(false)}
+          review={selectedReview}
+          reviewType="product"
+        />
       )}
 
       <ConfirmationModal

@@ -3,6 +3,7 @@ import axios from "axios";
 import FeedbackModal from "../components/FeedbackModal";
 import CreateUserReviewModal from "../components/CreateUserReviewModal";
 import { useNavigate } from "react-router-dom";
+import EditReviewModal from "../components/EditReviewModal";
 
 const URL_API = import.meta.env.VITE_API_URL;
 
@@ -18,6 +19,8 @@ function Seller({ sellerId, setIsSellerOpen }) {
 
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+  const [editReviewModalOpen, setEditReviewModalOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   const fetchSellerInfo = async () => {
     try {
@@ -200,7 +203,10 @@ function Seller({ sellerId, setIsSellerOpen }) {
                     <div>
                       <button
                         className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
-                        onClick={() => handleDeleteReview(review.id)}
+                        onClick={() => {
+                          setSelectedReview(review);
+                          setEditReviewModalOpen(true);
+                        }}
                       >
                         Editar
                       </button>
@@ -218,6 +224,14 @@ function Seller({ sellerId, setIsSellerOpen }) {
           </div>
         </div>
       </div>
+      {editReviewModalOpen && selectedReview && (
+        <EditReviewModal
+          ModalOpen={editReviewModalOpen}
+          onClose={() => setEditReviewModalOpen(false)}
+          review={selectedReview}
+          reviewType="user"
+        />
+      )}
       <FeedbackModal
         isOpen={feedback.isOpen}
         type={feedback.type}
