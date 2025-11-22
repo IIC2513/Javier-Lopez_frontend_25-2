@@ -15,10 +15,17 @@ import HowToUse from "./pages/HowToUse";
 import CartButton from "./components/CartButton";
 import CartOnSide from "./components/CartOnSide";
 import ProductButton from "./components/AddProductButton";
-import {CreateProductModal} from "./components/CreateProductModal";
+import { CreateProductModal } from "./components/CreateProductModal";
+import AdminButton from "./components/adminButton";
+import AdminUsersView from "./pages/AdminUsersView";
+import UserSalesView from "./pages/userSales";
 
-import Chat from "./components/Chat";
+import Chat from "./components/ChatSocket";
+import Summary from "./pages/Summary";
+const URL_API = import.meta.env.VITE_API_URL;
+
 import { setAuthToken } from "./api";
+import MyPurchases from "./pages/MyPurchases";
 function App() {
   const items = [
     {
@@ -27,11 +34,15 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Matcha Days", ariaLabel: "Placeholder", href: "/products" },
+        {
+          label: "Matcha Days",
+          ariaLabel: "Placeholder",
+          href: "/products/matcha-days",
+        },
         {
           label: "Gana tu primer concurso ",
           ariaLabel: "PlaceHolder",
-          href: "/products",
+          href: "/products/primer-concurso",
         },
       ],
     },
@@ -54,9 +65,17 @@ function App() {
       textColor: "#fff",
       fontFamily: "sora, sans-serif",
       links: [
-        { label: "Labubus", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products" },
-        { label: "Accesorios", ariaLabel: "PlaceHolder", href: "/products" },
+        {
+          label: "Labubus",
+          ariaLabel: "PlaceHolder",
+          href: "/products/labubus",
+        },
+        { label: "Libros", ariaLabel: "PlaceHolder", href: "/products/libros" },
+        {
+          label: "Accesorios",
+          ariaLabel: "PlaceHolder",
+          href: "/products/accesorios",
+        },
       ],
     },
   ];
@@ -78,7 +97,6 @@ function App() {
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
-      // Si hay algo guardado, lo parseamos. Si no, devolvemos un array vacío.
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
@@ -86,8 +104,8 @@ function App() {
     }
   });
 
-    const [isCreateProductModalOpen, setIsCreateProductModalOpen] = useState(false);
-
+  const [isCreateProductModalOpen, setIsCreateProductModalOpen] =
+    useState(false);
 
   useEffect(() => {
     try {
@@ -105,6 +123,18 @@ function App() {
     return localStorage.getItem("token");
   });
 
+  const fetchCart = async (currentID) => {
+    const response = await fetch(`${URL_API}/cart/users/${currentID}`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw new Error("Error fetching cart data");
+    }
+    const data = await response.json();
+    console.log("Fetched cart data:", data.cart.Products);
+    setCartList(data.cart.Products || []);
+  };
+
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -112,8 +142,12 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      fetchCart(currentUser.id).catch((error) =>
+        console.error("Error fetching cart:", error)
+      );
     } else {
       localStorage.removeItem("currentUser");
+      localStorage.removeItem("shoppingCart");
     }
   }, [currentUser]);
 
@@ -138,17 +172,16 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-
         <ProductButton
           setterCreateProductModalOpen={setIsCreateProductModalOpen}
           isLogged={!!currentUser}
         />
-        
+
         <CreateProductModal
           isOpen={isCreateProductModalOpen}
           onClose={() => setIsCreateProductModalOpen(false)}
+          currentUser={currentUser}
         />
-
 
         <CartButton
           setterCartOpen={setIsCartOpen}
@@ -174,12 +207,15 @@ function App() {
           currentUser={currentUser}
           setCurrentUser={setCurrentUser}
         />
+        {currentUser && currentUser.role === "admin" && <AdminButton />}
+
         {currentUser && (
           <Chat
             users={users}
             currentUser={currentUser}
             messages={messages}
             setMessages={setMessages}
+            token={token}
           />
         )}
 
@@ -266,8 +302,37 @@ function App() {
               />
             }
           />
-
+          <Route
+            path="/products/:categoryName"
+            element={
+              <Products
+                setCartList={setCartList}
+                cartList={cartList}
+                setterCartOpen={setIsCartOpen}
+              />
+            }
+          />
+          <Route
+            path="/admin-users"
+            element={<AdminUsersView currentUser={currentUser} token={token} />}
+          />
+          <Route
+            path="/admin-users/:id"
+            element={<UserSalesView currentUser={currentUser} token={token} />}
+          />
+          <Route path="/summary" element={<Summary />} />
           <Route path="/howtouse" element={<HowToUse />} />
+
+          <Route 
+          path="/my-purchases" 
+          element={
+              <MyPurchases 
+                currentUser={currentUser} 
+                cartList={cartList}           
+                setCartList={setCartList}     
+                setterCartOpen={setIsCartOpen} 
+              />
+            }/>
         </Routes>
       </div>
     </Router>

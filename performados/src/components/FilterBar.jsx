@@ -2,6 +2,17 @@ import React from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 
+const colorOptions = [
+  { value: "pink", label: "Rosado" },
+  { value: "white", label: "Blanco" },
+  { value: "green", label: "Verde" },
+  { value: "gray", label: "Gris" },
+  { value: "blue", label: "Azul" },
+  { value: "black", label: "Negro" },
+  { value: "brown", label: "Café" },
+  { value: "default", label: "Otro" },
+];
+
 function FilterBar({
   setterPriceRange,
   setterCondition,
@@ -56,7 +67,6 @@ function FilterBar({
             className=" text-[#2e5b61] text-xs md:text-sm lg:text-sm p-1 focus:outline-none size-max w-20 md:w-25 lg:w-35 "
             type="text"
             placeholder="Quiero..."
-            //onChange={(e) => setterName(e.target.value)}
             style={{
               fontFamily: "sora, sans-serif",
             }}
@@ -87,11 +97,13 @@ function FilterBar({
             className="px-3 py-1 rounded-full bg-[#2e6167] text-sm text-[#f6efe2] shadow-sm appearance-none hover:cursor-pointer hover:bg-[#366f78] "
           >
             <option value="any">Color</option>
-            {availableColors.map((c) => (
-              <option key={c} value={c}>
-                {c[0].toUpperCase() + c.slice(1)}
-              </option>
-            ))}
+            {colorOptions
+              .filter((option) => availableColors.includes(option.value) || option.value === "default")
+              .map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
           </select>
         </div>
         <div className="filter-item hover:cursor-pointer ">

@@ -4,14 +4,7 @@ import CategoryBar from "../components/CategoryBar";
 import FilterBar from "../components/FilterBar";
 import Product from "./Product";
 import { EditProductModal } from "../components/EditProductModal";
-import toteBagClairo from "../assets/Totebag-Clairo.png";
-import toteBagLaufey from "../assets/Totebag-Laufey.png";
-import labubu from "../assets/labubu-1.png";
-import labubu2 from "../assets/labubu-2.png";
-import labubu3 from "../assets/labubu-3.png";
-import SegundoSexo from "../assets/libro.png";
-import KitMatcha from "../assets/kit-matcha.png";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom"; 
 
 const categories = {
   totebags: 1,
@@ -22,13 +15,23 @@ const categories = {
   accesorios: 6,
 };
 
+const SPECIAL_COLLECTIONS = {
+  "matcha-days": [3,1,12,13,11],
+  "primer-concurso": [2,6,14,16,11,4]
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
-let products_fetched = [];
-
 const Products = ({ setCartList, cartList, setterCartOpen }) => {
+  const { categoryName } = useParams();
+  const navigate = useNavigate();
+
   let [products, setProducts] = useState([]);
-  let [selectedCategory, setSelectedCategory] = useState(null);
+  
+  let [selectedCategory, setSelectedCategory] = useState(
+    categoryName && categories[categoryName] ? categoryName : null
+  );
+
   let [selectedPriceRange, setSelectedPriceRange] = useState(null);
   let [selectedCondition, setSelectedCondition] = useState(null);
   let [selectedColor, setSelectedColor] = useState(null);
@@ -38,40 +41,61 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
   let [isProductOpen, setIsProductOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const openEditModal = (product) => {
-    setSelectedProduct(product);
-    setIsEditModalOpen(true);
+  useEffect(() => {
+    if (categoryName && (categories[categoryName] || SPECIAL_COLLECTIONS[categoryName])) {
+      setSelectedCategory(categoryName);
+    } else {
+      setSelectedCategory(null);
+    }
+  }, [categoryName]);
+
+  const handleCategorySelect = (category) => {
+    if (category) {
+      navigate(`/products/${category}`);
+    } else {
+      navigate("/products");
+    }
   };
 
   useEffect(() => {
     productsFetch();
   }, []);
 
-  const openProduct = (product) => {
-    console.log(`Producto abierto ${product.name}`);
-    setSelectedProduct(product);
-    setIsProductOpen(true);
-  };
-
   const productsFetch = async () => {
     try {
       console.log("Fetching products from API...");
       const response = await fetch(`${API_URL}/products`);
       const data = await response.json();
-      products_fetched = data;
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  //let [filteredProducts, setFilteredProducts] = useState(products_fetched);
+  const openProduct = (product) => {
+    setSelectedProduct(product);
+    setIsProductOpen(true);
+  };
+
+  const openEditModal = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
   const filteredProducts = useMemo(() => {
-    return products_fetched.filter((product) => {
+    return products.filter((product) => {
+      
       if (selectedCategory) {
-        const catId = categories[selectedCategory];
-        if (product.categoryId !== catId) return false;
+        if (SPECIAL_COLLECTIONS[selectedCategory]) {
+           const allowedIds = SPECIAL_COLLECTIONS[selectedCategory];
+           if (!allowedIds.includes(product.id)) return false;
+        } 
+        else if (categories[selectedCategory]) {
+           const catId = categories[selectedCategory];
+           if (Number(product.categoryId) !== Number(catId)) return false;
+        }
       }
+
       if (selectedName) {
         const q = String(selectedName).toLowerCase();
         if (!String(product.name).toLowerCase().includes(q)) return false;
@@ -93,7 +117,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
       return true;
     });
   }, [
-    products,
+    products, 
     selectedCategory,
     selectedName,
     selectedColor,
@@ -122,27 +146,20 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
         <div className="min-h-screen bg-[#ece2cc]">
           <div className="flex flex-col">
             <div className="bg-[#2e5b61] text-[#efe6d2] shadow-md pt-25 pb-10 sm:py-20 md:pb-10 sm:pt-30 md:pt-30 lg:pt-28 lg:pb-10 px-4">
-              <h2
-                className=" text-sm font-bold text-center mt-10 mb-1"
-                style={{
-                  fontFamily: "sora, sans-serif",
-                }}
-              >
+              <h2 className=" text-sm font-bold text-center mt-10 mb-1" style={{ fontFamily: "sora, sans-serif" }}>
                 ¡llego la hora de performarse!
               </h2>
-              <h2
-                className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center"
-                style={{
-                  fontFamily: "Anton, sans-serif",
-                }}
-              >
+              <h2 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center" style={{ fontFamily: "Anton, sans-serif" }}>
                 SUMATE AL CAMBIO
               </h2>
             </div>
 
             <div className="flex-col justify-center">
               <div className="Barra-Categorias">
-                <CategoryBar onCategorySelect={setSelectedCategory} />
+                <CategoryBar 
+                    onCategorySelect={handleCategorySelect} 
+                    selectedCategory={selectedCategory} 
+                />
               </div>
               <div>
                 <FilterBar
@@ -157,32 +174,22 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
                   {filteredProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="bg-[#e7dcc775]  p-3 flex flex-col items-center text-center shadow-sm hover:shadow-2xl transition-shadow duration-300 hover:cursor-pointer "
+                      className="bg-[#e7dcc775] p-3 flex flex-col items-center text-center shadow-sm hover:shadow-2xl transition-shadow duration-300 hover:cursor-pointer "
                       onClick={() => openProduct(product)}
                     >
                       <div className="grow flex flex-col items-center justify-center">
                         <div className="image-container mb-4 flex justify-center items-center">
                           <img
-                            src={product.image}
+                            src={product.image === null ? "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png" : product.image}
                             alt={product.name}
                             className="w-24 h-24 sm:w-28 sm:h-28 md:w-50 md:h-50 lg:w-80 lg:h-80 object-contain"
                           />
                         </div>
-                        <h2
-                          className="text-lg sm:text-xl md:text-xl lg:text-xl font-semibold mb-2 text-[#26484d]"
-                          style={{
-                            fontFamily: "sora, sans-serif",
-                          }}
-                        >
+                        <h2 className="text-lg sm:text-xl md:text-xl lg:text-xl font-semibold mb-2 text-[#26484d]" style={{ fontFamily: "sora, sans-serif" }}>
                           {product.name}
                         </h2>
-                        <p
-                          className=" text-sm sm:text-sm md:text-sm lg:text-sm text-[#2e5b61]"
-                          style={{
-                            fontFamily: "sora, sans-serif",
-                          }}
-                        >
-                          ${product.price}
+                        <p className=" text-sm sm:text-sm md:text-sm lg:text-sm text-[#2e5b61]" style={{ fontFamily: "sora, sans-serif" }}>
+                          {product.stock <= 0 ? "Agotado" : `$ ${product.price}`}
                         </p>
                       </div>
                     </div>
