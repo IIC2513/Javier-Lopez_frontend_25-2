@@ -3,8 +3,10 @@ import axios from "axios";
 import FeedbackModal from "../components/FeedbackModal";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-
+import CreateReviewModal from "../components/CreateReviewModal";
+import Seller from "./Seller";
 const URL_API = import.meta.env.VITE_API_URL;
+import EditReviewModal from "../components/EditReviewModal";
 
 const CloseIcon = () => (
   <svg
@@ -55,6 +57,10 @@ function Product({
   const isOwner = currentUser && currentUser.id === OwnerId;
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [sellerModalOpen, setSellerModalOpen] = useState(false);
+  const [editReviewModalOpen, setEditReviewModalOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   const [feedback, setFeedback] = useState({
     isOpen: false,
@@ -66,6 +72,11 @@ function Product({
   // Función helper para verificar color
   const verifyColor = (colorName) => {
     return colorThemes[colorName] ? colorName : "default";
+  };
+
+  // Mostrar modal Seller
+  const handleShowSeller = () => {
+    setSellerModalOpen(true);
   };
 
   // --- LÓGICA DE RESEÑAS ---
@@ -108,7 +119,35 @@ function Product({
     }
   };
 
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("¿Seguro que quieres eliminar esta reseña?")) return;
+    try {
+      await axios.delete(`${URL_API}/productreviews/${reviewId}`);
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+      setFeedback({
+        isOpen: true,
+        type: "success",
+        message: "Reseña eliminada exitosamente.",
+      });
+    } catch (error) {
+      setFeedback({
+        isOpen: true,
+        type: "error",
+        message:
+          error.response?.data?.message || "No se pudo eliminar la reseña.",
+      });
+    }
+  };
+
   const handleAddToCart = () => {
+    if (stock <= 0) {
+      setFeedback({
+        isOpen: true,
+        type: "info",
+        message: "Producto agotado.",
+      });
+      return;
+    }
     if (!currentUser) {
       setFeedback({
         isOpen: true,
@@ -185,6 +224,18 @@ function Product({
           colorThemes[verifyColor(color)]
         } flex items-center justify-center z-50 p-4`}
       >
+        {reviewModalOpen && (
+          <CreateReviewModal
+            ModalOpen={reviewModalOpen}
+            onClose={() => {
+              setReviewModalOpen(false);
+              window.location.reload();
+            }}
+            productId={id}
+            currentUser={currentUser}
+            productName={name}
+          />
+        )}
         <div className="bg-[#f6efe2] rounded shadow-2xl max-w-[85%] w-full relative grid grid-cols-1 md:grid-cols-2 max-h-[90vh] overflow-y-auto md:mt-20">
           <button
             className="absolute top-4 right-4 text-[#2e5b61] hover:text-[#1a3a3e] z-10 hover:cursor-pointer"
@@ -220,13 +271,13 @@ function Product({
                 reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="border border-gray-300 rounded p-4 mb-4 bg-white"
+                    className="border border-gray-300 rounded p-4 mb-4 bg-[#f2eadd]"
                   >
                     <div className="flex justify-between items-center">
                       <h4 className="font-semibold text-[#26484d]">
                         {review.title}
                       </h4>
-                      <h4 className="font-normal text-[#26484d] text-right">
+                      <h4 className="font-normal text-[#26484d] text-right ">
                         By:{" "}
                         {review.user.id === currentUser?.id
                           ? "You"
@@ -238,6 +289,25 @@ function Product({
                       {"☆".repeat(5 - review.stars)}
                     </p>
                     <p className="text-gray-700">{review.body}</p>
+                    {review.user.id === currentUser?.id && (
+                      <div>
+                        <button
+                          className="mt-2 px-3 mr-1 py-1 bg-[#9362bb] text-white rounded hover:bg-[#d91b23] text-sm"
+                          onClick={() => {
+                            setSelectedReview(review);
+                            setEditReviewModalOpen(true);
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="mt-2 px-3 py-1 bg-[#fb2c35] text-white rounded hover:bg-[#d91b23] text-sm"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -253,7 +323,17 @@ function Product({
             <p className="text-xl md:text-2xl font-semibold text-[#26484d] mb-4">
               ${price}
             </p>
-            <p className="text-base text-gray-700 mb-6">{description}</p>
+            <p
+              className="text-l md:text-xl font-semibold text-[#9362bb] mb-4 hover:underline hover:cursor-pointer"
+              onClick={handleShowSeller}
+              style={{ cursor: "pointer" }}
+            >
+              Visitar perfil del vendedor
+            </p>
+
+            <p className="text-base text-gray-700 mb-6">
+              Descripcion: {description}
+            </p>
             <div className="border-t border-[#d3c9b6] pt-4 mb-6 space-y-2">
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">
@@ -297,17 +377,17 @@ function Product({
                 onClick={handleAddToCart}
                 className="w-full bg-[#8467bb] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
-                {currentUser
-                  ? "Añadir al Carrito"
-                  : "Inicia sesión para comprar"}
+                {!currentUser
+                  ? "Inicia sesión para comprar"
+                  : stock <= 0
+                  ? "Producto agotado"
+                  : "Añadir al Carrito"}
               </button>
             )}
 
             {!isOwner && (
               <button
-                onClick={() => {
-                  setIsProductOpen(false);
-                }}
+                onClick={() => setReviewModalOpen(true)}
                 className="w-full bg-[#027f47] text-[#f6efe2] mt-2 py-3 rounded-lg font-semibold hover:bg-[#243e42] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e5b61] focus:ring-offset-[#f6efe2] hover:cursor-pointer"
               >
                 Dejar una Reseña
@@ -325,6 +405,19 @@ function Product({
           </div>
         </div>
       </div>
+
+      {sellerModalOpen && (
+        <Seller sellerId={OwnerId} setIsSellerOpen={setSellerModalOpen} />
+      )}
+
+      {editReviewModalOpen && selectedReview && (
+        <EditReviewModal
+          ModalOpen={editReviewModalOpen}
+          onClose={() => setEditReviewModalOpen(false)}
+          review={selectedReview}
+          reviewType="product"
+        />
+      )}
 
       <ConfirmationModal
         isOpen={showConfirm}
