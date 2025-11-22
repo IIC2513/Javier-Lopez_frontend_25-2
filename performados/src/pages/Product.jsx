@@ -29,7 +29,7 @@ const colorThemes = {
   pink: "bg-[#fd538d]",
   white: "bg-[#ece2cc]",
   green: "bg-[#839243]",
-  gray: "bg-[#fca41d]",
+  gray: "bg-[#7f7d7e]",
   blue: "bg-[#8467bb]",
   black: "bg-[#535152]",
   brown: "bg-[#a07348]",
