@@ -140,6 +140,14 @@ function Product({
   };
 
   const handleAddToCart = () => {
+    if (stock <= 0) {
+      setFeedback({
+        isOpen: true,
+        type: "info",
+        message: "Producto agotado.",
+      });
+      return;
+    }
     if (!currentUser) {
       setFeedback({
         isOpen: true,
