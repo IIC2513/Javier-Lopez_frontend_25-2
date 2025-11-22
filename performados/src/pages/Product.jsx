@@ -36,6 +36,17 @@ const colorThemes = {
   default: "bg-[#2f5b61]",
 };
 
+const colorOptions = [
+  { value: "pink", label: "Rosado" },
+  { value: "white", label: "Blanco" },
+  { value: "green", label: "Verde" },
+  { value: "gray", label: "Gris" },
+  { value: "blue", label: "Azul" },
+  { value: "black", label: "Negro" },
+  { value: "brown", label: "Café" },
+  { value: "default", label: "Otro" },
+];
+
 function Product({
   id,
   OwnerId,
@@ -343,7 +354,10 @@ function Product({
               </p>
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">Color:</strong>{" "}
-                {color}
+                {colorOptions.find((c) => c.value === verifyColor(color))
+                  ? colorOptions.find((c) => c.value === verifyColor(color))
+                      .label
+                  : "Otro"}
               </p>
               <p className="text-sm text-gray-800">
                 <strong className="font-semibold text-gray-900">Stock:</strong>{" "}

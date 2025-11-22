@@ -36,6 +36,7 @@ const colorOptions = [
   { value: "blue", label: "Azul" },
   { value: "black", label: "Negro" },
   { value: "brown", label: "Café" },
+  { value: "default", label: "Otro" },
 ];
 
 export const EditProductModal = ({ isOpen, onClose, product }) => {
