@@ -131,6 +131,15 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
         image: finalImageUrl 
       };
 
+      if (productData.stock < 0) {
+        setFeedback({
+          isOpen: true,
+          type: "error",
+          message: "No puedes establecer un stock negativo.",
+        });
+        return;
+      }
+
       const response = await fetch(`${URL_API}/products/${product.id}`, {
         method: "PATCH",
         headers: {
