@@ -28,6 +28,16 @@ const categories = {
   accesorios: 6,
 };
 
+const colorOptions = [
+  { value: "pink", label: "Rosado" },
+  { value: "white", label: "Blanco" },
+  { value: "green", label: "Verde" },
+  { value: "gray", label: "Gris" },
+  { value: "blue", label: "Azul" },
+  { value: "black", label: "Negro" },
+  { value: "brown", label: "Café" },
+];
+
 export const EditProductModal = ({ isOpen, onClose, product }) => {
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState("");
@@ -228,7 +238,19 @@ export const EditProductModal = ({ isOpen, onClose, product }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Color</label>
-            <input type="text" value={color} onChange={(e) => setColor(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required />
+            <select
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              required
+            >
+              <option value="" disabled>Selecciona un color</option>
+              {colorOptions.map((col) => (
+                <option key={col.value} value={col.value}>
+                  {col.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

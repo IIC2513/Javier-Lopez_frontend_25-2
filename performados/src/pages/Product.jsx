@@ -31,7 +31,7 @@ const colorThemes = {
   green: "bg-[#839243]",
   gray: "bg-[#fca41d]",
   blue: "bg-[#8467bb]",
-  black: "bg-[#fca41d]",
+  black: "bg-[#535152]",
   brown: "bg-[#a07348]",
   default: "bg-[#2f5b61]",
 };
