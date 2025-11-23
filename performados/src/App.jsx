@@ -133,7 +133,7 @@ function App() {
       throw new Error("Error fetching cart data");
     }
     const data = await response.json();
-    console.log("Fetched cart data:", data.cart.Products);
+    //console.log("Fetched cart data:", data.cart.Products);
     setCartList(data.cart.Products || []);
   };
 

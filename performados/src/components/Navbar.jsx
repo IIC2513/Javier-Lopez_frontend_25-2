@@ -179,21 +179,21 @@ const NavBar = ({
                             onClick={toggleMenu}
                             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
                         >
-                            Products ▾
+                            Productos ▾
                         </a>
                         <a
                             href="/about-us"
                             className="text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
                             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
                         >
-                            About Us
+                            Conócenos!
                         </a>
                         <a
                             href="/howtouse"
                             className="flex items-center gap-2 text-[#2f5b61] font-sora text-lg hover:underline cursor-pointer"
                             style={{ fontFamily: "sora, sans-serif", fontWeight: "bolder" }}
                         >
-                            How to Use
+                            Instructivo
                         </a>
                     </div>
 

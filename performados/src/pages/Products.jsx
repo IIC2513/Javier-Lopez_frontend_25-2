@@ -63,7 +63,7 @@ const Products = ({ setCartList, cartList, setterCartOpen }) => {
 
   const productsFetch = async () => {
     try {
-      console.log("Fetching products from API...");
+      //console.log("Fetching products from API...");
       const response = await fetch(`${API_URL}/products`);
       const data = await response.json();
       setProducts(data);

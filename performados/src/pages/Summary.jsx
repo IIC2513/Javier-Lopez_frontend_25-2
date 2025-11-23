@@ -14,8 +14,8 @@ function Summary() {
   const [cartList, setCartList] = useState(() => {
     try {
       const storedCart = localStorage.getItem("shoppingCart");
-      console.log(storedCart);
-      console.log("Stored Cart:", JSON.parse(storedCart));
+      //console.log(storedCart);
+      //console.log("Stored Cart:", JSON.parse(storedCart));
       return storedCart ? JSON.parse(storedCart) : [];
     } catch (error) {
       console.error("Error al leer el carrito de localStorage", error);
@@ -63,7 +63,7 @@ function Summary() {
       const response = await axios.delete(
         `${URL_API}/cart/users/${currentUser.id}`
       );
-      console.log("Carrito limpiado:", response.data);
+      //console.log("Carrito limpiado:", response.data);
     } catch (error) {
       console.error("Error al limpiar el carrito:", error);
     }
@@ -107,7 +107,7 @@ function Summary() {
       }
 
       const data = await response.json();
-      console.log(">>> Order created successfully:", data);
+      //console.log(">>> Order created successfully:", data);
       //alert("¡¡¡Compra realizada con exito!!!");
       return data;
     } catch (error) {

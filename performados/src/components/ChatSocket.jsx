@@ -29,7 +29,7 @@ const Chat = ({ currentUser, token }) => {
 
 	useEffect(() => {
 		const handleNewChatInvite = (data) => {
-			console.log("¡Me han creado un chat nuevo!", data);
+			//console.log("¡Me han creado un chat nuevo!", data);
 
 			socket.emit("join_room", data.chatId);
 			getVendors();
@@ -53,7 +53,7 @@ const Chat = ({ currentUser, token }) => {
 
 	useEffect(() => {
 		const handleRefresh = () => {
-			console.log("Refrescando lista...");
+			//console.log("Refrescando lista...");
 			getVendors();
 		};
 		socket.on("refresh_user_list", handleRefresh);
@@ -148,7 +148,7 @@ const Chat = ({ currentUser, token }) => {
 
 	useEffect(() => {
 		const handleReceiveMessage = (newMessage) => {
-			console.log("Mensaje recibido:", newMessage);
+			//console.log("Mensaje recibido:", newMessage);
 
 			if (
 				currentChatId &&
